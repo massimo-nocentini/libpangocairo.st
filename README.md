@@ -24,3 +24,10 @@ Metacello new
 CairoLibrary>>macModuleName
 	^ '/opt/local/lib/libcairo.dylib'
 ```
+
+### Trying it
+You can execute the examples:
+
+```Smalltalk
+PangoExamples example1
+```
