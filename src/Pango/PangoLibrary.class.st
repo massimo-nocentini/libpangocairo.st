@@ -6,5 +6,5 @@ Class {
 
 { #category : #'accessing platform' }
 PangoLibrary >> macModuleName [
-	^ '/opt/local/lib/libpango-1.0.0.dylib'
+	^ '/usr/local/lib/libpango-1.0.0.dylib'
 ]

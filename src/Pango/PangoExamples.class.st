@@ -10,7 +10,7 @@ PangoExamples class >> example1 [
 	| fontDescription surface |
 	
 	fontDescription := PangoFontDescription newFromString: 'Helvetica 40'.
-	surface := AthensCairoSurface width: 300 height: 300.
+	surface := AthensCairoSurface width: 500 height: 500.
 	surface drawDuring: [ :canvas | | fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
 		fontLayout fontDescription: fontDescription.
@@ -22,7 +22,11 @@ PangoExamples class >> example1 [
 	<tt> hello </tt>
 	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>
 	'.
+	
 		canvas updateLayout: fontLayout.
+
+		canvas paintTransform rotateByDegrees: 45.
+
 		canvas showLayout: fontLayout ].
 
 	surface asForm asMorph openInWindow 

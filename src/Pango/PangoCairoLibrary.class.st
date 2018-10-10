@@ -6,6 +6,6 @@ Class {
 
 { #category : #'accessing platform' }
 PangoCairoLibrary >> macModuleName [
-	^ '/opt/local/lib/libpangocairo-1.0.0.dylib'
+	^ '/usr/local/lib/libpangocairo-1.0.0.dylib'
 
 ]
