@@ -37,7 +37,7 @@ PangoExamples class >> example1 [
 PangoExamples class >> example2 [
 
 	<example>
-	| pango |
+	| pango canvas |
 	pango := RSPangoText new
 		         markup: '<span><tt>'
 			         ,
@@ -47,10 +47,16 @@ PangoExamples class >> example2 [
 
 	pango draggable.
 
-	RSCanvas new
-		add: pango;
-		@ RSCanvasController;
-		open
+	canvas := RSCanvas new
+		          add: pango;
+		          add: (RSLabel new
+				           text: 'hello';
+				           draggable;
+				           yourself);
+		          @ RSCanvasController;
+		          yourself.
+		
+	canvas svgCairoExporter export
 ]
 
 { #category : #'see class side' }
