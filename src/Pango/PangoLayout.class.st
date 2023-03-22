@@ -44,6 +44,15 @@ PangoLayout >> fontDescription: desc [
 	self ffiCall: #(void pango_layout_set_font_description (self, const PangoFontDescription *desc))
 ]
 
+{ #category : #accessing }
+PangoLayout >> getExtentsInkRectangle: inkRectangle logicalRectangle: logicalRectangle [
+	"https://docs.gtk.org/Pango/method.Layout.get_attributes.html"
+
+	^ self ffiCall:
+		  #( void pango_layout_get_extents #( self , PangoRectangle
+		        * inkRectangle , PangoRectangle * logicalRectangle ) )
+]
+
 { #category : #initialization }
 PangoLayout >> initialize [
 	self autoRelease

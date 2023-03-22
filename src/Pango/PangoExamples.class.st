@@ -39,10 +39,9 @@ PangoExamples class >> example2 [
 	<example>
 	| pango canvas |
 	pango := RSPangoText new
-		         markup: '<span><tt>'
-			         ,
-				         (RSAthensRenderer >> #visitPangoText:) inspectionSource
-					         textWithStyle asString , '</tt></span>';
+		         markup:
+			         '<span><tt>' , Object organization classComment
+			         , '</tt></span>';
 		         notedWithPad: Float goldenRatio.
 
 	pango draggable.
@@ -55,8 +54,10 @@ PangoExamples class >> example2 [
 				           yourself);
 		          @ RSCanvasController;
 		          yourself.
-		
-	canvas svgCairoExporter export
+
+	canvas svgCairoExporter
+		zoomToShapes;
+		export
 ]
 
 { #category : #'see class side' }
