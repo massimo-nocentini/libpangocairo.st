@@ -9,12 +9,12 @@ PangoExamples class >> example1 [
 	<example>
 	| fontDescription surface |
 	
-	fontDescription := PangoFontDescription newFromString: 'Helvetica 40'.
+	fontDescription := PangoFontDescription newFromString: 'Ubuntu Mono 20'.
 	surface := AthensCairoSurface width: 500 height: 500.
 	surface drawDuring: [ :canvas | | fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
 		fontLayout fontDescription: fontDescription.
-		fontLayout markup: '<span foreground="blue" font_family="Helvetica">
+		fontLayout markup: '<span foreground="blue" font_family="Ubuntu">
 		<b> bold </b>
 		<u> is </u>
 		<i> nice </i>
@@ -31,6 +31,26 @@ PangoExamples class >> example1 [
 
 	surface asForm asMorph openInWindow 
 		
+]
+
+{ #category : #examples }
+PangoExamples class >> example2 [
+
+	<example>
+	| pango |
+	pango := RSPangoText new
+		         markup: '<span><tt>'
+			         ,
+				         (RSAthensRenderer >> #visitPangoText:) inspectionSource
+					         textWithStyle asString , '</tt></span>';
+		         notedWithPad: Float goldenRatio.
+
+	pango draggable.
+
+	RSCanvas new
+		add: pango;
+		@ RSCanvasController;
+		open
 ]
 
 { #category : #'see class side' }
