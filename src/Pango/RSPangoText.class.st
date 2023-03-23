@@ -63,12 +63,12 @@ RSPangoText >> updateBaseRectangle [
 	surface drawDuring: [ :canvas |
 		| fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
-		fontLayout fontDescription: fontDescription.
+		"fontLayout fontDescription: fontDescription."
 		fontLayout markup: (self markup ifNil: [ '' ]).
 
 		canvas updateLayout: fontLayout.
 
-		sizePoint := fontLayout size / 1024.0.
+		sizePoint := fontLayout inkRectangle extent.
 
 		self extent: sizePoint ]
 ]

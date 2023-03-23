@@ -59,6 +59,43 @@ PangoLayout >> initialize [
 ]
 
 { #category : #accessing }
+PangoLayout >> inkOrLogicalRectangle: isLogical [
+
+	| ll |
+	ll := LibLua uniqueInstance.
+
+	^ ll withOpenedLibsStateDo: [ :L |
+		  | x y w h |
+		  ll
+			  luaL_requiref: L name: 'cairo';
+			  on: L push: #cairo;
+			  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
+			  on: L push: self getHandle;
+			  on: L push: isLogical.
+
+		  ll assert: [ ll lua_pcall: L nargs: 2 nresults: 4 ].
+
+		  x := ll on: L at: -4.
+		  y := ll on: L at: -3.
+		  w := ll on: L at: -2.
+		  h := ll on: L at: -1.
+
+		  Rectangle floatCenter: x @ y extent: w @ h ]
+]
+
+{ #category : #accessing }
+PangoLayout >> inkRectangle [
+
+	^ self inkOrLogicalRectangle: false
+]
+
+{ #category : #accessing }
+PangoLayout >> logicalRectangle [
+
+	^ self inkOrLogicalRectangle: true
+]
+
+{ #category : #accessing }
 PangoLayout >> markup: markup [
 	^ self ffiCall: #(void pango_layout_set_markup (self, const char *markup, -1))
 ]

@@ -40,8 +40,7 @@ PangoExamples class >> example2 [
 	| pango canvas |
 	pango := RSPangoText new
 		         markup:
-			         '<span><tt>' , Object organization classComment
-			         , '</tt></span>';
+			         '<span><tt>' , Object class comment , '</tt></span>';
 		         notedWithPad: Float goldenRatio.
 
 	pango draggable.
@@ -57,7 +56,44 @@ PangoExamples class >> example2 [
 
 	canvas svgCairoExporter
 		zoomToShapes;
-		export
+		export.
+
+	canvas open
+]
+
+{ #category : #examples }
+PangoExamples class >> example3 [
+
+	<example>
+	| pango  |
+	pango := RSPangoText new
+		         markup: '<span foreground="blue" font_family="Ubuntu"><b> bold </b>
+		<u> is </u>
+		<i> nice </i>
+	</span>
+	<tt> hello </tt>
+	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>';
+		         notedWithPad: Float goldenRatio.
+
+
+	RSGroup new
+		add: pango;
+		inspect
+]
+
+{ #category : #examples }
+PangoExamples class >> example4 [
+
+	<example>
+	| pango |
+	pango := RSPangoText new
+		         markup: Object class comment;
+		         notedWithPad: Float goldenRatio.
+
+
+	RSGroup new
+		add: pango;
+		inspect
 ]
 
 { #category : #'see class side' }
