@@ -66,9 +66,13 @@ RSPangoText >> updateBaseRectangle [
 		"fontLayout fontDescription: fontDescription."
 		fontLayout markup: (self markup ifNil: [ '' ]).
 
-		canvas updateLayout: fontLayout.
+		canvas
+			updateLayout: fontLayout;
+			showLayout: fontLayout.
 
-		sizePoint := fontLayout inkRectangle extent.
+		sizePoint := fontLayout logicalRectangle extent.
 
-		self extent: sizePoint ]
+		self
+			extent: sizePoint;
+			signalUpdate ]
 ]

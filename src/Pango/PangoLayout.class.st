@@ -65,7 +65,7 @@ PangoLayout >> inkOrLogicalRectangle: isLogical [
 	ll := LibLua uniqueInstance.
 
 	^ ll withOpenedLibsStateDo: [ :L |
-		  | x y w h |
+		  | x y w h b |
 		  ll
 			  luaL_requiref: L name: 'cairo';
 			  on: L push: #cairo;
@@ -73,14 +73,15 @@ PangoLayout >> inkOrLogicalRectangle: isLogical [
 			  on: L push: self getHandle;
 			  on: L push: isLogical.
 
-		  ll assert: [ ll lua_pcall: L nargs: 2 nresults: 4 ].
+		  ll assert: [ ll lua_pcall: L nargs: 2 nresults: 5 ].
 
+		  b := ll on: L at: -5.
 		  x := ll on: L at: -4.
 		  y := ll on: L at: -3.
 		  w := ll on: L at: -2.
 		  h := ll on: L at: -1.
 
-		  Rectangle floatCenter: x @ y extent: w @ h ]
+		  Rectangle origin: x @ y extent: w @ h ]
 ]
 
 { #category : #accessing }
