@@ -70,7 +70,7 @@ RSPangoText >> updateBaseRectangle [
 			updateLayout: fontLayout;
 			showLayout: fontLayout.
 
-		sizePoint := fontLayout logicalRectangle extent.
+		sizePoint := fontLayout inkRectangle extent.
 
 		self
 			extent: sizePoint;

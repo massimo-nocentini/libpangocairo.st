@@ -67,7 +67,7 @@ PangoExamples class >> example3 [
 	<example>
 	| pango  |
 	pango := RSPangoText new
-		         markup: '<span foreground="blue" font_family="Cantarell"><b> bold </b>
+		         markup: '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
 		<u> is </u>
 		<i> nice </i>
 	</span>
@@ -87,13 +87,16 @@ PangoExamples class >> example4 [
 	<example>
 	| pango |
 	pango := RSPangoText new
-		         markup: '<span font_family="Cantarell">' , Object class comment , '</span>';
-		         notedWithPad: Float goldenRatio.
+		         markup:
+			         '<span font_family="Cantarell" font_size="12pt">'
+			         , 'Hello world' , '</span>';
+		         boxedWithPad: Float goldenRatio.
 
 	RSGroup new
 		add: pango;
 		add: (RSLabel new
 				 text: 'Hello world';
+				 fontSize: 12;
 				 yourself);
 		inspect
 ]
