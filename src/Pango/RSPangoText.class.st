@@ -38,39 +38,31 @@ RSPangoText >> markup [
 { #category : #accessing }
 RSPangoText >> markup: anObject [
 
-	markup := anObject.
+	markup := Character cr join:
+		          (anObject lines collect: [ :aString |
+			           aString ifEmpty: [ ' ' ] ]).
+
 
 	self updateBaseRectangle
-]
-
-{ #category : #public }
-RSPangoText >> translationPoint [
-
-	^ 0 @ 0
 ]
 
 { #category : #accessing }
 RSPangoText >> updateBaseRectangle [
 
-	| fontDescription surface sizePoint font |
-	font := StandardFonts defaultFont.
-
-	fontDescription := PangoFontDescription newFromString:
-		                   font familyName , ' ' , font pointSize asString.
-
+	| surface sizePoint |
 	surface := AthensCairoSurface width: 500 height: 500.
 
 	surface drawDuring: [ :canvas |
 		| fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
 		"fontLayout fontDescription: fontDescription."
-		fontLayout markup: (self markup ifNil: [ '' ]).
+		fontLayout markup: (self markup ifNil: [ '<span></span>' ]).
 
 		canvas
 			updateLayout: fontLayout;
 			showLayout: fontLayout.
 
-		sizePoint := fontLayout inkRectangle extent.
+		sizePoint := fontLayout logicalRectangle extent.
 
 		self
 			extent: sizePoint;
