@@ -123,6 +123,9 @@ PangoExamples class >> example5 [
 
 	RSGroup new
 		add: pango;
+		add: (RSPangoText new
+				 markup: '<span color="green">' , Object class comment , '</span>';
+				 yourself);
 		inspect
 ]
 
