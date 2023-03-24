@@ -38,9 +38,8 @@ RSPangoText >> markup [
 { #category : #accessing }
 RSPangoText >> markup: anObject [
 
-	markup := Character cr join:
-		          (anObject lines collect: [ :aString |
-			           aString ifEmpty: [ ' ' ] ]).
+	markup := Character cr join: (anObject lines collect: [ :aString |
+			           aString ifEmpty: [ Character nbsp ] ]).
 
 
 	self updateBaseRectangle

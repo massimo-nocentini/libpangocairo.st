@@ -109,6 +109,23 @@ world' , '</span>';
 		inspect
 ]
 
+{ #category : #examples }
+PangoExamples class >> example5 [
+
+	<example>
+	| pango |
+	pango := RSPangoText new
+		         markup:
+			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on">'
+			         , Object class comment , '</span>';
+		         boxedWithPad: Float goldenRatio.
+
+
+	RSGroup new
+		add: pango;
+		inspect
+]
+
 { #category : #'see class side' }
 PangoExamples >> seeClassSide [
 ]

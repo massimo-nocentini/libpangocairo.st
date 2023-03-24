@@ -53,6 +53,27 @@ PangoLayout >> getExtentsInkRectangle: inkRectangle logicalRectangle: logicalRec
 		        * inkRectangle , PangoRectangle * logicalRectangle ) )
 ]
 
+{ #category : #accessing }
+PangoLayout >> get_line_count [
+
+	^ self ffiCall: #( int pango_layout_get_line_count
+	     #( self ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> get_line_spacing [
+
+	^ self ffiCall: #( float pango_layout_get_line_spacing
+	     #( self ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> get_spacing [
+
+	^ self ffiCall: #( int pango_layout_get_spacing
+	     #( self ) )
+]
+
 { #category : #initialization }
 PangoLayout >> initialize [
 	self autoRelease
