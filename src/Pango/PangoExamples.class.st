@@ -129,6 +129,28 @@ PangoExamples class >> example5 [
 		inspect
 ]
 
+{ #category : #examples }
+PangoExamples class >> example6 [
+
+	<example>
+	| pango |
+	pango := RSPangoText new
+		         markup:
+			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on"><tt>'
+			         ,
+				         (PangoLayout >> #inkOrLogicalRectangle:) inspectionSource
+					         textWithStyle asString , '</tt></span>';
+		         boxedWithPad: Float goldenRatio.
+
+
+	RSGroup new
+		add: pango;
+		add: (RSPangoText new
+				 markup: '<span color="green">' , Object class comment , '</span>';
+				 yourself);
+		inspect
+]
+
 { #category : #'see class side' }
 PangoExamples >> seeClassSide [
 ]

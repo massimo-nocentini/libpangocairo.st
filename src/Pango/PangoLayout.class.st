@@ -91,7 +91,7 @@ PangoLayout >> inkOrLogicalRectangle: isLogical [
 			  luaL_requiref: L name: 'cairo';
 			  on: L push: #cairo;
 			  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
-			  on: L push: self getHandle;
+			  on: L push: self;
 			  on: L push: isLogical.
 
 		  ll assert: [ ll lua_pcall: L nargs: 2 nresults: 5 ].
@@ -127,6 +127,12 @@ PangoLayout >> primGetSizeWidth: width height: height [
 	self ffiCall: #(void pango_layout_get_size (self, int *width, int *height))
 
 	
+]
+
+{ #category : #accessing }
+PangoLayout >> pushOnLua: state liblua: liblua [
+
+	^ liblua on: state push: handle
 ]
 
 { #category : #accessing }
