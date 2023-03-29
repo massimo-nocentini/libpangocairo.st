@@ -3,18 +3,21 @@ Extension { #name : #RSAthensRenderer }
 { #category : #'*Pango' }
 RSAthensRenderer >> visitPangoText: pango [
 
-	| lbtranslation fontLayout |
+	| lbtranslation fontLayout resource |
 	lbtranslation := (pango extent / 2.0) asFloatPoint negated.
 	matrix translateBy: lbtranslation.
 	athensCanvas pathTransform loadAffineTransform: matrix.
 	athensCanvas setPathMatrix.
 
 	fontLayout := PangoLayout newCanvas: athensCanvas.
-	fontLayout markup: (pango markup ifNil: [ '' ]).
+
+	resource := pango initPangoLayout: fontLayout.
 
 	athensCanvas
 		updateLayout: fontLayout;
 		showLayout: fontLayout.
+
+	pango freeResource: resource ofPangoLayout: fontLayout.
 
 	athensCanvas pathTransform translateBy: lbtranslation negated.
 	athensCanvas setPathMatrix

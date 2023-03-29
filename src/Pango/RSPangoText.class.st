@@ -18,7 +18,8 @@ Class {
 	#name : #RSPangoText,
 	#superclass : #RSBoundingShape,
 	#instVars : [
-		'markup'
+		'text',
+		'attributesString'
 	],
 	#category : #Pango
 }
@@ -30,17 +31,52 @@ RSPangoText >> accept: visitor [
 ]
 
 { #category : #accessing }
-RSPangoText >> markup [
+RSPangoText >> attributesString [
 
-	^ markup
+	^ attributesString
 ]
 
 { #category : #accessing }
-RSPangoText >> markup: anObject [
+RSPangoText >> attributesString: anObject [
 
-	markup := Character cr join: (anObject lines collect: [ :aString |
-			           aString ifEmpty: [ Character nbsp ] ]).
+	attributesString := anObject
+]
 
+{ #category : #'as yet unclassified' }
+RSPangoText >> freeResource: resource ofPangoLayout: fontLayout [
+
+	fontLayout attr_list_unref: resource
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> initPangoLayout: aPangoLayout [
+
+	| attrSpec externalAddress |
+	aPangoLayout text: self text.
+
+	attrSpec := self attributesString ifNil: [
+		            ', ' join:
+			            { '0 10 foreground red'. '10 -1 foreground grey'.
+			            '0 -1 font-desc "Monospace 10"'.
+			            '0 -1 style italic' } ].
+
+	externalAddress := aPangoLayout attributesString: attrSpec.
+
+	aPangoLayout set_attributes: externalAddress.
+
+	^ externalAddress
+]
+
+{ #category : #accessing }
+RSPangoText >> text [
+
+	^ text
+]
+
+{ #category : #accessing }
+RSPangoText >> text: anObject [
+
+	text := anObject.
 
 	self updateBaseRectangle
 ]
@@ -52,14 +88,16 @@ RSPangoText >> updateBaseRectangle [
 	surface := AthensCairoSurface width: 500 height: 500.
 
 	surface drawDuring: [ :canvas |
-		| fontLayout |
+		| fontLayout resource |
 		fontLayout := PangoLayout newCanvas: canvas.
-		"fontLayout fontDescription: fontDescription."
-		fontLayout markup: (self markup ifNil: [ '<span></span>' ]).
+
+		resource := self initPangoLayout: fontLayout.
 
 		canvas
 			updateLayout: fontLayout;
 			showLayout: fontLayout.
+
+		self freeResource: resource ofPangoLayout: fontLayout.
 
 		sizePoint := fontLayout logicalRectangle extent.
 
