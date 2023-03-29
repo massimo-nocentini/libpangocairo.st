@@ -57,8 +57,7 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 	attrSpec := self attributesString ifNil: [
 		            ', ' join:
 			            { '0 10 foreground red'. '10 -1 foreground grey'.
-			            '0 -1 font-desc "Monospace 10"'.
-			            '0 -1 style italic' } ].
+			            '0 -1 font-desc "Monospace 10"' } ].
 
 	externalAddress := aPangoLayout attributesString: attrSpec.
 
