@@ -6,6 +6,5 @@ TextFontChange >> asPangoAttributeString [
 	| logicalFont |
 	logicalFont := TextStyle default fontAt: self fontNumber.
 
-	^ 'font-desc "' , logicalFont familyName , ' '
-	  , logicalFont pixelSize asString , '"'
+	^ 'font-desc "DejaVu Sans Mono 10pt"'
 ]

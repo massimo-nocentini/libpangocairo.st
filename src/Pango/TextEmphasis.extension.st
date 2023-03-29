@@ -3,7 +3,7 @@ Extension { #name : #TextEmphasis }
 { #category : #'*Pango' }
 TextEmphasis >> asPangoAttributeString [
 
-	^ self class bold emphasisCode == self emphasisCode
+	^ self emphasisCode = 1
 		  ifTrue: [ 'weight bold' ]
-		  ifFalse: [ '' ]
+		  ifFalse: [ 'weight normal' ]
 ]
