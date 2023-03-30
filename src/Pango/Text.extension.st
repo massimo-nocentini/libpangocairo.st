@@ -6,6 +6,8 @@ Text >> asRSPangoText [
 	| attributes |
 	attributes := OrderedCollection new.
 
+	attributes add: '0 -1 foreground #' , Color black asHexString.
+
 	self runs withStartStopAndValueDo: [ :start :stop :aCollection |
 		aCollection do: [ :each |
 			each asPangoAttributeChunks do: [ :chunk |
