@@ -8,7 +8,7 @@ Text >> asRSPangoText [
 
 	self runs withStartStopAndValueDo: [ :start :stop :aCollection |
 		aCollection do: [ :each |
-			each asPangoAttributeString ifNotEmpty: [ :chunk |
+			each asPangoAttributeChunks do: [ :chunk |
 				| attrString |
 				attrString := '{1} {2} {3}' format: {
 						              (start - 1).

@@ -1,9 +1,15 @@
 Extension { #name : #TextEmphasis }
 
 { #category : #'*Pango' }
-TextEmphasis >> asPangoAttributeString [
+TextEmphasis >> asPangoAttributeChunks [
 
-	^ self emphasisCode = 1
-		  ifTrue: [ 'weight bold' ]
-		  ifFalse: [ 'weight normal' ]
+	^ self emphasisCode = self class bold emphasisCode
+		  ifTrue: [
+			  {
+				  ('foreground #' , Color black asHexString).
+				  'weight bold' } ]
+		  ifFalse: [
+			  self emphasisCode = self class italic emphasisCode
+				  ifTrue: [ { 'style italic' } ]
+				  ifFalse: [ { 'style normal' } ] ]
 ]

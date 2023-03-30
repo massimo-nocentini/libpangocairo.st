@@ -54,8 +54,8 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 	| attrSpec externalAddress |
 	aPangoLayout text: self text.
 
-	attrSpec := ', ' join: {'0 6 foreground black'} ,  self attributesString.
-	
+	attrSpec := ', ' join: self attributesString.
+
 	externalAddress := aPangoLayout attributesString: attrSpec.
 
 	aPangoLayout set_attributes: externalAddress.

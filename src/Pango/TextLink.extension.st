@@ -1,7 +1,7 @@
 Extension { #name : #TextLink }
 
 { #category : #'*Pango' }
-TextLink >> asPangoAttributeString [
+TextLink >> asPangoAttributeChunks [
 
-	^ ''
+	^ {  }
 ]
