@@ -8,5 +8,8 @@ TextEmphasis >> asPangoAttributeChunks [
 		  ifFalse: [
 			  self emphasisCode = self class italic emphasisCode
 				  ifTrue: [ { 'style italic' } ]
-				  ifFalse: [ { 'style normal' } ] ]
+				  ifFalse: [
+					  self emphasisCode = self class underlined emphasisCode
+						  ifTrue: [ { 'underline single' } ]
+						  ifFalse: [ { 'style normal' } ] ] ]
 ]
