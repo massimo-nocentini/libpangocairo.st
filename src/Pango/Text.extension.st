@@ -8,7 +8,7 @@ Text >> asRSPangoText [
 
 	attributes
 		add: '0 -1 foreground #' , Color black asHexString;
-		add: '0 -1 font-desc "monospace 10"'.
+		add: '0 -1 font-desc "monospace 12"'.
 
 	self runs withStartStopAndValueDo: [ :start :stop :aCollection |
 		aCollection do: [ :each |

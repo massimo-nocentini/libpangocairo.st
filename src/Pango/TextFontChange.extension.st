@@ -4,7 +4,7 @@ Extension { #name : #TextFontChange }
 TextFontChange >> asPangoAttributeChunks [
 
 	| logicalFont |
-	logicalFont := TextStyle default fontAt: self fontNumber.
+	"logicalFont := TextStyle default fontAt: self fontNumber."
 
 	^ { "'family Monospace'" }
 ]
