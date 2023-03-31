@@ -65,10 +65,18 @@ RSPangoText >> freeResource: externalAddress ofPangoLayout: fontLayout [
 { #category : #handle }
 RSPangoText >> initPangoLayout: aPangoLayout [
 
-	| attrSpec externalAddress |
+	| attrSpec externalAddress chunks |
 	aPangoLayout text: self text.
 
-	attrSpec := ', ' join: self attributesChunks.
+	chunks := OrderedCollection new
+		          add: '0 -1 foreground #' , Color black asHexString;
+		          add: ('0 -1 font-desc "{1} {2}"' format: {
+						           self font familyName.
+						           self font pointSize });
+		          addAll: self attributesChunks;
+		          yourself.
+
+	attrSpec := ', ' join: chunks.
 
 	externalAddress := aPangoLayout attr_list_from_string: attrSpec.
 
