@@ -19,7 +19,8 @@ Class {
 	#superclass : #RSBoundingShape,
 	#instVars : [
 		'text',
-		'attributesChunks'
+		'attributesChunks',
+		'font'
 	],
 	#category : #Pango
 }
@@ -40,6 +41,18 @@ RSPangoText >> attributesChunks [
 RSPangoText >> attributesChunks: anObject [
 
 	attributesChunks := anObject
+]
+
+{ #category : #accessing }
+RSPangoText >> font [
+
+	^ font
+]
+
+{ #category : #accessing }
+RSPangoText >> font: anObject [
+
+	font := anObject
 ]
 
 { #category : #handle }
@@ -69,7 +82,9 @@ RSPangoText >> initialize [
 
 	super initialize.
 
-	self attributesChunks: {  }
+	self
+		font: StandardFonts defaultFont;
+		attributesChunks: {  }
 ]
 
 { #category : #accessing }
@@ -90,9 +105,17 @@ RSPangoText >> text: anObject [
 RSPangoText >> updateBaseRectangle [
 
 	| surface extent |
+	"A very small surface to create an `AthensCairoCanvas` object."
 	surface := AthensCairoSurface width: 1 height: 1.
 
 	surface drawDuring: [ :athensCanvas |
+		| metricsProvider |
+		metricsProvider := CairoFontMetricsProvider new
+			                   font: self font;
+			                   yourself.
+
+		athensCanvas setScaledFont: metricsProvider cairoFont.
+
 		self withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
 			athensCanvas updateLayout: pangoLayout. ";
 					             showLayout: pangoLayout"

@@ -12,6 +12,11 @@ RSAthensRenderer >> visitPangoText: pango [
 	athensCanvas setPathMatrix.
 
 	pango withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
+		| fontDescription |
+		fontDescription := PangoFontDescription newFromString: 'Ubuntu Mono'.
+
+		pangoLayout set_font_description: fontDescription.
+
 		athensCanvas
 			updateLayout: pangoLayout;
 			showLayout: pangoLayout ].

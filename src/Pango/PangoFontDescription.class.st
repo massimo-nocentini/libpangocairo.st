@@ -19,7 +19,9 @@ PangoFontDescription class >> newFromString: aString [
 
 { #category : #private }
 PangoFontDescription class >> pango_font_description_free: desc [
-	self ffiCall: #(void pango_font_description_free (void *desc))
+
+	self ffiCall: #( void pango_font_description_free
+	   #( void * desc ) )
 ]
 
 { #category : #private }

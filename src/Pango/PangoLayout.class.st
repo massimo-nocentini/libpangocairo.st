@@ -19,12 +19,14 @@ PangoLayout class >> g_object_unref: handle [
 
 { #category : #'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
-	^ self pango_cairo_create_layout: aCanvas
+
+	^ (self pango_cairo_create_layout: aCanvas) initialize
 ]
 
 { #category : #'instance creation' }
 PangoLayout class >> newContext: aContext [
-	^ self pango_layout_new: aContext
+
+	^ (self pango_layout_new: aContext) initialize
 ]
 
 { #category : #private }
