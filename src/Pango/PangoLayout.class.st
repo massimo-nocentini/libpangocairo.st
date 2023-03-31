@@ -65,8 +65,11 @@ PangoLayout >> attributesString: aString [
 ]
 
 { #category : #accessing }
-PangoLayout >> fontDescription: desc [
-	self ffiCall: #(void pango_layout_set_font_description (self, const PangoFontDescription *desc))
+PangoLayout >> font_description_from_string: str [
+
+	self ffiCall:
+		#( PangoFontDescription * pango_font_description_from_string
+		   #( const char * str ) )
 ]
 
 { #category : #accessing }
@@ -165,6 +168,11 @@ PangoLayout >> set_attributes: attrListExternalAddress [
 
 	self ffiCall:
 		#( void pango_layout_set_attributes #( self , void * attrListExternalAddress ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> set_font_description: desc [
+	self ffiCall: #(void pango_layout_set_font_description (self, const PangoFontDescription *desc))
 ]
 
 { #category : #accessing }

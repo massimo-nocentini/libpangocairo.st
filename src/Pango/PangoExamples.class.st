@@ -6,15 +6,18 @@ Class {
 
 { #category : #examples }
 PangoExamples class >> example1 [
+
 	<example>
 	| fontDescription surface |
-	
-	fontDescription := PangoFontDescription newFromString: 'Ubuntu Mono 20'.
+	fontDescription := PangoFontDescription newFromString: 'ubuntu 20'.
+
 	surface := AthensCairoSurface width: 500 height: 500.
-	surface drawDuring: [ :canvas | | fontLayout |
+
+	surface drawDuring: [ :canvas |
+		| fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
-		fontLayout fontDescription: fontDescription.
-		fontLayout markup: '<span foreground="blue" font_family="Ubuntu">
+		fontLayout set_font_description: fontDescription.
+		fontLayout markup: '<span foreground="blue" font_family="ubuntu">
 		<b> bold </b>
 		<u> is </u>
 		<i> nice </i>
@@ -22,15 +25,11 @@ PangoExamples class >> example1 [
 	<tt> hello </tt>
 	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>
 	'.
-	
+
 		canvas updateLayout: fontLayout.
-
-		canvas paintTransform rotateByDegrees: 45.
-
 		canvas showLayout: fontLayout ].
 
-	surface asForm asMorph openInWindow 
-		
+	surface asForm asMorph openInWindow
 ]
 
 { #category : #examples }
@@ -38,7 +37,7 @@ PangoExamples class >> example2 [
 
 	<example>
 	| pango canvas |
-	pango := RSPangoText new
+	pango := RSPangoMarkup new
 		         markup:
 			         '<span><tt>' , Object class comment , '</tt></span>';
 		         notedWithPad: Float goldenRatio.
@@ -65,9 +64,10 @@ PangoExamples class >> example2 [
 PangoExamples class >> example3 [
 
 	<example>
-	| pango  |
-	pango := RSPangoText new
-		         markup: '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
+	| pango |
+	pango := RSPangoMarkup new
+		         markup:
+			         '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
 		<u> is </u>
 		<i> nice </i>
 	</span>
@@ -86,7 +86,7 @@ PangoExamples class >> example4 [
 
 	<example>
 	| pango |
-	pango := RSPangoText new
+	pango := RSPangoMarkup new
 		         markup:
 			         '<span font_family="Cantarell" font_size="12pt">'
 			         , 'Hello
@@ -101,8 +101,8 @@ world' , '</span>';
 				 text: 'Hello world';
 				 fontSize: 12;
 				 yourself);
-		add: (RSPangoText new boxedWithPad: 0);
-		add: (RSPangoText new
+		add: (RSPangoMarkup new boxedWithPad: 0);
+		add: (RSPangoMarkup new
 				 markup:
 					 '<span font_family="Cantarell" font_size="32pt" foreground="red">&#169;</span>';
 				 yourself);
@@ -114,7 +114,7 @@ PangoExamples class >> example5 [
 
 	<example>
 	| pango |
-	pango := RSPangoText new
+	pango := RSPangoMarkup new
 		         markup:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on">'
 			         , Object class comment , '</span>';
@@ -123,7 +123,7 @@ PangoExamples class >> example5 [
 
 	RSGroup new
 		add: pango;
-		add: (RSPangoText new
+		add: (RSPangoMarkup new
 				 markup: '<span color="green">' , Object class comment , '</span>';
 				 yourself);
 		inspect
@@ -134,7 +134,7 @@ PangoExamples class >> example6 [
 
 	<example>
 	| pango |
-	pango := RSPangoText new
+	pango := RSPangoMarkup new
 		         markup:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on"><tt>'
 			         ,
