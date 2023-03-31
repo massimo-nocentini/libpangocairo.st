@@ -4,14 +4,12 @@ Class {
 	#category : #Pango
 }
 
-{ #category : #'as yet unclassified' }
-RSPangoMarkup >> freeResource: resource ofPangoLayout: fontLayout [
-]
-
-{ #category : #'as yet unclassified' }
+{ #category : #handle }
 RSPangoMarkup >> initPangoLayout: aPangoLayout [
 
-	aPangoLayout markup: (self markup ifNil: [ '<span></span>' ])
+	aPangoLayout markup: (self markup ifNil: [ '<span></span>' ]).
+
+	^ ExternalAddress null
 ]
 
 { #category : #accessing }
@@ -21,11 +19,7 @@ RSPangoMarkup >> markup [
 ]
 
 { #category : #accessing }
-RSPangoMarkup >> markup: anObject [
+RSPangoMarkup >> markup: aString [
 
-	| fixed |
-	fixed := Character cr join: (anObject lines collect: [ :aString |
-			          aString ifEmpty: [ Character nbsp ] ]).
-
-	^ self text: fixed
+	^ self text: aString fixEmptyLinesForPango
 ]

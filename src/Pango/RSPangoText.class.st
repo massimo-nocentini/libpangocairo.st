@@ -19,7 +19,7 @@ Class {
 	#superclass : #RSBoundingShape,
 	#instVars : [
 		'text',
-		'attributesString'
+		'attributesChunks'
 	],
 	#category : #Pango
 }
@@ -31,32 +31,33 @@ RSPangoText >> accept: visitor [
 ]
 
 { #category : #accessing }
-RSPangoText >> attributesString [
+RSPangoText >> attributesChunks [
 
-	^ attributesString
+	^ attributesChunks
 ]
 
 { #category : #accessing }
-RSPangoText >> attributesString: anObject [
+RSPangoText >> attributesChunks: anObject [
 
-	attributesString := anObject
+	attributesChunks := anObject
 ]
 
-{ #category : #'as yet unclassified' }
-RSPangoText >> freeResource: resource ofPangoLayout: fontLayout [
+{ #category : #handle }
+RSPangoText >> freeResource: externalAddress ofPangoLayout: fontLayout [
 
-	fontLayout attr_list_unref: resource
+	externalAddress isNull ifFalse: [
+		fontLayout attr_list_unref: externalAddress ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #handle }
 RSPangoText >> initPangoLayout: aPangoLayout [
 
 	| attrSpec externalAddress |
 	aPangoLayout text: self text.
 
-	attrSpec := ', ' join: self attributesString.
+	attrSpec := ', ' join: self attributesChunks.
 
-	externalAddress := aPangoLayout attributesString: attrSpec.
+	externalAddress := aPangoLayout attr_list_from_string: attrSpec.
 
 	aPangoLayout set_attributes: externalAddress.
 
@@ -68,7 +69,7 @@ RSPangoText >> initialize [
 
 	super initialize.
 
-	self attributesString: #(  )
+	self attributesChunks: {  }
 ]
 
 { #category : #accessing }
@@ -88,24 +89,29 @@ RSPangoText >> text: anObject [
 { #category : #accessing }
 RSPangoText >> updateBaseRectangle [
 
-	| surface sizePoint |
-	surface := AthensCairoSurface width: 500 height: 500.
+	| surface extent |
+	surface := AthensCairoSurface width: 1 height: 1.
 
-	surface drawDuring: [ :canvas |
-		| fontLayout resource |
-		fontLayout := PangoLayout newCanvas: canvas.
+	surface drawDuring: [ :athensCanvas |
+		self withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
+			athensCanvas updateLayout: pangoLayout. ";
+					             showLayout: pangoLayout"
 
-		resource := self initPangoLayout: fontLayout.
+			extent := pangoLayout logicalRectangle extent ] ].
 
-		canvas
-			updateLayout: fontLayout;
-			showLayout: fontLayout.
+	self
+		extent: extent;
+		signalUpdate
+]
 
-		self freeResource: resource ofPangoLayout: fontLayout.
+{ #category : #handle }
+RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 
-		sizePoint := fontLayout logicalRectangle extent.
+	| pangoLayout resource |
+	pangoLayout := PangoLayout newCanvas: athensCanvas.
 
-		self
-			extent: sizePoint;
-			signalUpdate ]
+	resource := self initPangoLayout: pangoLayout.
+
+	[ aBlock value: pangoLayout ] ensure: [
+		self freeResource: resource ofPangoLayout: pangoLayout ]
 ]

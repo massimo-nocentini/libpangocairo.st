@@ -40,28 +40,17 @@ PangoLayout class >> pango_layout_new: context [
 ]
 
 { #category : #accessing }
+PangoLayout >> attr_list_from_string: text [
+
+	^ self ffiCall:
+		  #( void * pango_attr_list_from_string #( const char * text ) )
+]
+
+{ #category : #accessing }
 PangoLayout >> attr_list_unref: attrListExternalAddress [
 
 	self ffiCall:
 		#( void pango_attr_list_unref #( void * attrListExternalAddress ) )
-]
-
-{ #category : #accessing }
-PangoLayout >> attributesString: aString [
-
-	| ll |
-	ll := LibLua uniqueInstance.
-
-	^ ll withOpenedLibsStateDo: [ :L |
-		  ll
-			  luaL_requiref: L name: 'cairo';
-			  on: L push: #cairo;
-			  lua_getfield: L at: -1 name: 'pango_attr_list_from_string';
-			  on: L push: aString.
-
-		  ll assert: [ ll lua_pcall: L nargs: 1 nresults: 1 ].
-
-		  ll on: L at: -1 ]
 ]
 
 { #category : #accessing }

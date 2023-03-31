@@ -22,7 +22,7 @@ Text >> asRSPangoText [
 				attributes add: attrString ] ] ].
 
 	^ RSPangoText new
-		  attributesString: attributes;
+		  attributesChunks: attributes;
 		  text: self asString;
 		  yourself
 ]
