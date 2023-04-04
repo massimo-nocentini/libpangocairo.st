@@ -1,7 +1,7 @@
 Extension { #name : #Text }
 
 { #category : #'*Pango' }
-Text >> asRSPangoText [
+Text >> asRSPangoTextUsingFont: aFont [
 
 	| attributes |
 	attributes := OrderedCollection new.
@@ -18,6 +18,7 @@ Text >> asRSPangoText [
 				attributes add: attrString ] ] ].
 
 	^ RSPangoText new
+		  font: aFont;
 		  attributesChunks: attributes;
 		  text: self asString;
 		  yourself
