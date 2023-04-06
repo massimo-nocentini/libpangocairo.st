@@ -64,15 +64,6 @@ PangoLayout >> font_description_from_string: str [
 ]
 
 { #category : #accessing }
-PangoLayout >> getExtentsInkRectangle: inkRectangle logicalRectangle: logicalRectangle [
-	"https://docs.gtk.org/Pango/method.Layout.get_attributes.html"
-
-	^ self ffiCall:
-		  #( void pango_layout_get_extents #( self , PangoRectangle
-		        * inkRectangle , PangoRectangle * logicalRectangle ) )
-]
-
-{ #category : #accessing }
 PangoLayout >> get_line_count [
 
 	^ self ffiCall: #( int pango_layout_get_line_count
@@ -95,39 +86,11 @@ PangoLayout >> get_spacing [
 
 { #category : #initialization }
 PangoLayout >> initialize [
-	self autoRelease
-]
 
-{ #category : #accessing }
-PangoLayout >> inkOrLogicalRectangle: isLogical [
-
-	| ll |
-	ll := LibLua uniqueInstance.
-
-	^ ll withOpenedLibsStateDo: [ :L |
-		  | x y w h b |
-		  ll
-			  luaL_requiref: L name: 'cairo';
-			  on: L push: #cairo;
-			  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
-			  on: L push: self;
-			  on: L push: isLogical.
-
-		  ll assert: [ ll lua_pcall: L nargs: 2 nresults: 5 ].
-
-		  b := ll on: L at: -5.
-		  x := ll on: L at: -4.
-		  y := ll on: L at: -3.
-		  w := ll on: L at: -2.
-		  h := ll on: L at: -1.
-
-		  Rectangle origin: x @ y extent: w @ h ]
-]
-
-{ #category : #accessing }
-PangoLayout >> inkRectangle [
-
-	^ self inkOrLogicalRectangle: false
+	self
+		set_spacing: 0;
+		set_single_paragraph_mode: false;
+		autoRelease
 ]
 
 { #category : #accessing }
@@ -181,6 +144,28 @@ PangoLayout >> set_attributes: attrListExternalAddress [
 { #category : #accessing }
 PangoLayout >> set_font_description: desc [
 	self ffiCall: #(void pango_layout_set_font_description (self, const PangoFontDescription *desc))
+]
+
+{ #category : #accessing }
+PangoLayout >> set_line_spacing: spacing [
+
+	^ self ffiCall:
+		  #( void pango_layout_set_line_spacing
+		     #( self , float spacing ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> set_single_paragraph_mode: b [
+
+	^ self ffiCall: #( void pango_layout_set_single_paragraph_mode
+		     #( self , bool b ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> set_spacing: spacing [
+
+	^ self ffiCall:
+		  #( void pango_layout_set_spacing #( self , int spacing ) )
 ]
 
 { #category : #accessing }

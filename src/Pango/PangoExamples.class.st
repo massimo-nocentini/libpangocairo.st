@@ -138,7 +138,7 @@ PangoExamples class >> example6 [
 		         markup:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on"><tt>'
 			         ,
-				         (PangoLayout >> #inkOrLogicalRectangle:) inspectionSource
+				         (PangoLayout >> #pixelSize) inspectionSource
 					         textWithStyle asString , '</tt></span>';
 		         boxedWithPad: Float goldenRatio.
 
