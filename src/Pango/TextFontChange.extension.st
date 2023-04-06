@@ -1,10 +1,10 @@
 Extension { #name : #TextFontChange }
 
 { #category : #'*Pango' }
-TextFontChange >> asPangoAttributeChunks [
+TextFontChange >> asPangoAttributeChunks: aFont [
 
 	| font |
-	font := TextStyle default fontAt: self fontNumber.
+	font := aFont textStyle fontAt: self fontNumber.
 
 	^ self attributesForFont: font
 ]

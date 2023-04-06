@@ -8,7 +8,10 @@ Text >> asRSPangoTextUsingFont: aFont [
 
 	self runs withStartStopAndValueDo: [ :start :stop :aCollection |
 		aCollection do: [ :each |
-			each asPangoAttributeChunks do: [ :chunk |
+			| chunks |
+			chunks := each asPangoAttributeChunks: aFont.
+
+			chunks do: [ :chunk |
 				| attrString |
 				attrString := '{1} {2} {3}' format: {
 						              (start - 1).

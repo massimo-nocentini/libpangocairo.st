@@ -1,7 +1,7 @@
 Extension { #name : #TextColor }
 
 { #category : #'*Pango' }
-TextColor >> asPangoAttributeChunks [
+TextColor >> asPangoAttributeChunks: aFont [
 
 	^ { ('foreground #' , self color asHexString) }
 ]

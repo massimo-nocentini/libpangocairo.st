@@ -1,7 +1,7 @@
 Extension { #name : #TextEmphasis }
 
 { #category : #'*Pango' }
-TextEmphasis >> asPangoAttributeChunks [
+TextEmphasis >> asPangoAttributeChunks: aFont [
 
 	^ self emphasisCode = self class bold emphasisCode
 		  ifTrue: [ { 'weight bold' } ]

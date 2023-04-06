@@ -1,7 +1,7 @@
 Extension { #name : #TextAttribute }
 
 { #category : #'*Pango' }
-TextAttribute >> asPangoAttributeChunks [
+TextAttribute >> asPangoAttributeChunks: aFont [
 
 	^ {  }
 ]
