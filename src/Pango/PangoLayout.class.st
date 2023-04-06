@@ -133,12 +133,29 @@ PangoLayout >> inkRectangle [
 { #category : #accessing }
 PangoLayout >> logicalRectangle [
 
-	^ self inkOrLogicalRectangle: true
+	^ Rectangle origin: 0 @ 0 extent: self pixelSize
 ]
 
 { #category : #accessing }
 PangoLayout >> markup: markup [
 	^ self ffiCall: #(void pango_layout_set_markup (self, const char *markup, -1))
+]
+
+{ #category : #accessing }
+PangoLayout >> pixelSize [
+
+	| widthBuffer heightBuffer |
+	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
+	heightBuffer := ByteArray new: FFIInt32 externalTypeSize.
+	self primGetPixelSizeWidth: widthBuffer height: heightBuffer.
+	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
+]
+
+{ #category : #private }
+PangoLayout >> primGetPixelSizeWidth: width height: height [
+
+	self ffiCall:
+		#( void pango_layout_get_pixel_size #( self , int * width , int * height ) )
 ]
 
 { #category : #private }
