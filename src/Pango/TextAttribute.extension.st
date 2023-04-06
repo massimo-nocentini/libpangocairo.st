@@ -9,7 +9,7 @@ TextAttribute >> asPangoAttributeChunks: aFont [
 { #category : #'*Pango' }
 TextAttribute >> attributesForFont: aFont [
 
-	^ { ('font-desc "{1} {2}"' format: {
-			   aFont familyName.
-			   aFont pointSize }) }
+	^ {
+		  ('family ' , aFont familyName)".
+		  ('font-size ' , aFont pointSize asString)" }
 ]
