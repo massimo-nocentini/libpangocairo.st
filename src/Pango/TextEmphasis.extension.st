@@ -11,5 +11,8 @@ TextEmphasis >> asPangoAttributeChunks [
 				  ifFalse: [
 					  self emphasisCode = self class underlined emphasisCode
 						  ifTrue: [ { 'underline single' } ]
-						  ifFalse: [ { 'style normal' } ] ] ]
+						  ifFalse: [
+							  self emphasisCode = self class struckOut emphasisCode
+								  ifTrue: [ { 'strikethrough true' } ]
+								  ifFalse: [ { 'style normal' } ] ] ] ]
 ]

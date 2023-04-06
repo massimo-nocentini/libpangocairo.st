@@ -3,8 +3,8 @@ Extension { #name : #TextFontChange }
 { #category : #'*Pango' }
 TextFontChange >> asPangoAttributeChunks [
 
-	| logicalFont |
-	"logicalFont := TextStyle default fontAt: self fontNumber."
+	| font |
+	font := TextStyle default fontAt: self fontNumber.
 
-	^ { "'family Monospace'" }
+	^ self attributesForFont: font
 ]
