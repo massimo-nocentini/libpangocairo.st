@@ -20,7 +20,8 @@ Class {
 	#instVars : [
 		'text',
 		'attributesChunks',
-		'font'
+		'font',
+		'defaultForegroundColor'
 	],
 	#category : #Pango
 }
@@ -41,6 +42,18 @@ RSPangoText >> attributesChunks [
 RSPangoText >> attributesChunks: anObject [
 
 	attributesChunks := anObject
+]
+
+{ #category : #accessing }
+RSPangoText >> defaultForegroundColor [
+
+	^ defaultForegroundColor
+]
+
+{ #category : #accessing }
+RSPangoText >> defaultForegroundColor: anObject [
+
+	defaultForegroundColor := anObject
 ]
 
 { #category : #accessing }
@@ -69,7 +82,9 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 	aPangoLayout text: self text.
 
 	chunks := OrderedCollection new
-		          add: '0 -1 foreground #' , Color black asHexString;
+		          add:
+			          '0 -1 foreground #'
+			          , self defaultForegroundColor asHexString;
 		          add: ('0 -1 font-desc "{1} {2}"' format: {
 						           self font familyName.
 						           self font pointSize });
@@ -92,7 +107,8 @@ RSPangoText >> initialize [
 
 	self
 		font: StandardFonts defaultFont;
-		attributesChunks: {  }
+		defaultForegroundColor: Smalltalk ui theme textColor;
+		attributesChunks: OrderedCollection new
 ]
 
 { #category : #accessing }

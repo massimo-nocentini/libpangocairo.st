@@ -3,6 +3,12 @@ Extension { #name : #Text }
 { #category : #'*Pango' }
 Text >> asRSPangoTextUsingFont: aFont [
 
+	^ self asRSPangoTextUsingFont: aFont postAttributeChunks: {  }
+]
+
+{ #category : #'*Pango' }
+Text >> asRSPangoTextUsingFont: aFont postAttributeChunks: postAttributes [
+
 	| attributes |
 	attributes := OrderedCollection new.
 
@@ -19,6 +25,8 @@ Text >> asRSPangoTextUsingFont: aFont [
 						              chunk }.
 
 				attributes add: attrString ] ] ].
+
+	attributes addAll: postAttributes.
 
 	^ RSPangoText new
 		  font: aFont;
