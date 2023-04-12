@@ -6,7 +6,8 @@ Class {
 
 { #category : #'accessing platform' }
 PangoLibrary >> macModuleName [
-	^ '/usr/local/lib/libpango-1.0.0.dylib'
+
+	^ FFIMacLibraryFinder findLibrary: 'libpango-1.0.0.dylib'
 ]
 
 { #category : #'accessing platform' }

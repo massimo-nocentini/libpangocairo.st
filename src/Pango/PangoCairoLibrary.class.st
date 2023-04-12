@@ -6,8 +6,8 @@ Class {
 
 { #category : #'accessing platform' }
 PangoCairoLibrary >> macModuleName [
-	^ '/usr/local/lib/libpangocairo-1.0.0.dylib'
 
+	^ FFIMacLibraryFinder findLibrary: 'libpangocairo-1.0.0.dylib'
 ]
 
 { #category : #'accessing platform' }

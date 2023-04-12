@@ -7,7 +7,7 @@ Class {
 { #category : #'accessing platform' }
 PangoFT2Library >> macModuleName [
 
-	^ '/usr/local/lib/libpangoft2-1.0.0.dylib'
+	^ FFIMacLibraryFinder findLibrary: 'libpangoft2-1.0.0.dylib'
 ]
 
 { #category : #'accessing platform' }
