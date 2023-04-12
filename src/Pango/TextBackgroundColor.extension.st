@@ -3,5 +3,5 @@ Extension { #name : #TextBackgroundColor }
 { #category : #'*Pango' }
 TextBackgroundColor >> asPangoAttributeChunks: aFont [
 
-	^ { ('background #' , self color asHexString) }
+	^ { 'underline single' } "('background #' , self color asHexString)"
 ]
