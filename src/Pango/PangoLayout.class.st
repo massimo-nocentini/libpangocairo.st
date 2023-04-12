@@ -20,13 +20,13 @@ PangoLayout class >> g_object_unref: handle [
 { #category : #'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
 
-	^ (self pango_cairo_create_layout: aCanvas) initialize
+	^ self pango_cairo_create_layout: aCanvas
 ]
 
 { #category : #'instance creation' }
 PangoLayout class >> newContext: aContext [
 
-	^ (self pango_layout_new: aContext) initialize
+	^ self pango_layout_new: aContext
 ]
 
 { #category : #private }
@@ -87,10 +87,7 @@ PangoLayout >> get_spacing [
 { #category : #initialization }
 PangoLayout >> initialize [
 
-	self
-		set_spacing: 0;
-		set_single_paragraph_mode: false;
-		autoRelease
+	self autoRelease
 ]
 
 { #category : #accessing }
