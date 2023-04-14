@@ -3,7 +3,7 @@ Extension { #name : #LogicalFont }
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoFamilyName: familyName pointSize: size [
 
-	^ self familyName: 'pharo' , familyName pointSize: size
+	^ self familyName: 'pharo ' , familyName pointSize: size
 ]
 
 { #category : #'*Pango' }
@@ -15,5 +15,5 @@ LogicalFont class >> fontconfigPharoMonospacePointSize: size [
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoSansPointSize: size [
 
-	^ self fontconfigPharoFamilyName: 'sans-serif' pointSize: size
+	^ self fontconfigPharoFamilyName: 'sans serif' pointSize: size
 ]
