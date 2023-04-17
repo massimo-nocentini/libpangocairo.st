@@ -1,6 +1,22 @@
 Extension { #name : #String }
 
 { #category : #'*Pango' }
+String >> asRSPangoMarkupUsingFont: font [
+
+	| markup |
+	markup := '<span font_family="{1}" font_size="{2}pt" foreground="black">{3}</span>'
+		          format: {
+				          font familyName.
+				          font pointSize.
+				          self }.
+
+	^ RSPangoMarkup new
+		  font: font;
+		  markup: markup;
+		  yourself
+]
+
+{ #category : #'*Pango' }
 String >> fixEmptyLinesForPango [
 
 	^ Character cr join:
