@@ -34,6 +34,16 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
+
+	stream << ' <span font_style="italic">'.
+
+	super visitItalic: aFormat.
+
+	stream << '</span> '
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
 	stream << String cr.
@@ -61,11 +71,11 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
-	stream << ' <tt>'.
+	stream << ' <span font_family="Source Code Pro">'.
 
 	super visitMonospace: aFormat.
 
-	stream << '</tt> '
+	stream << '</span> '
 ]
 
 { #category : #visiting }
