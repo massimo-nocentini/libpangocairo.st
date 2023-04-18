@@ -34,6 +34,31 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
+
+	stream << String cr.
+
+	self
+		<< '<span font_family="Neo Euler">';
+		<< aMicMath body trim;
+		<< '</span> '.
+
+	super visitMath: aMicMath
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
+
+	stream
+		<< String space;
+		<< '<span font_family="Neo Euler">';
+		<< aMicMathInline text trim;
+		<< '</span> '.
+
+	super visitMathInline: aMicMathInline
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
 	stream << ' <tt>'.

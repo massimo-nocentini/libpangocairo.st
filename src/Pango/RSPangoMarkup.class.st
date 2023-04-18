@@ -1,8 +1,23 @@
 Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
+	#classVars : [
+		'Conversions'
+	],
 	#category : #Pango
 }
+
+{ #category : #initialization }
+RSPangoMarkup class >> initialize [
+
+	Conversions := Dictionary new
+		               at: '\infty' put: '&#8734;';
+		               at: '\forall' put: '&#8704;';
+		               at: '\thereexists' put: '&#8707;';
+		               at: '\elementof' put: '&#8712;';
+		               at: '\minussign' put: '&#8722;';
+		               yourself
+]
 
 { #category : #handle }
 RSPangoMarkup >> initPangoLayout: aPangoLayout [
@@ -21,5 +36,11 @@ RSPangoMarkup >> markup [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	^ self text: aString fixEmptyLinesForPango
+	| s |
+	s := aString fixEmptyLinesForPango.
+
+	Conversions keysAndValuesDo: [ :macro :replacement |
+		s := s copyReplaceAll: macro with: replacement ].
+
+	^ self text: s
 ]

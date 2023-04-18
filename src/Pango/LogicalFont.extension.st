@@ -15,5 +15,5 @@ LogicalFont class >> fontconfigPharoMonospacePointSize: size [
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoSansPointSize: size [
 
-	^ self fontconfigPharoFamilyName: 'sans serif' pointSize: size
+	^ self fontconfigPharoFamilyName: 'Concrete Math' pointSize: size
 ]
