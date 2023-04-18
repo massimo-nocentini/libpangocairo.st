@@ -9,7 +9,7 @@ LogicalFont class >> fontconfigPharoFamilyName: familyName pointSize: size [
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoMonospacePointSize: size [
 
-	^ self fontconfigPharoFamilyName: 'monospace' pointSize: size
+	^ self fontconfigPharoFamilyName: 'Source Code Pro' pointSize: size
 ]
 
 { #category : #'*Pango' }

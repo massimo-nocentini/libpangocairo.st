@@ -16,6 +16,7 @@ RSPangoMarkup class >> initialize [
 		               at: '\thereexists' put: '&#8707;';
 		               at: '\elementof' put: '&#8712;';
 		               at: '\minussign' put: '&#8722;';
+		               at: '\alpha' put: '&#0945;';
 		               yourself
 ]
 
