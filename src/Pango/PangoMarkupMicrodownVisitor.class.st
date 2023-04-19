@@ -34,6 +34,16 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitBold: aFormat [
+
+	stream << ' <span weight="bold">'.
+
+	super visitBold: aFormat.
+
+	stream << '</span> '
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 
 	stream << ' <span font_style="italic">'.
@@ -51,7 +61,7 @@ PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 	self
 		<< '<span font_family="Neo Euler">';
 		<< aMicMath body trim;
-		<< '</span> '.
+		<< '</span>'.
 
 	super visitMath: aMicMath
 ]
@@ -107,7 +117,7 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 	2 to: lines size do: [ :i |
 		stream << String cr.
 
-		self << '<span foreground="white">&#8226;</span> '.
+		self << '<span foreground="white">\bullet</span> '.
 
 		stream << (lines at: i) trim ].
 
@@ -138,7 +148,7 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 
 	stream << String cr.
 
-	self << '&#8226; '.
+	self << '\bullet '.
 
 	super visitUnorderedListItem: anUnorderedList
 ]

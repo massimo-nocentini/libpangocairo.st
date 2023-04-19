@@ -17,6 +17,7 @@ RSPangoMarkup class >> initialize [
 		               at: '\elementof' put: '&#8712;';
 		               at: '\minussign' put: '&#8722;';
 		               at: '\alpha' put: '&#0945;';
+		               at: '\bullet' put: '&#8226;';
 		               yourself
 ]
 
