@@ -15,5 +15,11 @@ LogicalFont class >> fontconfigPharoMonospacePointSize: size [
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoSansPointSize: size [
 
+	^ self fontconfigPharoFamilyName: 'Source Sans Pro' pointSize: size
+]
+
+{ #category : #'*Pango' }
+LogicalFont class >> fontconfigPharoSansSerifPointSize: size [
+
 	^ self fontconfigPharoFamilyName: 'QTPalatine' pointSize: size
 ]
