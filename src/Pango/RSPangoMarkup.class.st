@@ -18,6 +18,8 @@ RSPangoMarkup class >> initialize [
 		               at: '\minussign' put: '&#8722;';
 		               at: '\alpha' put: '&#0945;';
 		               at: '\bullet' put: '&#8226;';
+		               at: '\whitecircle' put: '&#9633;';
+		               at: '\blackcircle' put: '&#9635;';
 		               yourself
 ]
 

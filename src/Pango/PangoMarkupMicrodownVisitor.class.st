@@ -107,6 +107,16 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
+
+	stream << ' <span strikethrough="true">'.
+
+	super visitStrike: aFormat.
+
+	stream << '</span> '
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 
 	| lines |
