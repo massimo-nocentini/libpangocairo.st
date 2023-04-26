@@ -3,7 +3,9 @@ Class {
 	#superclass : #MicrodownVisitor,
 	#instVars : [
 		'stream',
-		'nestedLevel'
+		'nestedLevel',
+		'levels',
+		'sectionsNumbering'
 	],
 	#category : #Pango
 }
@@ -21,7 +23,18 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	super initialize.
 
-	nestedLevel := 0
+	nestedLevel := 0.
+
+	levels := OrderedCollection with: 42.
+	1 to: 5 do: [ :i | levels add: (levels at: i) / Float goldenRatio ].
+
+	sectionsNumbering := Dictionary new
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> pointSizeForHeaderLevel: l [
+
+	^ levels at: l ifAbsent: [ levels last ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -41,6 +54,44 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 	super visitBold: aFormat.
 
 	stream << '</span> '
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
+
+	| sectionNumber l |
+	l := aHeader level.
+
+	sectionsNumbering
+		at: l
+		ifPresent: [ :n |
+			sectionsNumbering at: l put: n + 1.
+
+			l + 1 to: sectionsNumbering size do: [ :k |
+			sectionsNumbering removeKey: k ] ]
+		ifAbsentPut: [ 1 ].
+
+	sectionNumber := String streamContents: [ :s |
+		                 1 to: l do: [ :k |
+			                 s
+				                 << (sectionsNumbering at: k ifAbsent: [
+							                  Warning signal:
+									                  'Use a level more in depth than expected.'.
+							                  0 ]) asString;
+				                 << '.' ] ].
+
+	stream
+		<< String cr;
+		<< ('<span font_size="{1}pt">{2} ' format: {
+						 (self pointSizeForHeaderLevel: aHeader level).
+						 sectionNumber }).
+
+	super visitHeader: aHeader.
+
+	stream
+		<< '</span>';
+		<< String cr;
+		<< String cr
 ]
 
 { #category : #visiting }
