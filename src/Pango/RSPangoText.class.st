@@ -71,8 +71,7 @@ RSPangoText >> font: anObject [
 { #category : #handle }
 RSPangoText >> freeResource: externalAddress ofPangoLayout: fontLayout [
 
-	externalAddress isNull ifFalse: [
-		fontLayout attr_list_unref: externalAddress ]
+
 ]
 
 { #category : #handle }

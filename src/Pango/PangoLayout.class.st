@@ -49,13 +49,6 @@ PangoLayout >> attr_list_from_string: text [
 ]
 
 { #category : #accessing }
-PangoLayout >> attr_list_unref: attrListExternalAddress [
-
-	self ffiCall:
-		#( void pango_attr_list_unref #( void * attrListExternalAddress ) )
-]
-
-{ #category : #accessing }
 PangoLayout >> font_description_from_string: str [
 
 	self ffiCall:

@@ -13,6 +13,14 @@ LogicalFont class >> fontconfigPharoMonospacePointSize: size [
 ]
 
 { #category : #'*Pango' }
+LogicalFont class >> fontconfigPharoSansPointSize [
+
+	^ self
+		  fontconfigPharoFamilyName: 'Source Sans Pro'
+		  pointSize: StandardFonts defaultFont pointSize
+]
+
+{ #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoSansPointSize: size [
 
 	^ self fontconfigPharoFamilyName: 'Source Sans Pro' pointSize: size

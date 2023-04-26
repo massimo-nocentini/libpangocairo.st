@@ -82,8 +82,10 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	stream
 		<< String cr;
-		<< ('<span font_size="{1}pt">{2} ' format: {
+		<< ('<span font_family="{1}" font_size="{2}pt">{3} ' format: {
+						 LogicalFont fontconfigPharoSansPointSize familyName.
 						 (self pointSizeForHeaderLevel: aHeader level).
+
 						 sectionNumber }).
 
 	super visitHeader: aHeader.
