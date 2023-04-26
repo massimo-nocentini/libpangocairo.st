@@ -69,9 +69,9 @@ RSPangoText >> font: anObject [
 ]
 
 { #category : #handle }
-RSPangoText >> freeResource: externalAddress ofPangoLayout: fontLayout [
+RSPangoText >> freeResource: pangoAttributeList ofPangoLayout: fontLayout [
 
-
+	pangoAttributeList isNull ifFalse: [ pangoAttributeList unref ]
 ]
 
 { #category : #handle }

@@ -9,8 +9,10 @@ Class {
 { #category : #accessing }
 PangoAttrList class >> attr_list_from_string: text [
 
-	^ self ffiCall:
-		  #( PangoAttrList * pango_attr_list_from_string #( const char * text ) )
+	^ self
+		  ffiCall: #( PangoAttrList * pango_attr_list_from_string
+			     #( const char * text ) )
+		  module: PangoLibrary
 ]
 
 { #category : #finalization }
@@ -23,8 +25,10 @@ PangoAttrList class >> finalizeResourceData: handle [
 { #category : #private }
 PangoAttrList class >> pango_attr_list_unref: handle [
 
-	^ self ffiCall:
+	^ self
+		  ffiCall:
 		  #( void pango_attr_list_unref #( PangoAttrList * handle ) )
+		  module: PangoLibrary
 ]
 
 { #category : #initialization }
@@ -39,4 +43,11 @@ PangoAttrList >> ref [
 	^ self ffiCall:
 		  #( PangoAttrList * pango_attr_list_ref #( PangoAttrList
 		        * self ) )
+]
+
+{ #category : #accessing }
+PangoAttrList >> unref [
+
+	^ self ffiCall:
+		  #( void pango_attr_list_unref #( PangoAttrList * self ) )
 ]
