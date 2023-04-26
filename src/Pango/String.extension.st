@@ -1,6 +1,12 @@
 Extension { #name : #String }
 
 { #category : #'*Pango' }
+String >> asPangoAttrList [
+
+	^ (PangoAttrList attr_list_from_string: self) ref
+]
+
+{ #category : #'*Pango' }
 String >> asRSPangoMarkupUsingFont: font [
 
 	| markup |
@@ -21,12 +27,6 @@ String >> fixEmptyLinesForPango [
 
 	^ Character cr join:
 		  (self lines collect: [ :l | l ifEmpty: [ Character space ] ])
-]
-
-{ #category : #'*Pango' }
-String >> pango_attr_list_from_string [
-
-	^ PangoAttrList attr_list_from_string: self
 ]
 
 { #category : #'*Pango' }

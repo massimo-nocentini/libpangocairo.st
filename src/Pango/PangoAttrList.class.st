@@ -22,11 +22,21 @@ PangoAttrList class >> finalizeResourceData: handle [
 
 { #category : #private }
 PangoAttrList class >> pango_attr_list_unref: handle [
-	^ self ffiCall: #( void pango_attr_list_unref (PangoAttrList *handle)) module: PangoLibrary
+
+	^ self ffiCall:
+		  #( void pango_attr_list_unref #( PangoAttrList * handle ) )
 ]
 
 { #category : #initialization }
 PangoAttrList >> initialize [
 
 	self autoRelease
+]
+
+{ #category : #accessing }
+PangoAttrList >> ref [
+
+	^ self ffiCall:
+		  #( PangoAttrList * pango_attr_list_ref #( PangoAttrList
+		        * self ) )
 ]
