@@ -24,6 +24,12 @@ String >> fixEmptyLinesForPango [
 ]
 
 { #category : #'*Pango' }
+String >> pango_attr_list_from_string [
+
+	^ PangoAttrList attr_list_from_string: self
+]
+
+{ #category : #'*Pango' }
 String >> replaceAllTabsWithSpacesForPango [
 
 	^ self

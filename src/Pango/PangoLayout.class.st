@@ -42,13 +42,6 @@ PangoLayout class >> pango_layout_new: context [
 ]
 
 { #category : #accessing }
-PangoLayout >> attr_list_from_string: text [
-
-	^ self ffiCall:
-		  #( void * pango_attr_list_from_string #( const char * text ) )
-]
-
-{ #category : #accessing }
 PangoLayout >> font_description_from_string: str [
 
 	self ffiCall:

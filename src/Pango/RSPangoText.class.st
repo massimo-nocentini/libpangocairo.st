@@ -92,7 +92,7 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 
 	attrSpec := ', ' join: chunks.
 
-	externalAddress := aPangoLayout attr_list_from_string: attrSpec.
+	externalAddress := attrSpec pango_attr_list_from_string.
 
 	aPangoLayout set_attributes: externalAddress.
 

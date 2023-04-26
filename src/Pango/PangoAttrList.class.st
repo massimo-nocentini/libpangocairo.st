@@ -6,6 +6,13 @@ Class {
 	#category : #Pango
 }
 
+{ #category : #accessing }
+PangoAttrList class >> attr_list_from_string: text [
+
+	^ self ffiCall:
+		  #( PangoAttrList * pango_attr_list_from_string #( const char * text ) )
+]
+
 { #category : #finalization }
 PangoAttrList class >> finalizeResourceData: handle [
 
