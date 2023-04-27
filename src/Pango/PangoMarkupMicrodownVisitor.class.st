@@ -6,7 +6,8 @@ Class {
 		'nestedLevel',
 		'levels',
 		'sectionsNumbering',
-		'modifier'
+		'modifier',
+		'orderedNestedLevels'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -48,6 +49,8 @@ PangoMarkupMicrodownVisitor >> initialize [
 	1 to: 5 do: [ :i | levels add: (levels at: i) / Float goldenRatio ].
 
 	sectionsNumbering := Dictionary new.
+
+	orderedNestedLevels := Dictionary new.
 
 	modifier := nil
 ]
@@ -193,6 +196,56 @@ PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 	super visitMonospace: aFormat.
 
 	stream << '</span> '
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitOrderedList: anOrderedList [
+
+	| prevLevel |
+	prevLevel := nestedLevel.
+
+	nestedLevel := anOrderedList nestedLevel.
+
+	super visitOrderedList: anOrderedList.
+
+	nestedLevel := prevLevel
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
+
+	| mod prevLevel item stack |
+	item := anOrderedItem parent.
+
+	prevLevel := orderedNestedLevels at: item ifAbsent: [ 0 ].
+
+	orderedNestedLevels at: item put: prevLevel + 1.
+
+	stack := nil.
+
+	[ item isNotNil ] whileTrue: [
+		orderedNestedLevels at: item ifPresent: [ :p |
+			stack := ValueLink new
+				         value: p asString;
+				         nextLink: stack;
+				         yourself ].
+
+		item := item parent ].
+
+	mod := String streamContents: [ :s |
+		       [ stack isNotNil ] whileTrue: [
+			       s << (stack value , '.').
+			       stack := stack nextLink ] ].
+
+	self pushModifier: mod , String space.
+
+	stream cr.
+
+	self nextPutAllAlpha: 100 mod: modifier.
+
+	super visitOrderedListItem: anOrderedItem.
+
+	self popModifier
 ]
 
 { #category : #visiting }
