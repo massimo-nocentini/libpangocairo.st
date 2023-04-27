@@ -8,8 +8,28 @@ Class {
 		'sectionsNumbering',
 		'modifier'
 	],
+	#classVars : [
+		'UnorderedBullets'
+	],
 	#category : #Pango
 }
+
+{ #category : #'class initialization' }
+PangoMarkupMicrodownVisitor class >> initialize [
+
+	UnorderedBullets := { '&#9679;'. '&#9675;'. '&#9632;'. '&#9633;'.
+	                    '&#9654;'. '&#9655;'. '&#9733;'. '&#9734;' }
+]
+
+{ #category : #accessing }
+PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
+
+	^ nestedLevel > 0
+		  ifTrue: [
+			  (UnorderedBullets at: nestedLevel ifAbsent: [ '\#9671;' ])
+			  , String space ]
+		  ifFalse: [ '' ]
+]
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> indentationString [
@@ -242,7 +262,7 @@ PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 
-	self pushModifier: '\bullet '.
+	self pushModifier: self bulletAtCurrentNestedLevel.
 
 	stream cr.
 
