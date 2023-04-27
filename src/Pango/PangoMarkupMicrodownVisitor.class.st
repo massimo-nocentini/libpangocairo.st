@@ -5,17 +5,16 @@ Class {
 		'stream',
 		'nestedLevel',
 		'levels',
-		'sectionsNumbering'
+		'sectionsNumbering',
+		'modifier'
 	],
 	#category : #Pango
 }
 
-{ #category : #accessing }
-PangoMarkupMicrodownVisitor >> << aString [
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> indentationString [
 
-	stream
-		<< (String tab repeat: nestedLevel);
-		<< aString
+	^ '   '
 ]
 
 { #category : #initialization }
@@ -28,13 +27,47 @@ PangoMarkupMicrodownVisitor >> initialize [
 	levels := OrderedCollection with: 42.
 	1 to: 5 do: [ :i | levels add: (levels at: i) / Float goldenRatio ].
 
-	sectionsNumbering := Dictionary new
+	sectionsNumbering := Dictionary new.
+
+	modifier := nil
+]
+
+{ #category : #accessing }
+PangoMarkupMicrodownVisitor >> nextPutAllAlpha: alpha mod: link [
+
+	link ifNotNil: [
+		self nextPutAllAlpha: 1 mod: link nextLink.
+
+		stream
+			nextPutAll: self indentationString;
+			nextPutAll: ('<span alpha="{1}%">{2}</span>' format: {
+							 (alpha asInteger min: 100 max: 1).
+							 link value }) ]
 ]
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> pointSizeForHeaderLevel: l [
 
 	^ levels at: l ifAbsent: [ levels last ]
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> popModifier [
+
+	modifier := modifier nextLink.
+
+	^ modifier
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> pushModifier: aString [
+
+	modifier := ValueLink new
+		            value: aString;
+		            nextLink: modifier;
+		            yourself.
+
+	^ modifier
 ]
 
 { #category : #'as yet unclassified' }
@@ -126,7 +159,8 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 		<< String space;
 		<< '<span font_family="Neo Euler">';
 		<< aMicMathInline text trim;
-		<< '</span> '.
+		<< '</span>';
+		<< String space.
 
 	super visitMathInline: aMicMathInline
 ]
@@ -162,27 +196,26 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
 
-	stream << ' <span strikethrough="true">'.
+	stream << '<span strikethrough="true">'.
 
 	super visitStrike: aFormat.
 
-	stream << '</span> '
+	stream << '</span>'
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting - inline elements' }
 PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 
-	| lines |
-	lines := aMicTextBlock substring lines.
+	aMicTextBlock text lines ifNotEmpty: [ :lines |
+		stream nextPutAll: lines first.
 
-	stream << lines first trim.
 
-	2 to: lines size do: [ :i |
-		stream << String cr.
+		2 to: lines size do: [ :i |
+			stream cr.
 
-		self << '<span foreground="white">\bullet</span> '.
+			self nextPutAllAlpha: (i = 1) asBit * 100 mod: modifier.
 
-		stream << (lines at: i) trim ].
+			stream nextPutAll: (lines at: i) ] ].
 
 	super visitText: aMicTextBlock
 ]
@@ -195,13 +228,13 @@ PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 
 	nestedLevel := anUnorderedList nestedLevel.
 
-	nestedLevel > 1 ifTrue: [ stream << String cr ].
+	"nestedLevel > 1 ifTrue: [ stream << String cr ]."
 
 	super visitUnorderedList: anUnorderedList.
 
-	nestedLevel = 1 ifTrue: [ stream << String cr ].
+	"nestedLevel = 1 ifTrue: [ stream << String cr ]."
 
-	stream << String cr.
+	"stream << String cr."
 
 	nestedLevel := prevLevel
 ]
@@ -209,9 +242,13 @@ PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 
-	stream << String cr.
+	self pushModifier: '\bullet '.
 
-	self << '\bullet '.
+	stream cr.
 
-	super visitUnorderedListItem: anUnorderedList
+	self nextPutAllAlpha: 100 mod: modifier.
+
+	super visitUnorderedListItem: anUnorderedList.
+
+	self popModifier
 ]
