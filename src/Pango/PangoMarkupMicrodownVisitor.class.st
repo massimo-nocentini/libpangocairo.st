@@ -199,19 +199,6 @@ PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 ]
 
 { #category : #visiting }
-PangoMarkupMicrodownVisitor >> visitOrderedList: anOrderedList [
-
-	| prevLevel |
-	prevLevel := nestedLevel.
-
-	nestedLevel := anOrderedList nestedLevel.
-
-	super visitOrderedList: anOrderedList.
-
-	nestedLevel := prevLevel
-]
-
-{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 
 	| mod prevLevel item stack |
@@ -296,20 +283,13 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 
-	| prevLevel |
-	prevLevel := nestedLevel.
-
-	nestedLevel := anUnorderedList nestedLevel.
-
-	"nestedLevel > 1 ifTrue: [ stream << String cr ]."
+	nestedLevel := nestedLevel + 1.
 
 	super visitUnorderedList: anUnorderedList.
 
-	"nestedLevel = 1 ifTrue: [ stream << String cr ]."
-
 	"stream << String cr."
 
-	nestedLevel := prevLevel
+	nestedLevel := nestedLevel - 1
 ]
 
 { #category : #visiting }
