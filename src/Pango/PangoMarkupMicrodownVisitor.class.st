@@ -254,7 +254,10 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
-	stream << '<span>'.
+	stream
+		<< String cr;
+		<< String cr;
+		<< '<span>'.
 
 	super visitParagraph: aParagraph.
 
@@ -280,7 +283,6 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 		stream
 			<< ' &#8220;';
 			<< '</span>';
-			<< String cr;
 			<< String cr.
 
 		self popModifier ]
