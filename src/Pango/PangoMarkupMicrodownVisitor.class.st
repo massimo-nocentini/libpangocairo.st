@@ -105,11 +105,11 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 
-	stream << ' <span weight="bold">'.
+	stream << '<span weight="bold">'.
 
 	super visitBold: aFormat.
 
-	stream << '</span> '
+	stream << '</span>'
 ]
 
 { #category : #visiting }
@@ -155,11 +155,27 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 
-	stream << ' <span font_style="italic">'.
+	stream << '<span font_style="italic">'.
 
 	super visitItalic: aFormat.
 
-	stream << '</span> '
+	stream << '</span>'
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitLink: aLink [
+
+	stream << '<i>'.
+
+	super visitLink: aLink.
+
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript">(<span font_family="Source Sans Pro" font_size="smaller" foreground="gray">';
+		<< aLink url;
+		<< '</span>)</span>'
 ]
 
 { #category : #visiting }
@@ -181,7 +197,7 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 	stream
 		<< String space;
 		<< '<span font_family="Neo Euler">';
-		<< aMicMathInline text trim;
+		<< aMicMathInline text;
 		<< '</span>';
 		<< String space.
 
@@ -191,11 +207,11 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
-	stream << ' <span font_family="Source Code Pro">'.
+	stream << '<span font_family="Source Code Pro">'.
 
 	super visitMonospace: aFormat.
 
-	stream << '</span> '
+	stream << '</span>'
 ]
 
 { #category : #visiting }
@@ -249,8 +265,9 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
+	"This message is for real quotations, not for <tt>."
 
-	self halt.
+	self halt
 ]
 
 { #category : #visiting }
@@ -268,7 +285,6 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 
 	aMicTextBlock text lines ifNotEmpty: [ :lines |
 		stream nextPutAll: lines first.
-
 
 		2 to: lines size do: [ :i |
 			stream cr.
