@@ -20,7 +20,7 @@ PangoLayout class >> g_object_unref: handle [
 { #category : #'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
 
-	^ self pango_cairo_create_layout: aCanvas
+	^ (self pango_cairo_create_layout: aCanvas) initialize
 ]
 
 { #category : #'instance creation' }
