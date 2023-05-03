@@ -265,9 +265,25 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
-	"This message is for real quotations, not for <tt>."
 
-	self halt
+	self withOneNestedLevelMoreDo: [
+		stream << String cr.
+
+		self pushModifier: '&#8220; '.
+
+		stream << '<span font_size="smaller" font_style="italic">'.
+
+		self nextPutAllAlpha: 100 mod: modifier.
+
+		super visitQuote: aQuote.
+
+		stream
+			<< ' &#8220;';
+			<< '</span>';
+			<< String cr;
+			<< String cr.
+
+		self popModifier ]
 ]
 
 { #category : #visiting }
@@ -299,13 +315,12 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 
-	nestedLevel := nestedLevel + 1.
+	self withOneNestedLevelMoreDo: [
+		super visitUnorderedList: anUnorderedList.
 
-	super visitUnorderedList: anUnorderedList.
-
-	"stream << String cr."
-
-	nestedLevel := nestedLevel - 1
+		stream
+			<< String cr;
+			<< String cr ]
 ]
 
 { #category : #visiting }
@@ -320,4 +335,14 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 	super visitUnorderedListItem: anUnorderedList.
 
 	self popModifier
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> withOneNestedLevelMoreDo: aBlock [
+
+	nestedLevel := nestedLevel + 1.
+
+	aBlock value.
+
+	nestedLevel := nestedLevel - 1
 ]
