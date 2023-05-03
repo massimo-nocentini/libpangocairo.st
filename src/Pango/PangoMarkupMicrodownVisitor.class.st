@@ -316,11 +316,7 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 
 	self withOneNestedLevelMoreDo: [
-		super visitUnorderedList: anUnorderedList.
-
-		stream
-			<< String cr;
-			<< String cr ]
+		super visitUnorderedList: anUnorderedList ]
 ]
 
 { #category : #visiting }
