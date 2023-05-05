@@ -39,7 +39,8 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 					'<span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
 				<< assoc key asString;
 				<< '] <span alpha="100%">';
-				<< assoc value url;
+				<<
+					(assoc value asFooterStringForPangoMarkupMicrodownVisitor: self);
 				<< '</span></span>' ].
 
 		footers removeAll ]
@@ -145,6 +146,23 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 	super visitBold: aFormat.
 
 	stream << '</span>'
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
+
+	aFootnote arguments at: #note ifPresent: [ :note |
+		| assoc |
+		linksCount := linksCount + 1.
+		assoc := linksCount -> aFootnote.
+
+		footers add: assoc.
+
+		stream
+			<<
+				'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+			<< assoc key asString;
+			<< ']</span></span>' ]
 ]
 
 { #category : #visiting }
