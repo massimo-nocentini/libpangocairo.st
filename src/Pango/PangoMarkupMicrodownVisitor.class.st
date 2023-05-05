@@ -9,7 +9,8 @@ Class {
 		'modifier',
 		'orderedNestedLevels',
 		'footers',
-		'linksCount'
+		'linksCount',
+		'maxFooterSize'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -28,9 +29,9 @@ PangoMarkupMicrodownVisitor class >> initialize [
 PangoMarkupMicrodownVisitor >> appendFooters [
 
 	footers ifNotEmpty: [
-		stream
-			<< String cr;
-			<< '_________________________'.
+		stream << String cr.
+
+		maxFooterSize timesRepeat: [ stream << '_' ].
 
 		footers do: [ :assoc |
 			stream
@@ -39,11 +40,11 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 					'<span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
 				<< assoc key asString;
 				<< '] <span alpha="100%">';
-				<<
-					(assoc value asFooterStringForPangoMarkupMicrodownVisitor: self);
+				<< assoc value;
 				<< '</span></span>' ].
 
-		footers removeAll ]
+		footers removeAll.
+		maxFooterSize := 0 ]
 ]
 
 { #category : #accessing }
@@ -86,7 +87,9 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	footers := OrderedCollection new.
 
-	linksCount := 0
+	linksCount := 0.
+
+	maxFooterSize := 0
 ]
 
 { #category : #accessing }
@@ -114,6 +117,29 @@ PangoMarkupMicrodownVisitor >> popModifier [
 	modifier := modifier nextLink.
 
 	^ modifier
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
+
+	| assoc str |
+	linksCount := linksCount + 1.
+	str := micElement asFooterStringForPangoMarkupMicrodownVisitor: self.
+
+	maxFooterSize := maxFooterSize max: str size.
+
+	assoc := linksCount -> str.
+
+	footers add: assoc.
+
+	block value.
+
+	stream
+		<< String space;
+		<<
+			'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+		<< assoc key asString;
+		<< ']</span></span>'
 ]
 
 { #category : #visiting }
@@ -151,18 +177,7 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 
-	aFootnote arguments at: #note ifPresent: [ :note |
-		| assoc |
-		linksCount := linksCount + 1.
-		assoc := linksCount -> aFootnote.
-
-		footers add: assoc.
-
-		stream
-			<<
-				'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
-			<< assoc key asString;
-			<< ']</span></span>' ]
+	self postFooter: aFootnote do: [  ]
 ]
 
 { #category : #visiting }
@@ -218,24 +233,12 @@ PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
-	| assoc |
-	linksCount := linksCount + 1.
-	assoc := linksCount -> aLink.
+	self postFooter: aLink do: [
+		stream << '<i>'.
 
-	footers add: assoc.
+		super visitLink: aLink.
 
-	stream << '<i>'.
-
-	super visitLink: aLink.
-
-	stream << '</i>'.
-
-	stream
-		<< String space;
-		<<
-			'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
-		<< assoc key asString;
-		<< ']</span></span>'
+		stream << '</i>' ]
 ]
 
 { #category : #visiting }
