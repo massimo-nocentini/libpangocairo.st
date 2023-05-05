@@ -7,7 +7,9 @@ Class {
 		'levels',
 		'sectionsNumbering',
 		'modifier',
-		'orderedNestedLevels'
+		'orderedNestedLevels',
+		'footers',
+		'linksCount'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -22,6 +24,27 @@ PangoMarkupMicrodownVisitor class >> initialize [
 	                    '&#9654;'. '&#9655;'. '&#9733;'. '&#9734;' }
 ]
 
+{ #category : #'as yet unclassified' }
+PangoMarkupMicrodownVisitor >> appendFooters [
+
+	footers ifNotEmpty: [
+		stream
+			<< String cr;
+			<< '_________________________'.
+
+		footers do: [ :assoc |
+			stream
+				<< String cr;
+				<<
+					'<span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+				<< assoc key asString;
+				<< '] <span alpha="100%">';
+				<< assoc value url;
+				<< '</span></span>' ].
+
+		footers removeAll ]
+]
+
 { #category : #accessing }
 PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 
@@ -30,6 +53,12 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 			  (UnorderedBullets at: nestedLevel ifAbsent: [ '\#9671;' ])
 			  , String space ]
 		  ifFalse: [ '' ]
+]
+
+{ #category : #'as yet unclassified' }
+PangoMarkupMicrodownVisitor >> footers [
+
+	^ footers
 ]
 
 { #category : #visiting }
@@ -52,7 +81,11 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	orderedNestedLevels := Dictionary new.
 
-	modifier := nil
+	modifier := nil.
+
+	footers := OrderedCollection new.
+
+	linksCount := 0
 ]
 
 { #category : #accessing }
@@ -99,7 +132,9 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 	^ (String streamContents: [ :aStream |
 		   stream := aStream. "save the reference and continue visiting."
 
-		   super visit: mic ]) trim
+		   super visit: mic.
+
+		   self appendFooters ]) trim
 ]
 
 { #category : #visiting }
@@ -165,6 +200,12 @@ PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
+	| assoc |
+	linksCount := linksCount + 1.
+	assoc := linksCount -> aLink.
+
+	footers add: assoc.
+
 	stream << '<i>'.
 
 	super visitLink: aLink.
@@ -173,9 +214,10 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
 	stream
 		<< String space;
-		<< '<span baseline_shift="superscript">(<span font_family="Source Sans Pro" font_size="smaller" foreground="gray">';
-		<< aLink url;
-		<< '</span>)</span>'
+		<<
+			'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+		<< assoc key asString;
+		<< ']</span></span>'
 ]
 
 { #category : #visiting }
