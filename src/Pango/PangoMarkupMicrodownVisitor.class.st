@@ -57,12 +57,6 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 		  ifFalse: [ '' ]
 ]
 
-{ #category : #'as yet unclassified' }
-PangoMarkupMicrodownVisitor >> footers [
-
-	^ footers
-]
-
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> indentationString [
 
@@ -206,6 +200,7 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	stream
 		<< String cr;
+		<< String cr;
 		<< ('<span font_family="{1}" font_size="{2}pt">{3} ' format: {
 						 LogicalFont fontconfigPharoSansPointSize familyName.
 						 (self pointSizeForHeaderLevel: aHeader level).
@@ -216,7 +211,6 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	stream
 		<< '</span>';
-		<< String cr;
 		<< String cr
 ]
 
@@ -258,11 +252,9 @@ PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 
 	stream
-		<< String space;
 		<< '<span font_family="Neo Euler">';
 		<< aMicMathInline text;
-		<< '</span>';
-		<< String space.
+		<< '</span>'.
 
 	super visitMathInline: aMicMathInline
 ]
@@ -319,14 +311,11 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 	stream
 		<< String cr;
-		<< String cr;
 		<< '<span>'.
 
 	super visitParagraph: aParagraph.
 
-	stream
-		<< '</span>';
-		<< String cr
+	stream << '</span>'
 ]
 
 { #category : #visiting }
