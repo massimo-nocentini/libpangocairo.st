@@ -155,7 +155,9 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 
 		   super visit: mic.
 
-		   self appendFooters ]) trim
+		   self appendFooters.
+
+		   stream := nil "Clean it up" ]) trim
 ]
 
 { #category : #visiting }

@@ -73,7 +73,9 @@ PangoLayout >> get_spacing [
 { #category : #initialization }
 PangoLayout >> initialize [
 
-	self autoRelease
+	self
+		autoRelease";
+		width: 1024 * 80"
 ]
 
 { #category : #accessing }
