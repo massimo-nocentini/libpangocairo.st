@@ -14,7 +14,5 @@ RSAthensRenderer >> visitPangoText: pango [
 	pango withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
 		athensCanvas
 			updateLayout: pangoLayout;
-			showLayout: pangoLayout ].
-
-	athensCanvas pathTransform translateBy: lbtranslation negated
+			showLayout: pangoLayout ]
 ]

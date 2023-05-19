@@ -171,6 +171,29 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
+
+	| ll fixedCode treeSitterVisitor |
+	ll := LibLua uniqueInstance.
+
+	treeSitterVisitor := TSJsonVisitor new.
+
+	fixedCode := aCodeBlock code copyReplaceAll: '""' with: '"'.
+
+	ll withOpenedLibsStateDo: [ :L |
+		ll
+			luaL_requiref: L name: 'tree-sitter';
+			on: L push: #'tree-sitter';
+			on: L push: aCodeBlock language;
+			on: L push: fixedCode;
+			on: L push: [ :LL | treeSitterVisitor liblua: ll on: LL ];
+			lua_pcall: L nargs: 3 lets: #(  ) ].
+
+
+	^ super visitCode: aCodeBlock
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 
 	self postFooter: aFootnote do: [  ]

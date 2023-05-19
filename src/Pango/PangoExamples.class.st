@@ -15,7 +15,7 @@ PangoExamples class >> example1 [
 	surface drawDuring: [ :canvas |
 		| fontLayout |
 		fontLayout := PangoLayout newCanvas: canvas.
-		fontLayout markup: '<span foreground="blue" font_family="Lucida Grande" font_size="40pt">
+		fontLayout text: '<span foreground="blue" font_family="Lucida Grande" font_size="40pt">
 		<b> bold </b>
 		<u> is </u>
 		<i> nice </i>
@@ -36,7 +36,7 @@ PangoExamples class >> example2 [
 	<example>
 	| pango canvas |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span><tt>' , Object class comment , '</tt></span>';
 		         notedWithPad: Float goldenRatio.
 
@@ -64,7 +64,7 @@ PangoExamples class >> example3 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
 		<u> is </u>
 		<i> nice </i>
@@ -85,7 +85,7 @@ PangoExamples class >> example4 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span font_family="Cantarell" font_size="12pt">'
 			         , 'Hello
 
@@ -101,7 +101,7 @@ world' , '</span>';
 				 yourself);
 		add: (RSPangoMarkup new boxedWithPad: 0);
 		add: (RSPangoMarkup new
-				 markup:
+				 text:
 					 '<span font_family="Cantarell" font_size="32pt" foreground="red">&#169;</span>';
 				 yourself);
 		inspect
@@ -113,7 +113,7 @@ PangoExamples class >> example5 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on">'
 			         , Object class comment , '</span>';
 		         boxedWithPad: Float goldenRatio.
@@ -122,7 +122,7 @@ PangoExamples class >> example5 [
 	RSGroup new
 		add: pango;
 		add: (RSPangoMarkup new
-				 markup: '<span color="green">' , Object class comment , '</span>';
+				 text: '<span color="green">' , Object class comment , '</span>';
 				 yourself);
 		inspect
 ]
@@ -133,7 +133,7 @@ PangoExamples class >> example6 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on"><tt>'
 			         ,
 				         (PangoLayout >> #pixelSize) inspectionSource

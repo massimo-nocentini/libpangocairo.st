@@ -6,17 +6,6 @@ Class {
 	#category : #Pango
 }
 
-{ #category : #finalization }
-PangoLayout class >> finalizeResourceData: handle [
-	handle isNull ifTrue: [ ^ self ].
-	^ self g_object_unref: handle
-]
-
-{ #category : #private }
-PangoLayout class >> g_object_unref: handle [
-	^ self ffiCall: #( void g_object_unref (void *handle)) module: PangoLibrary
-]
-
 { #category : #'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
 
@@ -26,19 +15,24 @@ PangoLayout class >> newCanvas: aCanvas [
 { #category : #'instance creation' }
 PangoLayout class >> newContext: aContext [
 
-	^ self pango_layout_new: aContext
+	^ (self pango_layout_new: aContext) initialize
 ]
 
 { #category : #private }
 PangoLayout class >> pango_cairo_create_layout: cr [
-	^ self 
-		ffiCall: #(PangoLayout *pango_cairo_create_layout (AthensCairoCanvas cr))
-		module: PangoCairoLibrary
+
+	^ self
+		  ffiCall:
+			  #( PangoLayout * pango_cairo_create_layout
+			     #( AthensCairoCanvas cr ) )
+		  module: PangoCairoLibrary
 ]
 
 { #category : #private }
 PangoLayout class >> pango_layout_new: context [
-	^ self ffiCall: #(PangoLayout *pango_layout_new (PangoContext *context))
+
+	^ self ffiCall:
+		  #( PangoLayout * pango_layout_new #( PangoContext * context ) )
 ]
 
 { #category : #accessing }
@@ -73,9 +67,7 @@ PangoLayout >> get_spacing [
 { #category : #initialization }
 PangoLayout >> initialize [
 
-	self
-		autoRelease";
-		width: 1024 * 80"
+	"self width: 1024 * 80"
 ]
 
 { #category : #accessing }
@@ -120,10 +112,11 @@ PangoLayout >> pushOnLua: state liblua: liblua [
 ]
 
 { #category : #accessing }
-PangoLayout >> set_attributes: attrListExternalAddress [
+PangoLayout >> set_attributes: aPangoAttrList [
 
 	self ffiCall:
-		#( void pango_layout_set_attributes #( self , void * attrListExternalAddress ) )
+		#( void pango_layout_set_attributes #( self , PangoAttrList
+		      * aPangoAttrList ) )
 ]
 
 { #category : #accessing }
@@ -167,6 +160,14 @@ PangoLayout >> text: text [
 
 	^ self ffiCall:
 		  #( void pango_layout_set_text #( self , const char * text , -1 ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> unref [
+
+	^ self
+		  ffiCall: #( void g_object_unref #( self ) )
+		  module: PangoLibrary
 ]
 
 { #category : #accessing }

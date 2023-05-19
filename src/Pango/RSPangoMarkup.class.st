@@ -1,6 +1,11 @@
 Class {
 	#name : #RSPangoMarkup,
-	#superclass : #RSPangoText,
+	#superclass : #RSPangoWithAttrList,
+	#instVars : [
+		'markup',
+		'attributesString',
+		'initialOffset'
+	],
 	#classVars : [
 		'Conversions'
 	],
@@ -23,28 +28,51 @@ RSPangoMarkup class >> initialize [
 		               yourself
 ]
 
-{ #category : #handle }
-RSPangoMarkup >> initPangoLayout: aPangoLayout [
+{ #category : #accessing }
+RSPangoMarkup >> attributesChunks [
 
-	aPangoLayout markup: (self markup ifNil: [ '<span></span>' ]).
+	^ attributesString splitOn: Character lf
+]
 
-	^ ExternalAddress null
+{ #category : #initialization }
+RSPangoMarkup >> initialize [
+
+	super initialize.
+
+	initialOffset := 0
 ]
 
 { #category : #accessing }
-RSPangoMarkup >> markup [
+RSPangoMarkup >> text: aString [
 
-	^ self text
-]
+	| ll clean_text |
+	"Keep a reference to the original markup string."
+	markup := aString.
 
-{ #category : #accessing }
-RSPangoMarkup >> markup: aString [
-
-	| s |
-	s := aString fixEmptyLinesForPango.
+	clean_text := aString fixEmptyLinesForPango.
 
 	Conversions keysAndValuesDo: [ :macro :replacement |
-		s := s copyReplaceAll: macro with: replacement ].
+		clean_text := clean_text copyReplaceAll: macro with: replacement ].
 
-	^ self text: s
+	ll := LibLua uniqueInstance.
+
+	ll withOpenedLibsStateDo: [ :L |
+		| flag |
+		ll
+			luaL_requiref: L name: 'cairo';
+			on: L push: #cairo;
+			lua_getfield: L at: -1 name: 'pango_parse_markup';
+			on: L push: clean_text;
+			on: L push: initialOffset;
+			lua_pcall: L nargs: 2 nresults: 3.
+
+		flag := ll on: L at: -3.
+		clean_text := ll on: L at: -2.
+		attributesString := ll on: L at: -1.
+
+		self
+			assert: flag
+			description: 'Failed to execute `pango_parse_markup` function.' ].
+
+	^ super text: clean_text
 ]

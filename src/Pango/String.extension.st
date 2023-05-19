@@ -1,12 +1,6 @@
 Extension { #name : #String }
 
 { #category : #'*Pango' }
-String >> asPangoAttrList [
-
-	^ (PangoAttrList attr_list_from_string: self) ref
-]
-
-{ #category : #'*Pango' }
 String >> asRSPangoMarkupUsingFont: font [
 
 	| markup |
@@ -18,7 +12,7 @@ String >> asRSPangoMarkupUsingFont: font [
 
 	^ RSPangoMarkup new
 		  font: font;
-		  markup: markup;
+		  text: markup;
 		  yourself
 ]
 
