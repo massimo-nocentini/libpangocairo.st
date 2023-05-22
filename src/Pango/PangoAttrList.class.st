@@ -16,12 +16,6 @@ PangoAttrList class >> attr_list_from_string: text [
 ]
 
 { #category : #accessing }
-PangoAttrList class >> fromString: specString [
-
-	^ (self attr_list_from_string: specString) initialize
-]
-
-{ #category : #accessing }
 PangoAttrList >> unref [
 
 	^ self ffiCall:
