@@ -62,22 +62,17 @@ RSPangoWithAttrList >> font: anObject [
 ]
 
 { #category : #handle }
-RSPangoWithAttrList >> initPangoLayout: aPangoLayout [
+RSPangoWithAttrList >> initPangoLayout: chunks [
 
-	| attrSpec chunks |
-	chunks := OrderedCollection new
-		          add:
-			          '0 -1 foreground #'
-			          , self defaultForegroundColor asHexString;
-		          add: ('0 -1 font-desc "{1} {2}"' format: {
-						           self font familyName.
-						           self font pointSize });
-		          addAll: self attributesChunks;
-		          yourself.
+	chunks
+		add: '0 -1 foreground #' , self defaultForegroundColor asHexString;
+		add: ('0 -1 font-desc "{1} {2}"' format: {
+						 self font familyName.
+						 self font pointSize });
+		addAll: self attributesChunks;
+		yourself.
 
-	attrSpec := String lf join: chunks.
-
-	^ PangoAttrList attr_list_from_string: attrSpec
+	^ String lf join: chunks
 ]
 
 { #category : #initialization }
@@ -107,7 +102,7 @@ RSPangoWithAttrList >> text: anObject [
 { #category : #accessing }
 RSPangoWithAttrList >> updateBaseRectangle [
 
-	| surface extent |
+	| surface rect |
 	"A very small surface to create an `AthensCairoCanvas` object."
 	surface := AthensCairoSurface width: 1 height: 1.
 
@@ -119,28 +114,41 @@ RSPangoWithAttrList >> updateBaseRectangle [
 
 		athensCanvas setScaledFont: metricsProvider cairoFont.
 
-		self
-			withAthensCairoCanvas: athensCanvas
-			do: [ :pangoLayout | extent := pangoLayout logicalRectangle extent ] ].
+		rect := self withAthensCairoCanvas: athensCanvas do: false ].
 
 	self
-		extent: extent;
+		extent: rect extent;
 		signalUpdate
 ]
 
 { #category : #handle }
-RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBlock [
+RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBoolean [
 
-	| pangoLayout pangoAttrList |
-	pangoLayout := PangoLayout newCanvas: athensCanvas.
+	| pangoAttrListStringSpec ll |
+	pangoAttrListStringSpec := self initPangoLayout:
+		                           OrderedCollection new.
 
-	pangoAttrList := self initPangoLayout: pangoLayout.
+	ll := LibLua uniqueInstance.
 
-	pangoLayout
-		text: self text;
-		set_attributes: pangoAttrList.
+	^ ll withOpenedLibsStateDo: [ :L |
+		  | flag x y w h |
+		  ll
+			  luaL_requiref: L name: 'cairo';
+			  on: L push: #cairo;
+			  on: L push: athensCanvas;
+			  on: L push: self text;
+			  on: L push: pangoAttrListStringSpec;
+			  on: L push: aBoolean;
+			  lua_pcall: L nargs: 4 nresults: 4.
 
-	[ aBlock value: pangoLayout ] ensure: [
-		"pangoAttrList unref.
-		pangoLayout unref" ]
+		  flag := ll on: L at: -5.
+
+		  self assert: flag description: 'something'.
+
+		  x := ll on: L at: -4.
+		  y := ll on: L at: -3.
+		  w := ll on: L at: -2.
+		  h := ll on: L at: -1.
+
+		  Rectangle center: x @ y extent: w @ h ]
 ]
