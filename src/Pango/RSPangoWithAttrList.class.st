@@ -141,6 +141,6 @@ RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBlock [
 		set_attributes: pangoAttrList.
 
 	[ aBlock value: pangoLayout ] ensure: [
-		pangoAttrList unref.
-		pangoLayout unref ]
+		"pangoAttrList unref.
+		pangoLayout unref" ]
 ]
