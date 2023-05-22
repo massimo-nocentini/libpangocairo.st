@@ -20,7 +20,8 @@ Class {
 	#instVars : [
 		'text',
 		'font',
-		'defaultForegroundColor'
+		'defaultForegroundColor',
+		'liblua'
 	],
 	#category : #Pango
 }
@@ -35,6 +36,23 @@ RSPangoWithAttrList >> accept: visitor [
 RSPangoWithAttrList >> attributesChunks [
 
 	self subclassResponsibility
+]
+
+{ #category : #handle }
+RSPangoWithAttrList >> attrlistSpecString [
+
+	| chunks |
+	chunks := OrderedCollection new
+		          add:
+			          '0 -1 foreground #'
+			          , self defaultForegroundColor asHexString;
+		          add: ('0 -1 font-desc "{1} {2}"' format: {
+						           self font familyName.
+						           self font pointSize });
+		          addAll: self attributesChunks;
+		          yourself.
+
+	^ String lf join: chunks
 ]
 
 { #category : #accessing }
@@ -61,24 +79,12 @@ RSPangoWithAttrList >> font: anObject [
 	font := anObject
 ]
 
-{ #category : #handle }
-RSPangoWithAttrList >> initPangoLayout: chunks [
-
-	chunks
-		add: '0 -1 foreground #' , self defaultForegroundColor asHexString;
-		add: ('0 -1 font-desc "{1} {2}"' format: {
-						 self font familyName.
-						 self font pointSize });
-		addAll: self attributesChunks;
-		yourself.
-
-	^ String lf join: chunks
-]
-
 { #category : #initialization }
 RSPangoWithAttrList >> initialize [
 
 	super initialize.
+
+	liblua := LibLua uniqueInstance.
 
 	self
 		font: StandardFonts defaultFont;
@@ -124,29 +130,23 @@ RSPangoWithAttrList >> updateBaseRectangle [
 { #category : #handle }
 RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBoolean [
 
-	| pangoAttrListStringSpec ll |
-	pangoAttrListStringSpec := self initPangoLayout:
-		                           OrderedCollection new.
-
-	ll := LibLua uniqueInstance.
-
-	^ ll withOpenedLibsStateDo: [ :L |
+	^ liblua withOpenedLibsStateDo: [ :L |
 		  | x y w h |
-		  ll on: L assertLUAOK: [
-			  ll
+		  liblua on: L assertLUAOK: [
+			  liblua
 				  luaL_requiref: L name: 'cairo';
 				  on: L push: #cairo;
-				  lua_getfield: L at: -1 name: 'write';
+				  lua_getfield: L at: -1 name: 'pango_text_with_attrlist_spec';
 				  on: L push: athensCanvas;
 				  on: L push: self text;
-				  on: L push: pangoAttrListStringSpec;
+				  on: L push: self attrlistSpecString;
 				  on: L push: aBoolean;
 				  lua_pcall: L nargs: 4 nresults: 4 ].
 
-		  x := ll on: L at: -4.
-		  y := ll on: L at: -3.
-		  w := ll on: L at: -2.
-		  h := ll on: L at: -1.
+		  x := liblua on: L at: -4.
+		  y := liblua on: L at: -3.
+		  w := liblua on: L at: -2.
+		  h := liblua on: L at: -1.
 
 		  Rectangle center: x @ y extent: w @ h ]
 ]
