@@ -2,7 +2,8 @@ Class {
 	#name : #RSPangoText,
 	#superclass : #RSPangoWithAttrList,
 	#instVars : [
-		'textRuns'
+		'textRuns',
+		'tripleFormatString'
 	],
 	#classVars : [
 		'Conversions'
@@ -13,24 +14,41 @@ Class {
 { #category : #accessing }
 RSPangoText >> attributesChunks [
 
-	| collection |
-	collection := OrderedCollection new.
+	| triples |
+	triples := OrderedCollection new.
 
-	textRuns withStartStopAndValueDo: [ :start :stop :aCollection |
-		aCollection do: [ :each |
+	textRuns withStartStopAndValueDo: [ :shiftedStart :stop :textAttributes |
+		| start |
+		start := shiftedStart - 1.
+
+		textAttributes do: [ :each |
 			| chunks |
 			chunks := each asPangoAttributeChunks: self font.
 
 			chunks do: [ :chunk |
-				| attrString |
-				attrString := '{1} {2} {3}' format: {
-						              (start - 1).
-						              stop.
-						              chunk }.
+				| triple |
+				triple := self formatTripleFrom: start to: stop value: chunk.
 
-				collection add: attrString ] ] ].
+				triples add: triple ] ] ].
 
-	^ collection
+	^ triples
+]
+
+{ #category : #accessing }
+RSPangoText >> formatTripleFrom: start to: stop value: chunk [
+
+	^ tripleFormatString format: {
+			  start.
+			  stop.
+			  chunk }
+]
+
+{ #category : #accessing }
+RSPangoText >> initialize [
+
+	super initialize.
+
+	tripleFormatString := '{1} {2} {3}'
 ]
 
 { #category : #accessing }
