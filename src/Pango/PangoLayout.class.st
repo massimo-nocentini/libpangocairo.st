@@ -106,12 +106,6 @@ PangoLayout >> primGetSizeWidth: width height: height [
 ]
 
 { #category : #accessing }
-PangoLayout >> pushOnLua: state liblua: liblua [
-
-	^ liblua on: state push: handle
-]
-
-{ #category : #accessing }
 PangoLayout >> set_attributes: aPangoAttrList [
 
 	self ffiCall:
