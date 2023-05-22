@@ -91,6 +91,30 @@ RSPangoWithAttrList >> initialize [
 		defaultForegroundColor: Smalltalk ui theme textColor
 ]
 
+{ #category : #handle }
+RSPangoWithAttrList >> rectangleOnCairoCanvas: athensCanvas shouldShow: aBoolean [
+
+	^ liblua withOpenedLibsStateDo: [ :L |
+		  | x y w h |
+		  liblua on: L assertLUAOK: [
+			  liblua
+				  luaL_requiref: L name: 'cairo';
+				  on: L push: #cairo;
+				  lua_getfield: L at: -1 name: 'pango_text_with_attrlist_spec';
+				  on: L push: athensCanvas;
+				  on: L push: self text;
+				  on: L push: self attrlistSpecString;
+				  on: L push: aBoolean;
+				  lua_pcall: L nargs: 4 nresults: 4 ].
+
+		  x := liblua on: L at: -4.
+		  y := liblua on: L at: -3.
+		  w := liblua on: L at: -2.
+		  h := liblua on: L at: -1.
+
+		  Rectangle center: x @ y extent: w @ h ]
+]
+
 { #category : #accessing }
 RSPangoWithAttrList >> text [
 
@@ -120,33 +144,9 @@ RSPangoWithAttrList >> updateBaseRectangle [
 
 		athensCanvas setScaledFont: metricsProvider cairoFont.
 
-		rect := self withAthensCairoCanvas: athensCanvas do: false ].
+		rect := self rectangleOnCairoCanvas: athensCanvas shouldShow: false ].
 
 	self
 		extent: rect extent;
 		signalUpdate
-]
-
-{ #category : #handle }
-RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBoolean [
-
-	^ liblua withOpenedLibsStateDo: [ :L |
-		  | x y w h |
-		  liblua on: L assertLUAOK: [
-			  liblua
-				  luaL_requiref: L name: 'cairo';
-				  on: L push: #cairo;
-				  lua_getfield: L at: -1 name: 'pango_text_with_attrlist_spec';
-				  on: L push: athensCanvas;
-				  on: L push: self text;
-				  on: L push: self attrlistSpecString;
-				  on: L push: aBoolean;
-				  lua_pcall: L nargs: 4 nresults: 4 ].
-
-		  x := liblua on: L at: -4.
-		  y := liblua on: L at: -3.
-		  w := liblua on: L at: -2.
-		  h := liblua on: L at: -1.
-
-		  Rectangle center: x @ y extent: w @ h ]
 ]

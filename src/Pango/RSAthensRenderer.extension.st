@@ -11,5 +11,5 @@ RSAthensRenderer >> visitPangoText: pango [
 	athensCanvas pathTransform loadAffineTransform: matrix.
 	athensCanvas setPathMatrix.
 
-	pango withAthensCairoCanvas: athensCanvas do: true
+	pango rectangleOnCairoCanvas: athensCanvas shouldShow: true
 ]
