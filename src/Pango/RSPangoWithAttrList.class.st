@@ -132,18 +132,17 @@ RSPangoWithAttrList >> withAthensCairoCanvas: athensCanvas do: aBoolean [
 
 	^ ll withOpenedLibsStateDo: [ :L |
 		  | flag x y w h |
-		  ll
-			  luaL_requiref: L name: 'cairo';
-			  on: L push: #cairo;
-			  on: L push: athensCanvas;
-			  on: L push: self text;
-			  on: L push: pangoAttrListStringSpec;
-			  on: L push: aBoolean;
-			  lua_pcall: L nargs: 4 nresults: 4.
+		  flag := ll
+			          luaL_requiref: L name: 'cairo';
+			          on: L push: #cairo;
+			          lua_getfield: L at: -1 name: 'write';
+			          on: L push: athensCanvas;
+			          on: L push: self text;
+			          on: L push: pangoAttrListStringSpec;
+			          on: L push: aBoolean;
+			          lua_pcall: L nargs: 4 nresults: 4.
 
-		  flag := ll on: L at: -5.
-
-		  self assert: flag description: 'something'.
+		  self assert: flag = ll LUA_OK description: 'something'.
 
 		  x := ll on: L at: -4.
 		  y := ll on: L at: -3.

@@ -57,22 +57,26 @@ RSPangoMarkup >> text: aString [
 	ll := LibLua uniqueInstance.
 
 	ll withOpenedLibsStateDo: [ :L |
-		| flag |
-		ll
-			luaL_requiref: L name: 'cairo';
-			on: L push: #cairo;
-			lua_getfield: L at: -1 name: 'pango_parse_markup';
-			on: L push: clean_text;
-			on: L push: initialOffset;
-			lua_pcall: L nargs: 2 nresults: 3.
+		| flag parsed |
+		flag := ll
+			        luaL_requiref: L name: 'cairo';
+			        on: L push: #cairo;
+			        lua_getfield: L at: -1 name: 'pango_parse_markup';
+			        on: L push: clean_text;
+			        on: L push: initialOffset;
+			        lua_pcall: L nargs: 2 nresults: 3.
 
-		flag := ll on: L at: -3.
+		parsed := ll on: L at: -3.
 		clean_text := ll on: L at: -2.
 		attributesString := ll on: L at: -1.
 
 		self
-			assert: flag
-			description: 'Failed to execute `pango_parse_markup` function.' ].
+			assert: flag = ll LUA_OK
+			description: 'Failed to execute `pango_parse_markup` function.'.
+
+		self
+			assert: parsed
+			description: 'Failed to parse the given Pango markup string.' ].
 
 	^ super text: clean_text
 ]
