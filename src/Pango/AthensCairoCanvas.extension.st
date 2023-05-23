@@ -11,8 +11,9 @@ AthensCairoCanvas >> newPangoLayout [
 
 { #category : #'*Pango' }
 AthensCairoCanvas >> showLayout: layout [
-	self 
-		ffiCall: #(void pango_cairo_show_layout (self, PangoLayout *layout))
+
+	self
+		ffiCall: #( void pango_cairo_show_layout #( self , void * layout ) )
 		module: PangoCairoLibrary
 ]
 

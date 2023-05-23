@@ -56,6 +56,21 @@ RSPangoText >> defaultForegroundColor: anObject [
 	defaultForegroundColor := anObject
 ]
 
+{ #category : #'as yet unclassified' }
+RSPangoText >> extentOfPangoLayoutHandler: anHandler [
+
+	| widthBuffer heightBuffer |
+	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
+	heightBuffer := ByteArray new: FFIInt32 externalTypeSize.
+
+	self
+		primGetPixelSizeOfPangoLayoutHandler: anHandler
+		width: widthBuffer
+		height: heightBuffer.
+
+	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
+]
+
 { #category : #accessing }
 RSPangoText >> font [
 
@@ -68,18 +83,30 @@ RSPangoText >> font: anObject [
 	font := anObject
 ]
 
-{ #category : #handle }
-RSPangoText >> freeResource: pangoAttributeList ofPangoLayout: pangoLayout [
+{ #category : #initialization }
+RSPangoText >> initialize [
 
-	pangoAttributeList isNull ifFalse: [ pangoAttributeList unref ]
+	super initialize.
+
+	self
+		font: StandardFonts defaultFont;
+		defaultForegroundColor: Smalltalk ui theme textColor;
+		attributesChunks: OrderedCollection new
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> pangoAttrListFromString: aString [
+
+	^ self
+		  ffiCall:
+		  #( void * pango_attr_list_from_string #( const char * aString ) )
+		  module: PangoLibrary
 ]
 
 { #category : #handle }
-RSPangoText >> initPangoLayout: aPangoLayout [
+RSPangoText >> pangoAttrListString [
 
-	| attrSpec externalAddress chunks |
-	aPangoLayout text: self text.
-
+	| chunks |
 	chunks := OrderedCollection new
 		          add:
 			          '0 -1 foreground #'
@@ -90,24 +117,59 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 		          addAll: self attributesChunks;
 		          yourself.
 
-	attrSpec := ', ' join: chunks.
-
-	externalAddress := PangoAttrList attr_list_from_string: attrSpec.
-
-	aPangoLayout set_attributes: externalAddress.
-
-	^ externalAddress
+	^ ', ' join: chunks
 ]
 
-{ #category : #initialization }
-RSPangoText >> initialize [
+{ #category : #'as yet unclassified' }
+RSPangoText >> pangoAttrListUnref: handler [
 
-	super initialize.
+	^ self
+		  ffiCall: #( void pango_attr_list_unref #( void * handler ) )
+		  module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> pixelSizeOfPangoLayoutHandler: anHandler [
+
+	| widthBuffer heightBuffer |
+	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
+	heightBuffer := ByteArray new: FFIInt32 externalTypeSize.
 
 	self
-		font: StandardFonts defaultFont;
-		defaultForegroundColor: Smalltalk ui theme textColor;
-		attributesChunks: OrderedCollection new
+		primGetPixelSizeOfPangoLayoutHandler: anHandler
+		width: widthBuffer
+		height: heightBuffer.
+
+	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> primGetPixelSizeOfPangoLayoutHandler: anHandler width: width height: height [
+
+	^ self
+		  ffiCall:
+			  #( void pango_layout_get_pixel_size #( void * anHandler , int * width
+			        , int * height ) )
+		  module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> setAttrListHandler: attrListHander onPangoHandler: pangoHandler [
+
+	self
+		ffiCall: #( void pango_layout_set_attributes
+			   #( void * pangoHandler , void * attrListHander ) )
+		module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> setText: aString onPangoHandler: pangoHandler [
+
+	^ self
+		  ffiCall:
+			  #( void pango_layout_set_text #( void * pangoHandler , const
+			        char * aString , -1 ) )
+		  module: PangoLibrary
 ]
 
 { #category : #accessing }
@@ -140,10 +202,7 @@ RSPangoText >> updateBaseRectangle [
 		athensCanvas setScaledFont: metricsProvider cairoFont.
 
 		self withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
-			athensCanvas updateLayout: pangoLayout. ";
-					             showLayout: pangoLayout"
-
-			extent := pangoLayout logicalRectangle extent ] ].
+			extent := self extentOfPangoLayoutHandler: pangoLayout ] ].
 
 	self
 		extent: extent;
@@ -154,11 +213,23 @@ RSPangoText >> updateBaseRectangle [
 RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 
 	athensCanvas withPangoLayoutHandler: [ :layoutHandler |
-		| pangoLayout resource |
-		pangoLayout := PangoLayout fromHandle: layoutHandler.
+		self
+			withPangoAttrListFromString: self pangoAttrListString
+			do: [ :attrListHandler |
+				self setText: self text onPangoHandler: layoutHandler.
 
-		resource := self initPangoLayout: pangoLayout.
+				self
+					setAttrListHandler: attrListHandler
+					onPangoHandler: layoutHandler.
 
-		[ aBlock value: pangoLayout ] ensure: [
-			self freeResource: resource ofPangoLayout: pangoLayout ] ]
+				aBlock value: layoutHandler ] ]
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
+
+	| handler |
+	handler := self pangoAttrListFromString: aString.
+
+	[ aBlock value: handler ] ensure: [ self pangoAttrListUnref: handler ]
 ]
