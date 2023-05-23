@@ -69,7 +69,7 @@ RSPangoText >> font: anObject [
 ]
 
 { #category : #handle }
-RSPangoText >> freeResource: pangoAttributeList ofPangoLayout: fontLayout [
+RSPangoText >> freeResource: pangoAttributeList ofPangoLayout: pangoLayout [
 
 	pangoAttributeList isNull ifFalse: [ pangoAttributeList unref ]
 ]
@@ -92,7 +92,7 @@ RSPangoText >> initPangoLayout: aPangoLayout [
 
 	attrSpec := ', ' join: chunks.
 
-	externalAddress := attrSpec asPangoAttrList.
+	externalAddress := PangoAttrList attr_list_from_string: attrSpec.
 
 	aPangoLayout set_attributes: externalAddress.
 
@@ -159,5 +159,7 @@ RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 	resource := self initPangoLayout: pangoLayout.
 
 	[ aBlock value: pangoLayout ] ensure: [
-		self freeResource: resource ofPangoLayout: pangoLayout ]
+		self freeResource: resource ofPangoLayout: pangoLayout.
+
+		pangoLayout unref ]
 ]

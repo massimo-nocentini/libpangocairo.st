@@ -6,21 +6,10 @@ Class {
 	#category : #Pango
 }
 
-{ #category : #finalization }
-PangoLayout class >> finalizeResourceData: handle [
-	handle isNull ifTrue: [ ^ self ].
-	^ self g_object_unref: handle
-]
-
-{ #category : #private }
-PangoLayout class >> g_object_unref: handle [
-	^ self ffiCall: #( void g_object_unref (void *handle)) module: PangoLibrary
-]
-
 { #category : #'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
 
-	^ (self pango_cairo_create_layout: aCanvas) initialize
+	^ self pango_cairo_create_layout: aCanvas
 ]
 
 { #category : #'instance creation' }
@@ -68,14 +57,6 @@ PangoLayout >> get_spacing [
 
 	^ self ffiCall: #( int pango_layout_get_spacing
 	     #( self ) )
-]
-
-{ #category : #initialization }
-PangoLayout >> initialize [
-
-	self
-		autoRelease";
-		width: 1024 * 80"
 ]
 
 { #category : #accessing }
@@ -167,6 +148,14 @@ PangoLayout >> text: text [
 
 	^ self ffiCall:
 		  #( void pango_layout_set_text #( self , const char * text , -1 ) )
+]
+
+{ #category : #accessing }
+PangoLayout >> unref [
+
+	^ self
+		  ffiCall: #( void g_object_unref #( void * self ) )
+		  module: PangoLibrary
 ]
 
 { #category : #accessing }
