@@ -153,13 +153,12 @@ RSPangoText >> updateBaseRectangle [
 { #category : #handle }
 RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 
-	| pangoLayout resource |
-	pangoLayout := PangoLayout newCanvas: athensCanvas.
+	athensCanvas withPangoLayoutHandler: [ :layoutHandler |
+		| pangoLayout resource |
+		pangoLayout := PangoLayout fromHandle: layoutHandler.
 
-	resource := self initPangoLayout: pangoLayout.
+		resource := self initPangoLayout: pangoLayout.
 
-	[ aBlock value: pangoLayout ] ensure: [
-		self freeResource: resource ofPangoLayout: pangoLayout.
-
-		pangoLayout unref ]
+		[ aBlock value: pangoLayout ] ensure: [
+			self freeResource: resource ofPangoLayout: pangoLayout ] ]
 ]
