@@ -40,29 +40,28 @@ RSPangoMarkup >> markup: aString [
 
 	ll := LibLua uniqueInstance.
 
-	ll withOpenedLibsStateDo: [ :L |
-		| flag parsed |
-		flag := ll
-			        luaL_requiref: L name: 'cairo';
-			        on: L push: #cairo;
-			        lua_getfield: L at: -1 name: 'pango_parse_markup';
-			        on: L push: clean_text;
-			        on: L push: 0;
-			        lua_pcall: L nargs: 2 nresults: 3.
+	self withPangoAttrListFromString: '' do: [ :emptyAttrListHandler |
+		ll withOpenedLibsStateDo: [ :L |
+			| parsed |
+			ll on: L assertLUAOK: [
+				ll
+					luaL_requiref: L name: 'cairo';
+					on: L push: #cairo;
+					lua_getfield: L at: -1 name: 'pango_parse_markup';
+					on: L push: clean_text;
+					on: L push: 0;
+					on: L push: emptyAttrListHandler;
+					lua_pcall: L nargs: 3 nresults: 3 ].
 
-		parsed := ll on: L at: -3.
-		clean_text := ll on: L at: -2.
-		attributesString := ll on: L at: -1.
+			parsed := ll on: L at: -3.
+			clean_text := ll on: L at: -2.
+			attributesString := ll on: L at: -1.
 
-		self
-			assert: flag = ll LUA_OK
-			description: 'Failed to execute `pango_parse_markup` function.'.
-
-		self
-			assert: parsed
-			description: 'Failed to parse the given Pango markup string.' ].
+			self
+				assert: parsed
+				description: 'Failed to parse the given Pango markup string.' ] ].
 
 	self attributesChunks: (String lf split: attributesString).
 
-	^ super text: clean_text
+	^ self text: clean_text
 ]
