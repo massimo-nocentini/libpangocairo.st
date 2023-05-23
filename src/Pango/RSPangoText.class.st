@@ -19,9 +19,9 @@ Class {
 	#superclass : #RSBoundingShape,
 	#instVars : [
 		'text',
-		'attributesChunks',
 		'font',
-		'defaultForegroundColor'
+		'defaultForegroundColor',
+		'attributesChunks'
 	],
 	#category : #Pango
 }
@@ -59,16 +59,26 @@ RSPangoText >> defaultForegroundColor: anObject [
 { #category : #'as yet unclassified' }
 RSPangoText >> extentOfPangoLayoutHandler: anHandler [
 
-	| widthBuffer heightBuffer |
-	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
-	heightBuffer := ByteArray new: FFIInt32 externalTypeSize.
+	| liblua |
+	liblua := LibLua uniqueInstance.
 
-	self
-		primGetPixelSizeOfPangoLayoutHandler: anHandler
-		width: widthBuffer
-		height: heightBuffer.
+	^ liblua withOpenedLibsStateDo: [ :L |
+		  | x y w h |
+		  liblua on: L assertLUAOK: [
+			  liblua
+				  luaL_requiref: L name: 'cairo';
+				  on: L push: #cairo;
+				  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
+				  on: L push: anHandler;
+				  on: L push: true;
+				  lua_pcall: L nargs: 2 nresults: 4 ].
 
-	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
+		  x := liblua on: L at: -4.
+		  y := liblua on: L at: -3.
+		  w := liblua on: L at: -2.
+		  h := liblua on: L at: -1.
+
+		  (Rectangle center: x @ y extent: w @ h) extent ]
 ]
 
 { #category : #accessing }

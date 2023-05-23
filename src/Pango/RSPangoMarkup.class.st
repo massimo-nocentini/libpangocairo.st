@@ -1,6 +1,9 @@
 Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
+	#instVars : [
+		'markup'
+	],
 	#classVars : [
 		'Conversions'
 	],
@@ -23,28 +26,43 @@ RSPangoMarkup class >> initialize [
 		               yourself
 ]
 
-{ #category : #handle }
-RSPangoMarkup >> initPangoLayout: aPangoLayout [
-
-	aPangoLayout markup: (self markup ifNil: [ '<span></span>' ]).
-
-	^ ExternalAddress null
-]
-
-{ #category : #accessing }
-RSPangoMarkup >> markup [
-
-	^ self text
-]
-
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	| s |
-	s := aString fixEmptyLinesForPango.
+	| ll clean_text attributesString |
+	"Keep a reference to the original markup string."
+	markup := aString.
+
+	clean_text := aString fixEmptyLinesForPango.
 
 	Conversions keysAndValuesDo: [ :macro :replacement |
-		s := s copyReplaceAll: macro with: replacement ].
+		clean_text := clean_text copyReplaceAll: macro with: replacement ].
 
-	^ self text: s
+	ll := LibLua uniqueInstance.
+
+	ll withOpenedLibsStateDo: [ :L |
+		| flag parsed |
+		flag := ll
+			        luaL_requiref: L name: 'cairo';
+			        on: L push: #cairo;
+			        lua_getfield: L at: -1 name: 'pango_parse_markup';
+			        on: L push: clean_text;
+			        on: L push: 0;
+			        lua_pcall: L nargs: 2 nresults: 3.
+
+		parsed := ll on: L at: -3.
+		clean_text := ll on: L at: -2.
+		attributesString := ll on: L at: -1.
+
+		self
+			assert: flag = ll LUA_OK
+			description: 'Failed to execute `pango_parse_markup` function.'.
+
+		self
+			assert: parsed
+			description: 'Failed to parse the given Pango markup string.' ].
+
+	self attributesChunks: (String lf split: attributesString).
+
+	^ super text: clean_text
 ]
