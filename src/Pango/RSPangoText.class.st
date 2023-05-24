@@ -63,14 +63,16 @@ RSPangoText >> extentOfPangoLayoutHandler: anHandler [
 	liblua := LibLua uniqueInstance.
 
 	^ liblua withOpenedLibsStateDo: [ :L |
-		  | x y w h |
+		  | x y w h requestLogicalRectangle |
+		  requestLogicalRectangle := true. "Ink rectangle otherwise."
+
 		  liblua on: L assertLUAOK: [
 			  liblua
 				  luaL_requiref: L name: 'cairo';
 				  on: L push: #cairo;
 				  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
 				  on: L push: anHandler;
-				  on: L push: true;
+				  on: L push: requestLogicalRectangle;
 				  lua_pcall: L nargs: 2 nresults: 4 ].
 
 		  x := liblua on: L at: -4.
@@ -139,31 +141,6 @@ RSPangoText >> pangoAttrListUnref: handler [
 ]
 
 { #category : #'as yet unclassified' }
-RSPangoText >> pixelSizeOfPangoLayoutHandler: anHandler [
-
-	| widthBuffer heightBuffer |
-	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
-	heightBuffer := ByteArray new: FFIInt32 externalTypeSize.
-
-	self
-		primGetPixelSizeOfPangoLayoutHandler: anHandler
-		width: widthBuffer
-		height: heightBuffer.
-
-	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
-]
-
-{ #category : #'as yet unclassified' }
-RSPangoText >> primGetPixelSizeOfPangoLayoutHandler: anHandler width: width height: height [
-
-	^ self
-		  ffiCall:
-			  #( void pango_layout_get_pixel_size #( void * anHandler , int * width
-			        , int * height ) )
-		  module: PangoLibrary
-]
-
-{ #category : #'as yet unclassified' }
 RSPangoText >> setAttrListHandler: attrListHander onPangoHandler: pangoHandler [
 
 	self
@@ -204,19 +181,17 @@ RSPangoText >> updateBaseRectangle [
 	surface := AthensCairoSurface width: 1 height: 1.
 
 	surface drawDuring: [ :athensCanvas |
-		| metricsProvider |
-		metricsProvider := CairoFontMetricsProvider new
-			                   font: self font;
-			                   yourself.
-
-		athensCanvas setScaledFont: metricsProvider cairoFont.
+		| scaledCairoFont |
+		scaledCairoFont := CairoScaledFont fromFreetypeFont:
+			                   self font asFreetypeFont.
+		athensCanvas setScaledFont: scaledCairoFont.
 
 		self withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
 			extent := self extentOfPangoLayoutHandler: pangoLayout ] ].
 
 	self
 		extent: extent;
-		signalUpdate
+		resetPath
 ]
 
 { #category : #handle }
@@ -225,7 +200,7 @@ RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 	athensCanvas withPangoLayoutHandler: [ :layoutHandler |
 		self
 			withPangoAttrListFromString: self pangoAttrListString
-			do: [ :attrListHandler |
+			do: [ :attrListHandler | "Set the bare bone text on the Pango layout."
 				self setText: self text onPangoHandler: layoutHandler.
 
 				self
