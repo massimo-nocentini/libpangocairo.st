@@ -33,6 +33,7 @@ RSPangoMarkup >> markup: aString [
 	"Keep a reference to the original markup string."
 	markup := aString.
 
+	attributesString := String empty.
 	clean_text := aString fixEmptyLinesForPango.
 
 	Conversions keysAndValuesDo: [ :macro :replacement |
@@ -42,7 +43,7 @@ RSPangoMarkup >> markup: aString [
 
 	self withPangoAttrListFromString: '' do: [ :emptyAttrListHandler |
 		ll withOpenedLibsStateDo: [ :L |
-			| parsed |
+			| parsed attributesSize |
 			ll on: L assertLUAOK: [
 				ll
 					luaL_requiref: L name: 'cairo';
@@ -51,15 +52,20 @@ RSPangoMarkup >> markup: aString [
 					on: L push: clean_text;
 					on: L push: 0;
 					on: L push: emptyAttrListHandler;
-					lua_pcall: L nargs: 3 nresults: 3 ].
+					lua_pcall: L nargs: 3 nresults: 4 ].
 
-			parsed := ll on: L at: -3.
-			clean_text := ll on: L at: -2.
-			attributesString := ll on: L at: -1.
+			parsed := ll on: L at: -4.
+			clean_text := ll on: L at: -3.
+			attributesString := ll on: L at: -2.
+			attributesSize := ll on: L at: -1.
 
 			self
 				assert: parsed
-				description: 'Failed to parse the given Pango markup string.' ] ].
+				description: 'Failed to parse the given Pango markup string.'.
+
+			self
+				assert: attributesSize >= 0
+				description: 'Invalid size of attributes list.' ] ].
 
 	self attributesChunks: (String lf split: attributesString).
 
