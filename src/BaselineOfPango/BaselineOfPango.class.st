@@ -8,5 +8,10 @@ Class {
 BaselineOfPango >> baseline: spec [
 
 	<baseline>
-	spec for: #common do: [ spec package: 'Pango' ]
+	spec for: #common do: [
+		spec
+			baseline: 'LibLuast'
+			with: [ spec repository: 'github://massimo-nocentini/LibLua-st' ].
+
+		spec package: 'Pango' ]
 ]
