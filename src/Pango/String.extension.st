@@ -20,8 +20,8 @@ String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aColl
 
 	^ RSPangoMarkup new
 		  font: font;
-		  attributesChunks: aCollection;
-		  markup: markup;
+		  auxiliaryOrderedLabelLanguageAssociations: aCollection;
+		  text: markup;
 		  yourself
 ]
 

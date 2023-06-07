@@ -57,8 +57,8 @@ TSLanguage >> populate: chunks offset: i text: clean_text [
 				| abs from to |
 				abs := capture at: 'absolute'.
 
-				from := (abs at: 'from') + i.
-				to := (abs at: 'to') + i + 1.
+				from := (abs at: 'from') + i - 2.
+				to := (abs at: 'to') + i - 1.
 
 				capture at: 'content' put: (clean_text copyFrom: from to: to).
 

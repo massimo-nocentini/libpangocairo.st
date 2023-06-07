@@ -106,7 +106,8 @@ PangoMarkupMicrodownVisitor >> nextLabel [
 
 	increasingCodeLabel := increasingCodeLabel + codeLabelRandom next.
 
-	^ increasingCodeLabel asString copyReplaceAll: '.' with: ''
+	^ '.. code::'
+	  , (increasingCodeLabel asString copyReplaceAll: '.' with: '')
 ]
 
 { #category : #accessing }
@@ -199,11 +200,11 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 	| code ll matches label |
 	label := self nextLabel.
 
-	stream cr.
+	stream cr. "introduce a new line"
 
 	"to make the label invisible"
 	stream
-		<< '<span alpha="1">code:';
+		<< '<span alpha="1">';
 		<< label;
 		<< '</span>';
 		cr.

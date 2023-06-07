@@ -2,7 +2,8 @@ Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
 	#instVars : [
-		'markup'
+		'markup',
+		'auxiliaryOrderedLabelLanguageAssociations'
 	],
 	#classVars : [
 		'Conversions'
@@ -27,7 +28,19 @@ RSPangoMarkup class >> initialize [
 ]
 
 { #category : #accessing }
+RSPangoMarkup >> auxiliaryOrderedLabelLanguageAssociations: anObject [
+
+	auxiliaryOrderedLabelLanguageAssociations := anObject
+]
+
+{ #category : #accessing }
 RSPangoMarkup >> markup: aString [
+
+	^ self text: aString
+]
+
+{ #category : #accessing }
+RSPangoMarkup >> text: aString [
 
 	| ll clean_text attributesString chunks |
 	"Keep a reference to the original markup string."
@@ -71,9 +84,9 @@ RSPangoMarkup >> markup: aString [
 
 	chunks addAll: (String lf split: attributesString).
 
-	self attributesChunks do: [ :assoc |
+	auxiliaryOrderedLabelLanguageAssociations do: [ :assoc |
 		| i label language |
-		label := 'code:' , assoc key.
+		label := assoc key.
 		language := assoc value.
 
 		i := clean_text findString: label.
@@ -82,10 +95,12 @@ RSPangoMarkup >> markup: aString [
 			assert: i > 0
 			description: 'Impossible to not find a code label.'.
 
-		language populate: chunks offset: i + label size - 1 text: clean_text ].
-
+		language
+			populate: chunks
+			offset: i + label size + 1
+			text: clean_text " `+ 1` because of the `String cr`." ].
 
 	self attributesChunks: chunks.
 
-	^ self text: clean_text
+	^ super text: clean_text
 ]

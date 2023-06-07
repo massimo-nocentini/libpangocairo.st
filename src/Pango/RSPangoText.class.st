@@ -33,12 +33,6 @@ RSPangoText >> accept: visitor [
 ]
 
 { #category : #accessing }
-RSPangoText >> attributesChunks [
-
-	^ attributesChunks
-]
-
-{ #category : #accessing }
 RSPangoText >> attributesChunks: anObject [
 
 	attributesChunks := anObject
@@ -126,7 +120,7 @@ RSPangoText >> pangoAttrListString [
 		          add: ('0 -1 font-desc "{1} {2}"' format: {
 						           self font familyName.
 						           self font pointSize });
-		          addAll: self attributesChunks;
+		          addAll: attributesChunks;
 		          yourself.
 
 	^ ', ' join: chunks
