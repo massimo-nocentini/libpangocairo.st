@@ -10,7 +10,10 @@ Class {
 		'orderedNestedLevels',
 		'footers',
 		'linksCount',
-		'maxFooterSize'
+		'maxFooterSize',
+		'codesDict',
+		'codeLabelRandom',
+		'increasingCodeLabel'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -45,6 +48,12 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 
 		footers removeAll.
 		maxFooterSize := 0 ]
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> auxiliaryPangoAttrSpecs [
+
+	^ codesDict
 ]
 
 { #category : #accessing }
@@ -83,7 +92,21 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	linksCount := 0.
 
-	maxFooterSize := 0
+	maxFooterSize := 0.
+
+	codesDict := OrderedCollection new.
+
+	codeLabelRandom := Random seed: 541.
+
+	increasingCodeLabel := 0.0
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> nextLabel [
+
+	increasingCodeLabel := increasingCodeLabel + codeLabelRandom next.
+
+	^ increasingCodeLabel asString copyReplaceAll: '.' with: ''
 ]
 
 { #category : #accessing }
@@ -168,6 +191,65 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 	super visitBold: aFormat.
 
 	stream << '</span>'
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
+
+	| code ll matches label |
+	label := self nextLabel.
+
+	stream cr.
+
+	"to make the label invisible"
+	stream
+		<< '<span alpha="1">code:';
+		<< label;
+		<< '</span>';
+		cr.
+
+	stream << '<span font_family="Source Code Pro">'.
+
+	"Prepare the code source to remove Smalltalk stuff about comments."
+	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
+
+	ll := LibLua uniqueInstance.
+
+	ll withOpenedLibsStateDo: [ :L |
+		| retcode |
+		retcode := ll
+			           luaL_requiref: L name: 'tree-sitter';
+			           on: L push: #'tree-sitter';
+			           lua_getfield: L
+			           at: -1
+			           name: 'highlights_matches'
+			           remove: true;
+			           on: L push: aCodeBlock language;
+			           on: L push: code;
+			           lua_pcall: L nargs: 2 nresults: 2.
+
+		self
+			assert: retcode == ll LUA_OK
+			description: 'failed to compute highlights.'.
+
+		matches := ll on: L at: -2.
+		code := ll on: L at: -1 ].
+
+	code do: [ :l | stream << l ].
+
+	matches ifNotNil: [
+		| language |
+		language := aCodeBlock language asSymbol value: TSLanguage.
+
+		language matches: matches.
+
+		codesDict add: label -> language ].
+
+	stream
+		<< '</span>';
+		cr.
+
+	^ super visitCode: aCodeBlock
 ]
 
 { #category : #visiting }

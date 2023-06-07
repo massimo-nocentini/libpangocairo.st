@@ -3,6 +3,14 @@ Extension { #name : #String }
 { #category : #'*Pango' }
 String >> asRSPangoMarkupUsingFont: font [
 
+	^ self
+		  asRSPangoMarkupUsingFont: font
+		  withAuxiliaryPangoAttributeSpecs: OrderedCollection new
+]
+
+{ #category : #'*Pango' }
+String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aCollection [
+
 	| markup |
 	markup := '<span font_family="{1}" font_size="{2}pt" foreground="black">{3}</span>'
 		          format: {
@@ -12,6 +20,7 @@ String >> asRSPangoMarkupUsingFont: font [
 
 	^ RSPangoMarkup new
 		  font: font;
+		  attributesChunks: aCollection;
 		  markup: markup;
 		  yourself
 ]

@@ -29,7 +29,7 @@ RSPangoMarkup class >> initialize [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	| ll clean_text attributesString |
+	| ll clean_text attributesString chunks |
 	"Keep a reference to the original markup string."
 	markup := aString.
 
@@ -67,7 +67,25 @@ RSPangoMarkup >> markup: aString [
 				assert: attributesSize >= 0
 				description: 'Invalid size of attributes list.' ] ].
 
-	self attributesChunks: (String lf split: attributesString).
+	chunks := OrderedCollection new.
+
+	chunks addAll: (String lf split: attributesString).
+
+	self attributesChunks do: [ :assoc |
+		| i label language |
+		label := 'code:' , assoc key.
+		language := assoc value.
+
+		i := clean_text findString: label.
+
+		self
+			assert: i > 0
+			description: 'Impossible to not find a code label.'.
+
+		language populate: chunks offset: i + label size - 1 text: clean_text ].
+
+
+	self attributesChunks: chunks.
 
 	^ self text: clean_text
 ]
