@@ -52,6 +52,8 @@ TSJsonLanguage >> initialize [
 				'family Source Sans Pro' };
 		at: 'opening.brace' put: { 'weight bold' };
 		at: 'closing.brace' put: { 'weight bold' };
+		at: 'opening.squaredb' put: { 'weight bold'. 'style italic' };
+		at: 'closing.squaredb' put: { 'weight bold'. 'style italic' };
 		at: 'number' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( number )) color asHexString).
@@ -66,5 +68,6 @@ TSJsonLanguage >> initialize [
 TSJsonLanguage >> orderedPatterns [
 
 	^ { 'number'. 'string.special.key'. 'constant.builtin'.
-	  'string'. 'opening.brace'. 'closing.brace' }
+	  'string'. 'opening.brace'. 'closing.brace'. 'opening.squaredb'.
+	  'closing.squaredb' }
 ]

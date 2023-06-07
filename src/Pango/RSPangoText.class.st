@@ -123,7 +123,7 @@ RSPangoText >> pangoAttrListString [
 		          addAll: attributesChunks;
 		          yourself.
 
-	^ ', ' join: chunks
+	^ String lf join: chunks
 ]
 
 { #category : #'as yet unclassified' }
