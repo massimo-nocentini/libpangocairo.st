@@ -53,8 +53,6 @@ RSPangoMarkup >> text: aString [
 
 	ll := LibLua uniqueInstance.
 
-	self assert: (clean_text lines select: #isEmpty) isEmpty.
-
 	self withPangoAttrListFromString: '' do: [ :emptyAttrListHandler |
 		ll withOpenedLibsStateDo: [ :L |
 			| parsed attributesSize |
@@ -79,9 +77,9 @@ RSPangoMarkup >> text: aString [
 
 			self
 				assert: attributesSize >= 0
-				description: 'Invalid size of attributes list.' ]
+				description: 'Invalid size of attributes list.'.
 
-		"self assert: (clean_text lines select: #isEmpty) isEmpty " ].
+			self assert: (clean_text lines select: #isEmpty) isEmpty ] ].
 
 	chunks := SortedCollection sortUsing: [ :a :b |
 		          a third = b third
@@ -93,17 +91,18 @@ RSPangoMarkup >> text: aString [
 
 	counter := 1.
 
-	(Character lf split: attributesString) withIndexDo: [ :attrStr :i |
-		| spaceIndex from |
-		spaceIndex := attrStr indexOf: Character space.
+	attributesString ifNotEmpty: [
+		(Character lf split: attributesString) withIndexDo: [ :attrStr :i |
+			| spaceIndex from |
+			spaceIndex := attrStr indexOf: Character space.
 
-		from := (attrStr copyFrom: 1 to: spaceIndex - 1) asInteger.
+			from := attrStr copyFrom: 1 to: spaceIndex - 1.
 
-		chunks add: {
-				counter.
-				i.
-				from.
-				attrStr } ].
+			chunks add: {
+					counter.
+					i.
+					from asInteger.
+					attrStr } ] ].
 
 	auxiliaryOrderedLabelLanguageAssociations do: [ :assoc |
 		| i label language |
@@ -122,7 +121,7 @@ RSPangoMarkup >> text: aString [
 			populate: chunks
 			offset: i + label size + 1
 			text: clean_text
-			counter: counter " `+ 1` because of the `String cr`." ].
+			counter: counter ].
 
 	self attributesChunks: (chunks collect: #last).
 

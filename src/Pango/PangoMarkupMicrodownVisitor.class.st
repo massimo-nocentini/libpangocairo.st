@@ -210,9 +210,9 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 	stream << '<span font_family="Source Code Pro">'.
 
 	"Prepare the code source to remove Smalltalk stuff about comments."
-	code := aCodeBlock code trim fixEmptyLinesForPango
-		        copyReplaceAll: '""'
-		        with: '"'.
+	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
+
+	code := code fixEmptyLinesForPangoUsingJoiner: Character lf.
 
 	ll := LibLua uniqueInstance.
 
@@ -236,8 +236,12 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		matches := ll on: L at: -2.
 		code := ll on: L at: -1 ].
 
+	self assert: (code select: #isEmpty) isEmpty.
+
+	code := Character cr join: code.
+
 	stream
-		<< (Character cr join: code);
+		<< code;
 		<< '</span>';
 		cr.
 

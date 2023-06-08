@@ -28,8 +28,14 @@ String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aColl
 { #category : #'*Pango' }
 String >> fixEmptyLinesForPango [
 
-	^ Character cr join:
-		  (self lines collect: [ :l | l ifEmpty: [ self class space ] ])
+	^ self fixEmptyLinesForPangoUsingJoiner: Character cr
+]
+
+{ #category : #'*Pango' }
+String >> fixEmptyLinesForPangoUsingJoiner: joiner [
+
+	^ joiner join: ((Character cr split: self) collect: [ :l |
+			   l ifEmpty: [ self class space ] ])
 ]
 
 { #category : #'*Pango' }
