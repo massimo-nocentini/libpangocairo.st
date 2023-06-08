@@ -202,7 +202,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	"to make the label invisible, this will look like to have an empty line."
 	stream
-		<< '<span alpha="50%">';
+		<< '<span alpha="1">';
 		<< label;
 		<< '</span>';
 		lf.
