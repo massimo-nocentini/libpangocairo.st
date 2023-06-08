@@ -11,9 +11,9 @@ Class {
 		'footers',
 		'linksCount',
 		'maxFooterSize',
-		'codesDict',
 		'codeLabelRandom',
-		'increasingCodeLabel'
+		'increasingCodeLabel',
+		'auxiliaryOrderedLabelLanguageAssociations'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -32,13 +32,13 @@ PangoMarkupMicrodownVisitor class >> initialize [
 PangoMarkupMicrodownVisitor >> appendFooters [
 
 	footers ifNotEmpty: [
-		stream << String cr.
+		stream << String lf.
 
 		maxFooterSize timesRepeat: [ stream << '_' ].
 
 		footers do: [ :assoc |
 			stream
-				<< String cr;
+				lf;
 				<<
 					'<span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
 				<< assoc key asString;
@@ -50,10 +50,10 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 		maxFooterSize := 0 ]
 ]
 
-{ #category : #visiting }
-PangoMarkupMicrodownVisitor >> auxiliaryPangoAttrSpecs [
+{ #category : #accessing }
+PangoMarkupMicrodownVisitor >> auxiliaryOrderedLabelLanguageAssociations: aCollection [
 
-	^ codesDict
+	auxiliaryOrderedLabelLanguageAssociations := aCollection
 ]
 
 { #category : #accessing }
@@ -94,15 +94,13 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	maxFooterSize := 0.
 
-	codesDict := OrderedCollection new.
-
 	codeLabelRandom := Random seed: 541.
 
 	increasingCodeLabel := 0.0
 ]
 
 { #category : #visiting }
-PangoMarkupMicrodownVisitor >> nextLabel [
+PangoMarkupMicrodownVisitor >> nextCodeLabel [
 
 	increasingCodeLabel := increasingCodeLabel + codeLabelRandom next.
 
@@ -198,21 +196,23 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	| code ll matches label |
-	label := self nextLabel.
+	label := self nextCodeLabel.
 
-	stream cr. "introduce a new line"
+	stream lf. "introduce a new line"
 
-	"to make the label invisible"
+	"to make the label invisible, this will look like to have an empty line."
 	stream
-		<< '<span alpha="1">';
+		<< '<span alpha="50%">';
 		<< label;
 		<< '</span>';
-		cr.
+		lf.
 
 	stream << '<span font_family="Source Code Pro">'.
 
 	"Prepare the code source to remove Smalltalk stuff about comments."
-	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
+	code := aCodeBlock code trim fixEmptyLinesForPango
+		        copyReplaceAll: '""'
+		        with: '"'.
 
 	ll := LibLua uniqueInstance.
 
@@ -236,7 +236,10 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		matches := ll on: L at: -2.
 		code := ll on: L at: -1 ].
 
-	code do: [ :l | stream << l ].
+	stream
+		<< (Character lf join: code);
+		<< '</span>';
+		lf.
 
 	matches ifNotNil: [
 		| language |
@@ -244,11 +247,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 		language matches: matches.
 
-		codesDict add: label -> language ].
-
-	stream
-		<< '</span>';
-		cr.
+		auxiliaryOrderedLabelLanguageAssociations add: label -> language ].
 
 	^ super visitCode: aCodeBlock
 ]
@@ -284,8 +283,8 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 				                 << '.' ] ].
 
 	stream
-		<< String cr;
-		<< String cr;
+		<< String lf;
+		<< String lf;
 		<< ('<span font_family="{1}" font_size="{2}pt">{3} ' format: {
 						 LogicalFont fontconfigPharoSansPointSize familyName.
 						 (self pointSizeForHeaderLevel: aHeader level).
@@ -296,7 +295,7 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	stream
 		<< '</span>';
-		<< String cr
+		<< String lf
 ]
 
 { #category : #visiting }
@@ -323,7 +322,7 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
-	stream << String cr.
+	stream << String lf.
 
 	self
 		<< '<span font_family="Neo Euler">';
@@ -382,7 +381,7 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 
 	self pushModifier: mod , String space.
 
-	stream cr.
+	stream lf.
 
 	self nextPutAllAlpha: 100 mod: modifier.
 
@@ -395,7 +394,7 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 	stream
-		<< String cr;
+		<< String lf;
 		<< '<span>'.
 
 	super visitParagraph: aParagraph.
@@ -407,7 +406,7 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 
 	self withOneNestedLevelMoreDo: [
-		stream << String cr.
+		stream << String lf.
 
 		self pushModifier: '&#8220; '.
 
@@ -420,7 +419,7 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 		stream
 			<< ' &#8220;';
 			<< '</span>';
-			<< String cr.
+			lf.
 
 		self popModifier ]
 ]
@@ -442,7 +441,7 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 		stream nextPutAll: lines first.
 
 		2 to: lines size do: [ :i |
-			stream cr.
+			stream lf.
 
 			self nextPutAllAlpha: (i = 1) asBit * 100 mod: modifier.
 
@@ -463,7 +462,7 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 
 	self pushModifier: self bulletAtCurrentNestedLevel.
 
-	stream cr.
+	stream lf.
 
 	self nextPutAllAlpha: 100 mod: modifier.
 

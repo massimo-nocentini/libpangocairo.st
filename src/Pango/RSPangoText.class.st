@@ -74,7 +74,7 @@ RSPangoText >> extentOfPangoLayoutHandler: anHandler [
 		  w := liblua on: L at: -2.
 		  h := liblua on: L at: -1.
 
-		  (Rectangle center: x @ y extent: w @ h) extent ]
+		  (Rectangle origin: x @ y extent: w @ h) extent ]
 ]
 
 { #category : #accessing }
@@ -123,7 +123,8 @@ RSPangoText >> pangoAttrListString [
 		          addAll: attributesChunks;
 		          yourself.
 
-	^ String lf join: chunks
+
+	^ Character lf join: chunks
 ]
 
 { #category : #'as yet unclassified' }
@@ -185,7 +186,7 @@ RSPangoText >> updateBaseRectangle [
 
 	self
 		extent: extent;
-		resetPath
+		signalUpdate
 ]
 
 { #category : #handle }

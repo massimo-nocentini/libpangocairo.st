@@ -21,15 +21,15 @@ String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aColl
 	^ RSPangoMarkup new
 		  font: font;
 		  auxiliaryOrderedLabelLanguageAssociations: aCollection;
-		  text: markup;
+		  markup: markup;
 		  yourself
 ]
 
 { #category : #'*Pango' }
 String >> fixEmptyLinesForPango [
 
-	^ Character cr join:
-		  (self lines collect: [ :l | l ifEmpty: [ Character space ] ])
+	^ Character lf join:
+		  (self lines collect: [ :l | l ifEmpty: [ self class space ] ])
 ]
 
 { #category : #'*Pango' }

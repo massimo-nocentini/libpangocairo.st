@@ -36,7 +36,7 @@ RSPangoMarkup >> auxiliaryOrderedLabelLanguageAssociations: anObject [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	^ self text: aString
+	^ self text: aString fixEmptyLinesForPango
 ]
 
 { #category : #accessing }
@@ -44,10 +44,9 @@ RSPangoMarkup >> text: aString [
 
 	| ll clean_text attributesString chunks |
 	"Keep a reference to the original markup string."
-	markup := aString.
+	clean_text := markup := aString.
 
 	attributesString := String empty.
-	clean_text := aString fixEmptyLinesForPango.
 
 	Conversions keysAndValuesDo: [ :macro :replacement |
 		clean_text := clean_text copyReplaceAll: macro with: replacement ].
@@ -82,7 +81,7 @@ RSPangoMarkup >> text: aString [
 
 	chunks := OrderedCollection new.
 
-	chunks addAll: (String lf split: attributesString).
+	chunks addAll: (Character lf split: attributesString).
 
 	auxiliaryOrderedLabelLanguageAssociations do: [ :assoc |
 		| i label language |

@@ -19,10 +19,13 @@ PangoLayout class >> newContext: aContext [
 ]
 
 { #category : #private }
-PangoLayout class >> pango_cairo_create_layout: cr [
-	^ self 
-		ffiCall: #(PangoLayout *pango_cairo_create_layout (AthensCairoCanvas cr))
-		module: PangoCairoLibrary
+PangoLayout class >> pango_cairo_create_layout: cairo_t [
+
+	^ self
+		  ffiCall:
+			  #( PangoLayout * pango_cairo_create_layout
+			     #( AthensCairoCanvas cairo_t ) )
+		  module: PangoCairoLibrary
 ]
 
 { #category : #private }
