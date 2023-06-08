@@ -28,7 +28,7 @@ String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aColl
 { #category : #'*Pango' }
 String >> fixEmptyLinesForPango [
 
-	^ Character lf join:
+	^ Character cr join:
 		  (self lines collect: [ :l | l ifEmpty: [ self class space ] ])
 ]
 

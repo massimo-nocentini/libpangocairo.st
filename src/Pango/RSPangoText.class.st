@@ -123,7 +123,6 @@ RSPangoText >> pangoAttrListString [
 		          addAll: attributesChunks;
 		          yourself.
 
-
 	^ Character lf join: chunks
 ]
 

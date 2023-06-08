@@ -53,6 +53,8 @@ RSPangoMarkup >> text: aString [
 
 	ll := LibLua uniqueInstance.
 
+	self assert: (clean_text lines select: #isEmpty) isEmpty.
+
 	self withPangoAttrListFromString: '' do: [ :emptyAttrListHandler |
 		ll withOpenedLibsStateDo: [ :L |
 			| parsed attributesSize |
@@ -77,7 +79,9 @@ RSPangoMarkup >> text: aString [
 
 			self
 				assert: attributesSize >= 0
-				description: 'Invalid size of attributes list.' ] ].
+				description: 'Invalid size of attributes list.' ]
+
+		"self assert: (clean_text lines select: #isEmpty) isEmpty " ].
 
 	chunks := SortedCollection sortUsing: [ :a :b |
 		          a third = b third
