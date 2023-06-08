@@ -42,7 +42,7 @@ RSPangoMarkup >> markup: aString [
 { #category : #accessing }
 RSPangoMarkup >> text: aString [
 
-	| ll clean_text attributesString chunks |
+	| ll clean_text attributesString chunks counter |
 	"Keep a reference to the original markup string."
 	clean_text := markup := aString.
 
@@ -79,14 +79,34 @@ RSPangoMarkup >> text: aString [
 				assert: attributesSize >= 0
 				description: 'Invalid size of attributes list.' ] ].
 
-	chunks := OrderedCollection new.
+	chunks := SortedCollection sortUsing: [ :a :b |
+		          a third = b third
+			          ifTrue: [
+				          a second = b second
+					          ifTrue: [ a first < b first ]
+					          ifFalse: [ a second < b second ] ]
+			          ifFalse: [ a third < b third ] ].
 
-	chunks addAll: (Character lf split: attributesString).
+	counter := 1.
+
+	(Character lf split: attributesString) withIndexDo: [ :attrStr :i |
+		| spaceIndex from |
+		spaceIndex := attrStr indexOf: Character space.
+
+		from := (attrStr copyFrom: 1 to: spaceIndex - 1) asInteger.
+
+		chunks add: {
+				counter.
+				i.
+				from.
+				attrStr } ].
 
 	auxiliaryOrderedLabelLanguageAssociations do: [ :assoc |
 		| i label language |
 		label := assoc key.
 		language := assoc value.
+
+		counter := counter + 1.
 
 		i := clean_text findString: label.
 
@@ -97,9 +117,10 @@ RSPangoMarkup >> text: aString [
 		language
 			populate: chunks
 			offset: i + label size + 1
-			text: clean_text " `+ 1` because of the `String cr`." ].
+			text: clean_text
+			counter: counter " `+ 1` because of the `String cr`." ].
 
-	self attributesChunks: chunks.
+	self attributesChunks: (chunks collect: #last).
 
 	^ super text: clean_text
 ]

@@ -41,7 +41,7 @@ TSLanguage >> orderedPatterns [
 ]
 
 { #category : #'as yet unclassified' }
-TSLanguage >> populate: chunks offset: i text: clean_text [
+TSLanguage >> populate: chunks offset: i text: clean_text counter: counter [
 
 	| sorted |
 	sorted := SortedCollection sortUsing: [ :a :b |
@@ -69,5 +69,10 @@ TSLanguage >> populate: chunks offset: i text: clean_text [
 							spec.
 							priority } ] ] ] ].
 
-	sorted do: [ :triple | chunks add: ('{1} {2} {3}' format: triple) ]
+	sorted withIndexDo: [ :tuple :j |
+		chunks add: {
+				counter.
+				j.
+				tuple first. "from"
+				('{1} {2} {3}' format: tuple) } ]
 ]
