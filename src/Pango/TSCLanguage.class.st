@@ -23,7 +23,12 @@ TSCLanguage >> initialize [
 		at: 'operator' put: { 'weight bold' };
 		at: 'label' put: { 'underline single' };
 		at: 'function' put: {
-				'style normal'.
+				'style italic'.
+				('foreground #'
+				 , (SHStyleElement withTokens: #( selector )) color asHexString) };
+		at: 'function.decl' put: {
+				'style italic'.
+				'weight bold'.
 				('foreground #'
 				 , (SHStyleElement withTokens: #( selector )) color asHexString) };
 		at: 'number' put: {
@@ -47,6 +52,6 @@ TSCLanguage >> initialize [
 { #category : #'as yet unclassified' }
 TSCLanguage >> orderedPatterns [
 
-	^ { 'number'. 'string'. 'function'. 'variable'. 'constant'. 'property'.
-	  'operator'. 'keyword'. 'comment'. 'type' }
+	^ { 'number'. 'string'. 'function.decl'. 'function'. 'variable'.
+	  'constant'. 'property'. 'operator'. 'keyword'. 'comment'. 'type' }
 ]
