@@ -196,6 +196,8 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	| code ll matches label |
+	ll := LibLua uniqueInstance.
+
 	label := self nextCodeLabel.
 
 	stream cr. "introduce a new line"
@@ -212,9 +214,10 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 	"Prepare the code source to remove Smalltalk stuff about comments."
 	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
 
-	code := code fixEmptyLinesForPangoUsingJoiner: Character lf.
+	code := code withInternalLineEndings
+		        fixEmptyLinesForPangoUsingJoiner: Character lf.
 
-	ll := LibLua uniqueInstance.
+	self assert: (code lines select: #isEmpty) isEmpty.
 
 	ll withOpenedLibsStateDo: [ :L |
 		| retcode |
@@ -239,6 +242,24 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 	self assert: (code select: #isEmpty) isEmpty.
 
 	code := Character cr join: code.
+
+	ll withOpenedLibsStateDo: [ :L |
+		| retcode |
+		retcode := ll
+			           luaL_requiref: L name: 'cairo';
+			           on: L push: #cairo;
+			           lua_getfield: L
+			           at: -1
+			           name: 'g_markup_escape_text'
+			           remove: true;
+			           on: L push: code;
+			           lua_pcall: L nargs: 1 nresults: 1.
+
+		self
+			assert: retcode == ll LUA_OK
+			description: 'failed to escape text.'.
+
+		code := ll on: L at: -1 ].
 
 	stream
 		<< code;
@@ -300,6 +321,26 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 	stream
 		<< '</span>';
 		<< String cr
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
+
+	^ anInputFileMicBlock arguments
+		  at: #language
+		  ifPresent: [ :language |
+			  anInputFileMicBlock reference contents
+				  ifEmpty: [ super visitInputFile: anInputFileMicBlock ]
+				  ifNotEmpty: [ :content |
+					  | codeMicBlock |
+					  codeMicBlock := MicCodeBlock new
+						                  body: content;
+						                  yourself.
+
+					  codeMicBlock arguments at: #language put: language.
+
+					  codeMicBlock accept: self ] ]
+		  ifAbsent: [ nil ]
 ]
 
 { #category : #visiting }

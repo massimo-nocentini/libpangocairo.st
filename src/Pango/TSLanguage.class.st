@@ -9,6 +9,12 @@ Class {
 }
 
 { #category : #'private - accessing' }
+TSLanguage class >> c [
+
+	^ TSCLanguage new
+]
+
+{ #category : #'private - accessing' }
 TSLanguage class >> json [
 
 	^ TSJsonLanguage new

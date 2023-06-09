@@ -67,13 +67,15 @@ RSPangoMarkup >> text: aString [
 					lua_pcall: L nargs: 3 nresults: 4 ].
 
 			parsed := ll on: L at: -4.
-			clean_text := ll on: L at: -3.
-			attributesString := ll on: L at: -2.
-			attributesSize := ll on: L at: -1.
+
 
 			self
 				assert: parsed
 				description: 'Failed to parse the given Pango markup string.'.
+
+			clean_text := ll on: L at: -3.
+			attributesString := ll on: L at: -2.
+			attributesSize := ll on: L at: -1.
 
 			self
 				assert: attributesSize >= 0

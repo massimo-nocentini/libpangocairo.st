@@ -185,7 +185,7 @@ RSPangoText >> updateBaseRectangle [
 
 	self
 		extent: extent;
-		signalUpdate
+		resetPath
 ]
 
 { #category : #handle }
