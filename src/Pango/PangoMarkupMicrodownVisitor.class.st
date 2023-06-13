@@ -195,9 +195,7 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
-	| code ll matches label |
-	ll := LibLua uniqueInstance.
-
+	| code matches label |
 	label := self nextCodeLabel.
 
 	stream cr. "introduce a new line"
@@ -219,7 +217,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	self assert: (code lines select: #isEmpty) isEmpty.
 
-	ll withOpenedLibsStateDo: [ :L |
+	self withNewLuaState: [ :L :ll |
 		| retcode |
 		retcode := ll
 			           luaL_requiref: L name: 'tree-sitter';
@@ -243,7 +241,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	code := Character cr join: code.
 
-	ll withOpenedLibsStateDo: [ :L |
+	self withNewLuaState: [ :L :ll |
 		| retcode |
 		retcode := ll
 			           luaL_requiref: L name: 'cairo';
@@ -514,6 +512,15 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 	super visitUnorderedListItem: anUnorderedList.
 
 	self popModifier
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> withNewLuaState: aCodeBlock [
+
+	| ll |
+	ll := LibLua uniqueInstance.
+
+	^ ll withOpenedLibsStateDo: [ :L | aCodeBlock value: L value: ll ]
 ]
 
 { #category : #visiting }
