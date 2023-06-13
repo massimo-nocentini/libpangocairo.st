@@ -35,7 +35,7 @@ TSPSQLLanguage >> initialize [
 				('foreground #'
 				 , (SHStyleElement withTokens: #( number )) color asHexString).
 				'family Neo Euler' };
-		at: 'type' put: {
+		at: 'type.builtin' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( pragma )) color asHexString).
 				'weight bold' };
@@ -45,7 +45,7 @@ TSPSQLLanguage >> initialize [
 			 , (SHStyleElement withTokens: #( instVar )) color asHexString) };
 		at: 'string' put: { ('foreground #'
 			 , (SHStyleElement withTokens: #( string )) color asHexString) };
-		at: 'constant' put: { ('foreground #'
+		at: 'constant.builtin' put: { ('foreground #'
 			 , (SHStyleElement withTokens: { 'true' }) color asHexString) }
 ]
 
