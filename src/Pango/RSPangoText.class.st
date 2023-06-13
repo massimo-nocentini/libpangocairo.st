@@ -39,6 +39,30 @@ RSPangoText >> attributesChunks: anObject [
 ]
 
 { #category : #accessing }
+RSPangoText >> computeEncompassingRectangle [
+
+	| surface rectangle |
+	"A very small surface to create an `AthensCairoCanvas` object."
+	surface := AthensCairoSurface width: 1 height: 1.
+
+	surface drawDuring: [ :athensCanvas |
+		| scaledCairoFont |
+		scaledCairoFont := CairoScaledFont fromFreetypeFont:
+			                   self font asFreetypeFont.
+
+		scaledCairoFont lock.
+
+		[
+		athensCanvas setScaledFont: scaledCairoFont.
+
+		self withAthensCairoCanvas: athensCanvas do: [ :layoutHandler |
+			rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
+			ensure: [ scaledCairoFont unlock ] ].
+
+	^ rectangle
+]
+
+{ #category : #accessing }
 RSPangoText >> defaultForegroundColor [
 
 	^ defaultForegroundColor
@@ -48,33 +72,6 @@ RSPangoText >> defaultForegroundColor [
 RSPangoText >> defaultForegroundColor: anObject [
 
 	defaultForegroundColor := anObject
-]
-
-{ #category : #'as yet unclassified' }
-RSPangoText >> extentOfPangoLayoutHandler: anHandler [
-
-	| liblua |
-	liblua := LibLua uniqueInstance.
-
-	^ liblua withOpenedLibsStateDo: [ :L |
-		  | x y w h requestLogicalRectangle |
-		  requestLogicalRectangle := true. "Ink rectangle otherwise."
-
-		  liblua on: L assertLUAOK: [
-			  liblua
-				  luaL_requiref: L name: 'cairo';
-				  on: L push: #cairo;
-				  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
-				  on: L push: anHandler;
-				  on: L push: requestLogicalRectangle;
-				  lua_pcall: L nargs: 2 nresults: 4 ].
-
-		  x := liblua on: L at: -4.
-		  y := liblua on: L at: -3.
-		  w := liblua on: L at: -2.
-		  h := liblua on: L at: -1.
-
-		  (Rectangle origin: x @ y extent: w @ h) extent ]
 ]
 
 { #category : #accessing }
@@ -135,6 +132,33 @@ RSPangoText >> pangoAttrListUnref: handler [
 ]
 
 { #category : #'as yet unclassified' }
+RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
+
+	| liblua |
+	liblua := LibLua uniqueInstance.
+
+	^ liblua withOpenedLibsStateDo: [ :L |
+		  | x y w h requestLogicalRectangle |
+		  requestLogicalRectangle := true. "Ink rectangle otherwise."
+
+		  liblua on: L assertLUAOK: [
+			  liblua
+				  luaL_requiref: L name: 'cairo';
+				  on: L push: #cairo;
+				  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
+				  on: L push: anHandler;
+				  on: L push: requestLogicalRectangle;
+				  lua_pcall: L nargs: 2 nresults: 4 ].
+
+		  x := liblua on: L at: -4.
+		  y := liblua on: L at: -3.
+		  w := liblua on: L at: -2.
+		  h := liblua on: L at: -1.
+
+		  Rectangle origin: x @ y extent: w @ h ]
+]
+
+{ #category : #'as yet unclassified' }
 RSPangoText >> setAttrListHandler: attrListHander onPangoHandler: pangoHandler [
 
 	self
@@ -162,30 +186,7 @@ RSPangoText >> text [
 { #category : #accessing }
 RSPangoText >> text: anObject [
 
-	text := anObject.
-
-	self updateBaseRectangle
-]
-
-{ #category : #accessing }
-RSPangoText >> updateBaseRectangle [
-
-	| surface extent |
-	"A very small surface to create an `AthensCairoCanvas` object."
-	surface := AthensCairoSurface width: 1 height: 1.
-
-	surface drawDuring: [ :athensCanvas |
-		| scaledCairoFont |
-		scaledCairoFont := CairoScaledFont fromFreetypeFont:
-			                   self font asFreetypeFont.
-		athensCanvas setScaledFont: scaledCairoFont.
-
-		self withAthensCairoCanvas: athensCanvas do: [ :pangoLayout |
-			extent := self extentOfPangoLayoutHandler: pangoLayout ] ].
-
-	self
-		extent: extent;
-		resetPath
+	text := anObject
 ]
 
 { #category : #handle }
@@ -194,7 +195,7 @@ RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
 	athensCanvas withPangoLayoutHandler: [ :layoutHandler |
 		self
 			withPangoAttrListFromString: self pangoAttrListString
-			do: [ :attrListHandler | "Set the bare bone text on the Pango layout."
+			do: [ :attrListHandler |
 				self setText: self text onPangoHandler: layoutHandler.
 
 				self
