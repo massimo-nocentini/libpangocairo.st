@@ -27,8 +27,10 @@ AthensCairoCanvas >> unrefPangoLayout: handler [
 
 { #category : #'*Pango' }
 AthensCairoCanvas >> updateLayout: layout [
-	self 
-		ffiCall: #(void pango_cairo_update_layout (self, PangoLayout *layout))
+
+	self
+		ffiCall:
+		#( void pango_cairo_update_layout #( self , void * layout ) )
 		module: PangoCairoLibrary
 ]
 
