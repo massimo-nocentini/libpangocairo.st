@@ -56,6 +56,7 @@ RSPangoText >> computeEncompassingRectangle [
 		athensCanvas setScaledFont: scaledCairoFont.
 
 		self withAthensCairoCanvas: athensCanvas do: [ :layoutHandler |
+			athensCanvas updateLayout: layoutHandler.
 			rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
 			ensure: [ scaledCairoFont unlock ] ].
 

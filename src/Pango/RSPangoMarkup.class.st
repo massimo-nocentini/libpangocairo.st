@@ -33,6 +33,14 @@ RSPangoMarkup >> auxiliaryOrderedLabelLanguageAssociations: anObject [
 	auxiliaryOrderedLabelLanguageAssociations := anObject
 ]
 
+{ #category : #initialization }
+RSPangoMarkup >> initialize [
+
+	super initialize.
+
+	self auxiliaryOrderedLabelLanguageAssociations: OrderedCollection new
+]
+
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 

@@ -3,24 +3,15 @@ Extension { #name : #String }
 { #category : #'*Pango' }
 String >> asRSPangoMarkupUsingFont: font [
 
-	^ self
-		  asRSPangoMarkupUsingFont: font
-		  withAuxiliaryPangoAttributeSpecs: OrderedCollection new
-]
-
-{ #category : #'*Pango' }
-String >> asRSPangoMarkupUsingFont: font withAuxiliaryPangoAttributeSpecs: aCollection [
-
 	| markup |
-	markup := '<span font_family="{1}" font_size="{2}pt" foreground="black">{3}</span>'
-		          format: {
-				          font familyName.
-				          font pointSize.
-				          self }.
+	markup := self class streamContents: [ :stream |
+		          stream
+			          << '<markup>';
+			          << self;
+			          << '</markup>' ].
 
 	^ RSPangoMarkup new
 		  font: font;
-		  auxiliaryOrderedLabelLanguageAssociations: aCollection;
 		  markup: markup;
 		  yourself
 ]
