@@ -111,7 +111,7 @@ PangoMarkupMicrodownVisitor >> highlightsMatches: srcString language: language d
 		  matches := ll on: L at: -2.
 		  srcLines := ll on: L at: -1.
 
-		  recv value: matches value: srcLines ]
+		  matches ifNotNil: [ recv value: matches value: srcLines ] ]
 ]
 
 { #category : #visiting }
@@ -269,17 +269,16 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		highlightsMatches: code
 		language: aCodeBlock language
 		do: [ :matches :codeLines |
+			| language |
 			self assert: (codeLines select: #isEmpty) isEmpty.
 
 			code := Character cr join: codeLines.
 
-			matches ifNotNil: [
-				| language |
-				language := aCodeBlock language asSymbol value: TSLanguage.
+			language := aCodeBlock language asSymbol value: TSLanguage.
 
-				language matches: matches.
+			language matches: matches.
 
-				auxiliaryOrderedLabelLanguageAssociations add: label -> language ] ].
+			auxiliaryOrderedLabelLanguageAssociations add: label -> language ].
 
 	code := self escapeTextInGMarkup: code.
 
@@ -461,7 +460,8 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 	stream
-		<< String cr;
+		cr;
+		cr;
 		<< '<span>'.
 
 	super visitParagraph: aParagraph.

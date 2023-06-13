@@ -20,6 +20,12 @@ TSLanguage class >> json [
 	^ TSJsonLanguage new
 ]
 
+{ #category : #'private - accessing' }
+TSLanguage class >> psql [
+
+	^ TSPSQLLanguage new
+]
+
 { #category : #accessing }
 TSLanguage >> at: pattern [
 
