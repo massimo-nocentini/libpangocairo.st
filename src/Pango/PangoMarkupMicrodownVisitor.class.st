@@ -67,6 +67,54 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> escapeTextInGMarkup: code [
+
+	^ self withNewLuaStateDo: [ :L :ll |
+		  | retcode |
+		  retcode := ll
+			             luaL_requiref: L name: 'cairo';
+			             on: L push: #cairo;
+			             lua_getfield: L
+			             at: -1
+			             name: 'g_markup_escape_text'
+			             remove: true;
+			             on: L push: code;
+			             lua_pcall: L nargs: 1 nresults: 1.
+
+		  self
+			  assert: retcode == ll LUA_OK
+			  description: 'failed to escape text.'.
+
+		  ll on: L at: -1 ]
+]
+
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> highlightsMatches: srcString language: language do: recv [
+
+	^ self withNewLuaStateDo: [ :L :ll |
+		  | retcode matches srcLines |
+		  retcode := ll
+			             luaL_requiref: L name: 'tree-sitter';
+			             on: L push: #'tree-sitter';
+			             lua_getfield: L
+			             at: -1
+			             name: 'highlights_matches'
+			             remove: true;
+			             on: L push: language;
+			             on: L push: srcString;
+			             lua_pcall: L nargs: 2 nresults: 2.
+
+		  self
+			  assert: retcode == ll LUA_OK
+			  description: 'failed to compute highlights.'.
+
+		  matches := ll on: L at: -2.
+		  srcLines := ll on: L at: -1.
+
+		  recv value: matches value: srcLines ]
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> indentationString [
 
 	^ '   '
@@ -195,7 +243,7 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
-	| code matches label |
+	| code label |
 	label := self nextCodeLabel.
 
 	stream cr. "introduce a new line"
@@ -217,60 +265,28 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	self assert: (code lines select: #isEmpty) isEmpty.
 
-	self withNewLuaState: [ :L :ll |
-		| retcode |
-		retcode := ll
-			           luaL_requiref: L name: 'tree-sitter';
-			           on: L push: #'tree-sitter';
-			           lua_getfield: L
-			           at: -1
-			           name: 'highlights_matches'
-			           remove: true;
-			           on: L push: aCodeBlock language;
-			           on: L push: code;
-			           lua_pcall: L nargs: 2 nresults: 2.
+	self
+		highlightsMatches: code
+		language: aCodeBlock language
+		do: [ :matches :codeLines |
+			self assert: (codeLines select: #isEmpty) isEmpty.
 
-		self
-			assert: retcode == ll LUA_OK
-			description: 'failed to compute highlights.'.
+			code := Character cr join: codeLines.
 
-		matches := ll on: L at: -2.
-		code := ll on: L at: -1 ].
+			matches ifNotNil: [
+				| language |
+				language := aCodeBlock language asSymbol value: TSLanguage.
 
-	self assert: (code select: #isEmpty) isEmpty.
+				language matches: matches.
 
-	code := Character cr join: code.
+				auxiliaryOrderedLabelLanguageAssociations add: label -> language ] ].
 
-	self withNewLuaState: [ :L :ll |
-		| retcode |
-		retcode := ll
-			           luaL_requiref: L name: 'cairo';
-			           on: L push: #cairo;
-			           lua_getfield: L
-			           at: -1
-			           name: 'g_markup_escape_text'
-			           remove: true;
-			           on: L push: code;
-			           lua_pcall: L nargs: 1 nresults: 1.
-
-		self
-			assert: retcode == ll LUA_OK
-			description: 'failed to escape text.'.
-
-		code := ll on: L at: -1 ].
+	code := self escapeTextInGMarkup: code.
 
 	stream
 		<< code;
 		<< '</span>';
 		cr.
-
-	matches ifNotNil: [
-		| language |
-		language := aCodeBlock language asSymbol value: TSLanguage.
-
-		language matches: matches.
-
-		auxiliaryOrderedLabelLanguageAssociations add: label -> language ].
 
 	^ super visitCode: aCodeBlock
 ]
@@ -326,7 +342,15 @@ PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
 
 	^ anInputFileMicBlock arguments
 		  at: #language
-		  ifPresent: [ :language |
+		  ifPresent: [ :language | "Put an header before the actual resource content."
+			  stream
+				  cr;
+				  cr;
+				  <<
+					  '<span size="larger" style="italic" underline="single" foreground="gray" font_family="Source Code Pro">';
+				  << anInputFileMicBlock reference fullName;
+				  << '</span>'.
+
 			  anInputFileMicBlock reference contents
 				  ifEmpty: [ super visitInputFile: anInputFileMicBlock ]
 				  ifNotEmpty: [ :content |
@@ -338,7 +362,7 @@ PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
 					  codeMicBlock arguments at: #language put: language.
 
 					  codeMicBlock accept: self ] ]
-		  ifAbsent: [ nil ]
+		  ifAbsent: [ super visitInputFile: anInputFileMicBlock ]
 ]
 
 { #category : #visiting }
@@ -515,7 +539,7 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 ]
 
 { #category : #visiting }
-PangoMarkupMicrodownVisitor >> withNewLuaState: aCodeBlock [
+PangoMarkupMicrodownVisitor >> withNewLuaStateDo: aCodeBlock [
 
 	| ll |
 	ll := LibLua uniqueInstance.
