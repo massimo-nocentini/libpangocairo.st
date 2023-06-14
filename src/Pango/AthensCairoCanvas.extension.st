@@ -1,6 +1,14 @@
 Extension { #name : #AthensCairoCanvas }
 
 { #category : #'*Pango' }
+AthensCairoCanvas >> layoutPath: layout [
+
+	self
+		ffiCall: #( void pango_cairo_layout_path #( self , void * layout ) )
+		module: PangoCairoLibrary
+]
+
+{ #category : #'*Pango' }
 AthensCairoCanvas >> newPangoLayout [
 
 	self
@@ -18,11 +26,12 @@ AthensCairoCanvas >> showLayout: layout [
 ]
 
 { #category : #'*Pango' }
-AthensCairoCanvas >> unrefPangoLayout: handler [
+AthensCairoCanvas >> updateContext: context [
 
 	self
-		ffiCall: #( void g_object_unref #( void * handler ) )
-		module: PangoLibrary
+		ffiCall:
+		#( void pango_cairo_update_context #( self , void * context ) )
+		module: PangoCairoLibrary
 ]
 
 { #category : #'*Pango' }
@@ -32,14 +41,4 @@ AthensCairoCanvas >> updateLayout: layout [
 		ffiCall:
 		#( void pango_cairo_update_layout #( self , void * layout ) )
 		module: PangoCairoLibrary
-]
-
-{ #category : #'*Pango' }
-AthensCairoCanvas >> withPangoLayoutHandler: block [
-
-	| layoutHandler |
-	layoutHandler := self newPangoLayout.
-
-	[ block value: layoutHandler ] ensure: [
-		self unrefPangoLayout: layoutHandler ]
 ]
