@@ -144,7 +144,7 @@ RSPangoText >> layoutWidth: width [
 { #category : #accessing }
 RSPangoText >> layoutWidthNiceColumns [
 
-	self layoutWidth: (512 * Float goldenRatio) ceiling
+	self layoutWidth: (1024 * Float silverRatio) ceiling
 ]
 
 { #category : #accessing }
