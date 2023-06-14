@@ -22,7 +22,6 @@ Class {
 		'font',
 		'defaultForegroundColor',
 		'attributesChunks',
-		'pangoContext',
 		'layoutWidth'
 	],
 	#category : #Pango
@@ -57,8 +56,10 @@ RSPangoText >> computeEncompassingRectangle [
 		[
 		athensCanvas setScaledFont: scaledCairoFont.
 
-		self onAthensCairoCanvas: athensCanvas withPangoLayoutDo: [ :layoutHandler |
-			rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
+		self
+			onAthensCairoCanvas: athensCanvas getHandle
+			withPangoLayoutDo: [ :layoutHandler |
+				rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
 			ensure: [ scaledCairoFont unlock ] ].
 
 	^ rectangle
@@ -97,15 +98,29 @@ RSPangoText >> font: anObject [
 	font := anObject
 ]
 
+{ #category : #'*Pango' }
+RSPangoText >> gObjectUnref: handler [
+
+	self
+		ffiCall: #( void g_object_unref #( void * handler ) )
+		module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> getContextOfPangoLayout: layout [
+
+	^ self
+		  ffiCall: #( void * pango_layout_get_context
+		     #( void * layout ) )
+		  module: PangoLibrary
+]
+
 { #category : #initialization }
 RSPangoText >> initialize [
 
 	super initialize.
 
-	pangoContext := self newPangoContext.
-
 	self
-		setPangoContextFontMap: self defaultFontMap;
 		layoutWidthNiceColumns;
 		font: StandardFonts defaultFont;
 		defaultForegroundColor: Smalltalk ui theme textColor;
@@ -155,6 +170,15 @@ RSPangoText >> newPangoLayout [
 ]
 
 { #category : #'as yet unclassified' }
+RSPangoText >> newPangoLayoutOnAthensCairoCanvas: cairoCanvas [
+
+	self
+		ffiCall:
+		#( void * pango_cairo_create_layout #( void * cairoCanvas ) )
+		module: PangoCairoLibrary
+]
+
+{ #category : #'as yet unclassified' }
 RSPangoText >> onAthensCairoCanvas: cairoCanvas showPangoLayout: layout [
 
 	self
@@ -166,21 +190,23 @@ RSPangoText >> onAthensCairoCanvas: cairoCanvas showPangoLayout: layout [
 { #category : #handle }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
-	self updatePangoContextOnAthensCairoCanvas: athensCanvas getHandle.
+	| layoutHandler |
+	layoutHandler := self newPangoLayoutOnAthensCairoCanvas: athensCanvas.
 
-	self withPangoLayoutHandler: [ :layoutHandler |
-		self
-			onPangoLayout: layoutHandler setWidth: self layoutWidth;
-			onPangoLayout: layoutHandler setText: self text.
+	[
+	self
+		onPangoLayout: layoutHandler setWidth: self layoutWidth;
+		onPangoLayout: layoutHandler setText: self text.
 
-		self
-			withPangoAttrListFromString: self pangoAttrListString
-			do: [ :attrListHandler |
-				self
-					onPangoLayout: layoutHandler
-					setAttrListHandler: attrListHandler.
+	self
+		withPangoAttrListFromString: self pangoAttrListString
+		do: [ :attrListHandler |
+			self
+				onPangoLayout: layoutHandler
+				setAttrListHandler: attrListHandler.
 
-				aBlock value: layoutHandler ] ]
+			aBlock value: layoutHandler ] ] ensure: [
+		self gObjectUnref: layoutHandler ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -294,14 +320,6 @@ RSPangoText >> text: anObject [
 	text := anObject
 ]
 
-{ #category : #'*Pango' }
-RSPangoText >> unrefPangoLayout: handler [
-
-	self
-		ffiCall: #( void g_object_unref #( void * handler ) )
-		module: PangoLibrary
-]
-
 { #category : #'as yet unclassified' }
 RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 
@@ -318,14 +336,4 @@ RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
 	handler := self pangoAttrListFromString: aString.
 
 	[ aBlock value: handler ] ensure: [ self pangoAttrListUnref: handler ]
-]
-
-{ #category : #handle }
-RSPangoText >> withPangoLayoutHandler: block [
-
-	| layoutHandler |
-	layoutHandler := self newPangoLayout.
-
-	[ block value: layoutHandler ] ensure: [
-		self unrefPangoLayout: layoutHandler ]
 ]
