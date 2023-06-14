@@ -57,7 +57,7 @@ RSPangoText >> computeEncompassingRectangle [
 		[
 		athensCanvas setScaledFont: scaledCairoFont.
 
-		self withAthensCairoCanvas: athensCanvas do: [ :layoutHandler |
+		self onAthensCairoCanvas: athensCanvas withPangoLayoutDo: [ :layoutHandler |
 			rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
 			ensure: [ scaledCairoFont unlock ] ].
 
@@ -152,6 +152,35 @@ RSPangoText >> newPangoLayout [
 	^ self
 		  ffiCall: #( void * pango_layout_new #( void * pangoContext ) )
 		  module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> onAthensCairoCanvas: cairoCanvas showPangoLayout: layout [
+
+	self
+		ffiCall:
+		#( void pango_cairo_show_layout #( void * cairoCanvas , void * layout ) )
+		module: PangoCairoLibrary
+]
+
+{ #category : #handle }
+RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
+
+	self updatePangoContextOnAthensCairoCanvas: athensCanvas getHandle.
+
+	self withPangoLayoutHandler: [ :layoutHandler |
+		self
+			onPangoLayout: layoutHandler setWidth: self layoutWidth;
+			onPangoLayout: layoutHandler setText: self text.
+
+		self
+			withPangoAttrListFromString: self pangoAttrListString
+			do: [ :attrListHandler |
+				self
+					onPangoLayout: layoutHandler
+					setAttrListHandler: attrListHandler.
+
+				aBlock value: layoutHandler ] ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -273,24 +302,13 @@ RSPangoText >> unrefPangoLayout: handler [
 		module: PangoLibrary
 ]
 
-{ #category : #handle }
-RSPangoText >> withAthensCairoCanvas: athensCanvas do: aBlock [
+{ #category : #'as yet unclassified' }
+RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 
-	athensCanvas updateContext: pangoContext.
-
-	self withPangoLayoutHandler: [ :layoutHandler |
-		self
-			onPangoLayout: layoutHandler setWidth: self layoutWidth;
-			onPangoLayout: layoutHandler setText: self text.
-
-		self
-			withPangoAttrListFromString: self pangoAttrListString
-			do: [ :attrListHandler |
-				self
-					onPangoLayout: layoutHandler
-					setAttrListHandler: attrListHandler.
-
-				aBlock value: layoutHandler ] ]
+	self
+		ffiCall:
+		#( void pango_cairo_update_context #( void * cairoCanvas , void * pangoContext ) )
+		module: PangoCairoLibrary
 ]
 
 { #category : #'as yet unclassified' }

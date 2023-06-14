@@ -1,6 +1,12 @@
 Extension { #name : #AthensCairoCanvas }
 
 { #category : #'*Pango' }
+AthensCairoCanvas >> getHandle [
+
+	^ handle
+]
+
+{ #category : #'*Pango' }
 AthensCairoCanvas >> layoutPath: layout [
 
 	self

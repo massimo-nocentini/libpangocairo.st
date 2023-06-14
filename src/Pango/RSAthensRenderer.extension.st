@@ -1,17 +1,20 @@
 Extension { #name : #RSAthensRenderer }
 
 { #category : #'*Pango' }
-RSAthensRenderer >> visitPangoText: pango [
+RSAthensRenderer >> visitPangoText: pangoShape [
 
 	| lbtranslation |
-	lbtranslation := (pango extent / 2.0) asFloatPoint negated.
+	lbtranslation := (pangoShape extent / 2.0) asFloatPoint negated.
 
 	matrix translateBy: lbtranslation.
 
 	athensCanvas pathTransform loadAffineTransform: matrix.
 	athensCanvas setPathMatrix.
 
-	pango
-		withAthensCairoCanvas: athensCanvas
-		do: [ :layoutHandler | athensCanvas showLayout: layoutHandler ]
+	pangoShape
+		onAthensCairoCanvas: athensCanvas
+		withPangoLayoutDo: [ :layoutHandler |
+			pangoShape
+				onAthensCairoCanvas: athensCanvas getHandle
+				showPangoLayout: layoutHandler ]
 ]
