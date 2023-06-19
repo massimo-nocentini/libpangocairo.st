@@ -412,7 +412,9 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
-	stream << '<span font_family="Source Code Pro">'.
+	stream
+	<<
+	'<span font_family="Source Code Pro" background="gray" bgalpha="31%">'.
 
 	super visitMonospace: aFormat.
 
