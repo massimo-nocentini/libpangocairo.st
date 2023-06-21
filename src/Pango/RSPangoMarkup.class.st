@@ -33,6 +33,18 @@ RSPangoMarkup >> auxiliaryOrderedLabelLanguageAssociations: anObject [
 	auxiliaryOrderedLabelLanguageAssociations := anObject
 ]
 
+{ #category : #accessing }
+RSPangoMarkup >> convertMacros: aString [
+
+	| converted |
+	converted := aString.
+
+	Conversions keysAndValuesDo: [ :macro :replacement |
+		converted := converted copyReplaceAll: macro with: replacement ].
+
+	^ converted
+]
+
 { #category : #initialization }
 RSPangoMarkup >> initialize [
 
@@ -46,17 +58,20 @@ RSPangoMarkup >> markup: aString [
 
 	| filled |
 	filled := String streamContents: [ :stream |
-		          | span |
+		          | span macrosFree |
 		          span := '<span font_family="{1}" font_size="{2}pt" foreground="#{3}">'
 			                  format: {
 					                  self font familyName.
 					                  self font pointSize.
 					                  self defaultForegroundColor asHexString }.
 
+		          macrosFree := self convertMacros:
+			                        aString fixEmptyLinesForPango.
+
 		          stream
 			          << '<markup>';
 			          << span;
-			          << aString fixEmptyLinesForPango;
+			          << macrosFree;
 			          << '</span>';
 			          << '</markup>' ].
 
@@ -71,9 +86,6 @@ RSPangoMarkup >> text: aString [
 	clean_text := markup := aString.
 
 	attributesString := String empty.
-
-	Conversions keysAndValuesDo: [ :macro :replacement |
-		clean_text := clean_text copyReplaceAll: macro with: replacement ].
 
 	ll := LibLua uniqueInstance.
 
