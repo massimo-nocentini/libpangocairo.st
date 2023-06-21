@@ -12,9 +12,9 @@ RSAthensRenderer >> visitPangoText: pangoShape [
 	athensCanvas setPathMatrix.
 
 	pangoShape
-		onAthensCairoCanvas: athensCanvas getHandle
+		onAthensCairoCanvas: athensCanvas
 		withPangoLayoutDo: [ :layoutHandler |
 			pangoShape
-				onAthensCairoCanvas: athensCanvas getHandle
+				onAthensCairoCanvasHandler: athensCanvas getHandle
 				showPangoLayout: layoutHandler ]
 ]

@@ -57,7 +57,7 @@ RSPangoText >> computeEncompassingRectangle [
 		athensCanvas setScaledFont: scaledCairoFont.
 
 		self
-			onAthensCairoCanvas: athensCanvas getHandle
+			onAthensCairoCanvas: athensCanvas
 			withPangoLayoutDo: [ :layoutHandler |
 				rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
 			ensure: [ scaledCairoFont unlock ] ].
@@ -178,20 +178,12 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvas: cairoCanvas [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
-RSPangoText >> onAthensCairoCanvas: cairoCanvas showPangoLayout: layout [
-
-	self
-		ffiCall:
-		#( void pango_cairo_show_layout #( void * cairoCanvas , void * layout ) )
-		module: PangoCairoLibrary
-]
-
 { #category : #handle }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
 	| layoutHandler |
-	layoutHandler := self newPangoLayoutOnAthensCairoCanvas: athensCanvas.
+	layoutHandler := self newPangoLayoutOnAthensCairoCanvas:
+		                 athensCanvas getHandle.
 
 	[
 	self
@@ -207,6 +199,15 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
 			aBlock value: layoutHandler ] ] ensure: [
 		self gObjectUnref: layoutHandler ]
+]
+
+{ #category : #'as yet unclassified' }
+RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
+
+	self
+		ffiCall:
+		#( void pango_cairo_show_layout #( void * cairoCanvas , void * layout ) )
+		module: PangoCairoLibrary
 ]
 
 { #category : #'as yet unclassified' }
