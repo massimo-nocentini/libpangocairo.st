@@ -258,7 +258,7 @@ RSPangoText >> pangoAttrListString [
 		          add:
 			          '0 -1 foreground #'
 			          , self defaultForegroundColor asHexString;
-		          add: ('0 -1 font-desc "{1} {2}"' format: {
+		          add: ('0 -1 font-desc "{1}, Normal {2}"' format: {
 						           self font familyName.
 						           self font pointSize });
 		          addAll: attributesChunks;

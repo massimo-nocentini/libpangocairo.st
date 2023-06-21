@@ -3,7 +3,7 @@ Extension { #name : #LogicalFont }
 { #category : #'*Pango' }
 LogicalFont class >> fontconfigPharoFamilyName: familyName pointSize: size [
 
-	^ self familyName: '' , familyName pointSize: size
+	^ self familyName: familyName pointSize: size
 ]
 
 { #category : #'*Pango' }

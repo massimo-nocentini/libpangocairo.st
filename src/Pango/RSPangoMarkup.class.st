@@ -44,7 +44,22 @@ RSPangoMarkup >> initialize [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	^ self text: aString fixEmptyLinesForPango
+	| filled |
+	filled := String streamContents: [ :stream |
+		          | span |
+		          span := '<span font_family="{1}" font_size="{2}pt">'
+			                  format: {
+					                  self font familyName.
+					                  self font pointSize }.
+
+		          stream
+			          << '<markup>';
+			          << span;
+			          << aString fixEmptyLinesForPango;
+			          << '</span>';
+			          << '</markup>' ].
+
+	^ self text: filled
 ]
 
 { #category : #accessing }
