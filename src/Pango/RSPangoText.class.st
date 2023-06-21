@@ -242,7 +242,7 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 ]
 
 { #category : #'as yet unclassified' }
-RSPangoText >> pangoAttrListFromString: aString [
+RSPangoText >> pangoAttrListHandlerFromString: aString [
 
 	^ self
 		  ffiCall:
@@ -337,7 +337,7 @@ RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
 
 	| handler |
-	handler := self pangoAttrListFromString: aString.
+	handler := self pangoAttrListHandlerFromString: aString.
 
 	[ aBlock value: handler ] ensure: [ self pangoAttrListUnref: handler ]
 ]

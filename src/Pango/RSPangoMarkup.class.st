@@ -47,10 +47,11 @@ RSPangoMarkup >> markup: aString [
 	| filled |
 	filled := String streamContents: [ :stream |
 		          | span |
-		          span := '<span font_family="{1}" font_size="{2}pt">'
+		          span := '<span font_family="{1}" font_size="{2}pt" foreground="#{3}">'
 			                  format: {
 					                  self font familyName.
-					                  self font pointSize }.
+					                  self font pointSize.
+					                  self defaultForegroundColor asHexString }.
 
 		          stream
 			          << '<markup>';
