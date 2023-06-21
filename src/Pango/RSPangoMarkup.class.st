@@ -2,8 +2,8 @@ Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
 	#instVars : [
-		'markup',
-		'auxiliaryOrderedLabelLanguageAssociations'
+		'auxiliaryOrderedLabelLanguageAssociations',
+		'markupString'
 	],
 	#classVars : [
 		'Conversions'
@@ -56,7 +56,7 @@ RSPangoMarkup >> initialize [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	markup := String streamContents: [ :stream |
+	markupString := String streamContents: [ :stream |
 		          | span macrosFree |
 		          span := '<span font_family="{1}" font_size="{2}pt" foreground="#{3}">'
 			                  format: {
@@ -74,14 +74,14 @@ RSPangoMarkup >> markup: aString [
 			          << '</span>';
 			          << '</markup>' ].
 
-	^ self text: markup
+	^ self text: markupString
 ]
 
 { #category : #accessing }
 RSPangoMarkup >> text: aString [
 
-	| ll clean_text attributesString chunks counter |
-	clean_text := markup.
+	| ll cleanedString attributesString chunks counter |
+	cleanedString := markupString.
 
 	attributesString := String empty.
 
@@ -95,7 +95,7 @@ RSPangoMarkup >> text: aString [
 					luaL_requiref: L name: 'cairo';
 					on: L push: #cairo;
 					lua_getfield: L at: -1 name: 'pango_parse_markup';
-					on: L push: clean_text;
+					on: L push: cleanedString;
 					on: L push: 0;
 					on: L push: emptyAttrListHandler;
 					lua_pcall: L nargs: 3 nresults: 4 ].
@@ -107,7 +107,7 @@ RSPangoMarkup >> text: aString [
 				assert: parsed
 				description: 'Failed to parse the given Pango markup string.'.
 
-			clean_text := ll on: L at: -3.
+			cleanedString := ll on: L at: -3.
 			attributesString := ll on: L at: -2.
 			attributesSize := ll on: L at: -1.
 
@@ -115,7 +115,7 @@ RSPangoMarkup >> text: aString [
 				assert: attributesSize >= 0
 				description: 'Invalid size of attributes list.'.
 
-			self assert: (clean_text lines select: #isEmpty) isEmpty ] ].
+			self assert: (cleanedString lines select: #isEmpty) isEmpty ] ].
 
 	chunks := SortedCollection sortUsing: [ :a :b |
 		          a third = b third
@@ -147,7 +147,7 @@ RSPangoMarkup >> text: aString [
 
 		counter := counter + 1.
 
-		i := clean_text findString: label.
+		i := cleanedString findString: label.
 
 		self
 			assert: i > 0
@@ -156,10 +156,10 @@ RSPangoMarkup >> text: aString [
 		language
 			populate: chunks
 			offset: i + label size + 1
-			text: clean_text
+			text: cleanedString
 			counter: counter ].
 
 	self attributesChunks: (chunks collect: #last).
 
-	^ super text: clean_text
+	^ super text: cleanedString
 ]
