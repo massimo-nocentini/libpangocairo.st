@@ -56,8 +56,7 @@ RSPangoMarkup >> initialize [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
-	| filled |
-	filled := String streamContents: [ :stream |
+	markup := String streamContents: [ :stream |
 		          | span macrosFree |
 		          span := '<span font_family="{1}" font_size="{2}pt" foreground="#{3}">'
 			                  format: {
@@ -75,15 +74,14 @@ RSPangoMarkup >> markup: aString [
 			          << '</span>';
 			          << '</markup>' ].
 
-	^ self text: filled
+	^ self text: markup
 ]
 
 { #category : #accessing }
 RSPangoMarkup >> text: aString [
 
 	| ll clean_text attributesString chunks counter |
-	"Keep a reference to the original markup string."
-	clean_text := markup := aString.
+	clean_text := markup.
 
 	attributesString := String empty.
 
