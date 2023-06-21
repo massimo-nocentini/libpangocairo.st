@@ -170,7 +170,7 @@ RSPangoText >> newPangoLayout [
 ]
 
 { #category : #'as yet unclassified' }
-RSPangoText >> newPangoLayoutOnAthensCairoCanvas: cairoCanvas [
+RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 
 	self
 		ffiCall:
@@ -181,24 +181,27 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvas: cairoCanvas [
 { #category : #handle }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
-	| layoutHandler |
-	layoutHandler := self newPangoLayoutOnAthensCairoCanvas:
+	| layoutHandler ensuredBlock |
+	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
 		                 athensCanvas getHandle.
 
-	[
-	self
-		onPangoLayout: layoutHandler setWidth: self layoutWidth;
-		onPangoLayout: layoutHandler setText: self text.
+	ensuredBlock := [
+	                self
+		                onPangoLayout: layoutHandler
+		                setWidth: self layoutWidth;
+		                onPangoLayout: layoutHandler setText: self text.
 
-	self
-		withPangoAttrListFromString: self pangoAttrListString
-		do: [ :attrListHandler |
-			self
-				onPangoLayout: layoutHandler
-				setAttrListHandler: attrListHandler.
+	                self
+		                withPangoAttrListFromString:
+		                self pangoAttrListString
+		                do: [ :attrListHandler |
+			                self
+				                onPangoLayout: layoutHandler
+				                setAttrListHandler: attrListHandler.
 
-			aBlock value: layoutHandler ] ] ensure: [
-		self gObjectUnref: layoutHandler ]
+			                aBlock value: layoutHandler ] ].
+
+	ensuredBlock ensure: [ self gObjectUnref: layoutHandler ]
 ]
 
 { #category : #'as yet unclassified' }
