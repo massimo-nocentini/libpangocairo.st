@@ -3,16 +3,9 @@ Extension { #name : #String }
 { #category : #'*Pango' }
 String >> asRSPangoMarkupUsingFont: font [
 
-	| markup |
-	markup := self class streamContents: [ :stream |
-		          stream
-			          << '<markup>';
-			          << self;
-			          << '</markup>' ].
-
 	^ RSPangoMarkup new
 		  font: font;
-		  markup: markup;
+		  markup: self;
 		  yourself
 ]
 
