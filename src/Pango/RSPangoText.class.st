@@ -154,6 +154,14 @@ RSPangoText >> layoutWidthUnbounded [
 ]
 
 { #category : #'as yet unclassified' }
+RSPangoText >> newPangoAttrListHandler [
+
+	^ self
+		  ffiCall: #( void * pango_attr_list_new #(  ) )
+		  module: PangoLibrary
+]
+
+{ #category : #'as yet unclassified' }
 RSPangoText >> newPangoContext [
 
 	^ self
@@ -337,7 +345,10 @@ RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
 
 	| handler |
-	handler := self pangoAttrListHandlerFromString: aString.
+	handler := aString
+		           ifEmpty: [ self newPangoAttrListHandler ]
+		           ifNotEmpty: [
+		           self pangoAttrListHandlerFromString: aString ].
 
 	[ aBlock value: handler ] ensure: [ self pangoAttrListUnref: handler ]
 ]

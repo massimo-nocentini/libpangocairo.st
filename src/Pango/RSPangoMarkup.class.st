@@ -87,35 +87,37 @@ RSPangoMarkup >> text: aString [
 
 	ll := LibLua uniqueInstance.
 
-	self withPangoAttrListFromString: '' do: [ :emptyAttrListHandler |
-		ll withOpenedLibsStateDo: [ :L |
-			| parsed attributesSize |
-			ll on: L assertLUAOK: [
-				ll
-					luaL_requiref: L name: 'cairo';
-					on: L push: #cairo;
-					lua_getfield: L at: -1 name: 'pango_parse_markup';
-					on: L push: cleanedString;
-					on: L push: 0;
-					on: L push: emptyAttrListHandler;
-					lua_pcall: L nargs: 3 nresults: 4 ].
+	self
+		withPangoAttrListFromString: String empty
+		do: [ :emptyAttrListHandler |
+			ll withOpenedLibsStateDo: [ :L |
+				| parsed attributesSize |
+				ll on: L assertLUAOK: [
+					ll
+						luaL_requiref: L name: 'cairo';
+						on: L push: #cairo;
+						lua_getfield: L at: -1 name: 'pango_parse_markup';
+						on: L push: cleanedString;
+						on: L push: 0;
+						on: L push: emptyAttrListHandler;
+						lua_pcall: L nargs: 3 nresults: 4 ].
 
-			parsed := ll on: L at: -4.
+				parsed := ll on: L at: -4.
 
 
-			self
-				assert: parsed
-				description: 'Failed to parse the given Pango markup string.'.
+				self
+					assert: parsed
+					description: 'Failed to parse the given Pango markup string.'.
 
-			cleanedString := ll on: L at: -3.
-			attributesString := ll on: L at: -2.
-			attributesSize := ll on: L at: -1.
+				cleanedString := ll on: L at: -3.
+				attributesString := ll on: L at: -2.
+				attributesSize := ll on: L at: -1.
 
-			self
-				assert: attributesSize >= 0
-				description: 'Invalid size of attributes list.'.
+				self
+					assert: attributesSize >= 0
+					description: 'Invalid size of attributes list.'.
 
-			self assert: (cleanedString lines select: #isEmpty) isEmpty ] ].
+				self assert: (cleanedString lines select: #isEmpty) isEmpty ] ].
 
 	chunks := SortedCollection sortUsing: [ :a :b |
 		          a third = b third
