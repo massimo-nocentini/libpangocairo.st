@@ -13,7 +13,11 @@ Class {
 		'maxFooterSize',
 		'codeLabelRandom',
 		'increasingCodeLabel',
-		'auxiliaryOrderedLabelLanguageAssociations'
+		'auxiliaryOrderedLabelLanguageAssociations',
+		'fontMonospace',
+		'fontSans',
+		'fontSerif',
+		'fontMath'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -39,8 +43,9 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 		footers do: [ :assoc |
 			stream
 				cr;
-				<<
-					'<span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+				<< '<span font_family="';
+				<< fontSans familyName;
+				<< '" font_size="smaller" alpha="50%">[';
 				<< assoc key asString;
 				<< '] <span alpha="100%">';
 				<< assoc value;
@@ -144,7 +149,12 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	codeLabelRandom := Random seed: 541.
 
-	increasingCodeLabel := 0.0
+	increasingCodeLabel := 0.0.
+
+	fontMonospace := LogicalFont pangoMonospace.
+	fontSans := LogicalFont pangoSans.
+	fontSerif := LogicalFont pangoSerif.
+	fontMath := LogicalFont pangoMath
 ]
 
 { #category : #visiting }
@@ -200,8 +210,9 @@ PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
 
 	stream
 		<< String space;
-		<<
-			'<span baseline_shift="superscript"><span font_family="Source Sans Pro" font_size="smaller" alpha="50%">[';
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
 		<< assoc key asString;
 		<< ']</span></span>'
 ]
@@ -255,7 +266,9 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		<< '</span>';
 		cr.
 
-	stream << '<span font_family="Source Code Pro">'.
+	(stream << '<span font_family="')
+		<< fontMonospace familyName;
+		<< '">'.
 
 	"Prepare the code source to remove Smalltalk stuff about comments."
 	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
@@ -324,7 +337,7 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 		<< String cr;
 		<< String cr;
 		<< ('<span font_family="{1}" font_size="{2}pt">{3} ' format: {
-						 LogicalFont fontconfigPharoSans familyName.
+						 fontSans familyName.
 						 (self pointSizeForHeaderLevel: aHeader level).
 
 						 sectionNumber }).
@@ -346,7 +359,9 @@ PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
 				  cr;
 				  cr;
 				  <<
-					  '<span size="larger" style="italic" underline="single" foreground="gray" font_family="Source Code Pro">';
+					  '<span size="larger" style="italic" underline="single" foreground="gray" font_family="';
+				  << fontMonospace familyName;
+				  << '">';
 				  << anInputFileMicBlock reference fullName;
 				  << '</span>'.
 
@@ -388,21 +403,16 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
-	stream << String cr.
-
-	self
-		<< '<span font_family="Neo Euler">';
-		<< aMicMath body trim;
-		<< '</span>'.
-
-	super visitMath: aMicMath
+	self notYetImplemented
 ]
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 
 	stream
-		<< '<span font_family="Neo Euler">';
+		<< '<span font_family="';
+		<< fontMath familyName;
+		<< '">';
 		<< aMicMathInline text;
 		<< '</span>'.
 
@@ -413,8 +423,9 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
 	stream
-	<<
-	'<span font_family="Source Code Pro" background="gray" bgalpha="31%">'.
+		<< '<span font_family="';
+		<< fontMonospace familyName;
+		<< '" background="gray" bgalpha="31%">'.
 
 	super visitMonospace: aFormat.
 

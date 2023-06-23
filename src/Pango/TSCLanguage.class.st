@@ -34,7 +34,7 @@ TSCLanguage >> initialize [
 		at: 'number' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( number )) color asHexString).
-				'family Neo Euler' };
+				('family ' , LogicalFont pangoMath familyName) };
 		at: 'type' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( pragma )) color asHexString).

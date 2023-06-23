@@ -49,7 +49,7 @@ TSJsonLanguage >> initialize [
 				('foreground #'
 				 , (SHStyleElement withTokens: #( comment )) color asHexString).
 				'style italic'.
-				'family Source Sans Pro' };
+				('family ' , LogicalFont pangoSans familyName) };
 		at: 'opening.brace' put: { 'weight bold' };
 		at: 'closing.brace' put: { 'weight bold' };
 		at: 'opening.squaredb' put: { 'weight bold'. 'style italic' };
@@ -57,7 +57,7 @@ TSJsonLanguage >> initialize [
 		at: 'number' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( number )) color asHexString).
-				'family Neo Euler' };
+				('family ' , LogicalFont pangoMath familyName) };
 		at: 'string' put: { ('foreground #'
 			 , (SHStyleElement withTokens: #( string )) color asHexString) };
 		at: 'constant.builtin' put: { ('foreground #'

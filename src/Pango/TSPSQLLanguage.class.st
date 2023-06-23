@@ -34,7 +34,7 @@ TSPSQLLanguage >> initialize [
 		at: 'number' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( number )) color asHexString).
-				'family Neo Euler' };
+				('family ' , LogicalFont pangoMath familyName) };
 		at: 'type.builtin' put: {
 				('foreground #'
 				 , (SHStyleElement withTokens: #( pragma )) color asHexString).
