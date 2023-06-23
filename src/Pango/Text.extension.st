@@ -1,15 +1,10 @@
 Extension { #name : #Text }
 
 { #category : #'*Pango' }
-Text >> asRSPangoTextUsingFont: aFont [
+Text >> asRSPangoShapeUsingFont: aFont [
 
-	^ self
-		  asRSPangoTextUsingFont: aFont
-		  initialAttributeChunks: OrderedCollection new
-]
-
-{ #category : #'*Pango' }
-Text >> asRSPangoTextUsingFont: aFont initialAttributeChunks: attributes [
+	| attributes |
+	attributes := OrderedCollection new.
 
 	self runs withStartStopAndValueDo: [ :start :stop :aCollection |
 		aCollection do: [ :each |
