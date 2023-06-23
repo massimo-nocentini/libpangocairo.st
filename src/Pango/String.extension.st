@@ -1,12 +1,12 @@
 Extension { #name : #String }
 
 { #category : #'*Pango' }
-String >> asRSPangoMarkupUsingFont: font [
+String >> asRSPangoShapeUsingFont: font [
 
 	^ RSPangoMarkup new
 		  font: font;
 		  markup: self;
-		  yourself
+		  asCompositeShape
 ]
 
 { #category : #'*Pango' }
