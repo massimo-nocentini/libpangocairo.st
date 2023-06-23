@@ -324,8 +324,7 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 		<< String cr;
 		<< String cr;
 		<< ('<span font_family="{1}" font_size="{2}pt">{3} ' format: {
-						 (LogicalFont fontconfigPharoSansPointSize:
-								  StandardFonts defaultFont pointSize) familyName.
+						 LogicalFont fontconfigPharoSans familyName.
 						 (self pointSizeForHeaderLevel: aHeader level).
 
 						 sectionNumber }).

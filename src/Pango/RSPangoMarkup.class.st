@@ -57,22 +57,20 @@ RSPangoMarkup >> initialize [
 RSPangoMarkup >> markup: aString [
 
 	markupString := String streamContents: [ :stream |
-		          | span macrosFree |
-		          span := '<span font_family="{1}" font_size="{2}pt" foreground="#{3}">'
-			                  format: {
-					                  self font familyName.
-					                  self font pointSize.
-					                  self defaultForegroundColor asHexString }.
+		                | span macrosFree |
+		                span := '<span {1} foreground="#{2}">' format: {
+				                        self font pangoMarkupSpanTagContent.
+				                        self defaultForegroundColor asHexString }.
 
-		          macrosFree := self convertMacros:
-			                        aString fixEmptyLinesForPango.
+		                macrosFree := self convertMacros:
+			                              aString fixEmptyLinesForPango.
 
-		          stream
-			          << '<markup>';
-			          << span;
-			          << macrosFree;
-			          << '</span>';
-			          << '</markup>' ].
+		                stream
+			                << '<markup>';
+			                << span;
+			                << macrosFree;
+			                << '</span>';
+			                << '</markup>' ].
 
 	^ self text: markupString
 ]
