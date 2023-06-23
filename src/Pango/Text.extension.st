@@ -24,5 +24,5 @@ Text >> asRSPangoShapeUsingFont: aFont [
 		  font: aFont;
 		  attributesChunks: attributes;
 		  text: self asString;
-		  yourself
+		  asCompositeShape
 ]
