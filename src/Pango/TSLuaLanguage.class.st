@@ -15,8 +15,7 @@ TSLuaLanguage >> initialize [
 				 , (SHStyleElement withTokens: #( comment )) color asHexString).
 				'style italic' };
 		at: 'keyword' put: { 'weight bold' };
-		at: 'keyword.return' put: { ('foreground #'
-			 , (SHStyleElement withTokens: #( return )) color asHexString) };
+		at: 'keyword.return' put: { 'weight bold' };
 		at: 'keyword.function' put: { 'weight bold' };
 		at: 'repeat' put: { 'weight bold' };
 		at: 'conditional' put: { 'weight bold' };
@@ -26,7 +25,7 @@ TSLuaLanguage >> initialize [
 		at: 'function.builtin' put: {
 				'weight bold'.
 				('foreground #'
-				 , (SHStyleElement withTokens: #( 'nil' )) color asHexString) };
+				 , (SHStyleElement withTokens: #( 'self' )) color asHexString) };
 		at: 'label' put: { 'underline single' };
 		at: 'constant.builtin' put: { ('foreground #'
 			 , (SHStyleElement withTokens: #( 'nil' )) color asHexString) };
