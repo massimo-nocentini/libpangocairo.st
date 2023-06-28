@@ -121,7 +121,7 @@ RSPangoText >> initialize [
 	super initialize.
 
 	self
-		layoutWidthNiceColumns;
+		layoutWidthUnbounded;
 		font: StandardFonts defaultFont;
 		defaultForegroundColor: Smalltalk ui theme textColor;
 		attributesChunks: OrderedCollection new

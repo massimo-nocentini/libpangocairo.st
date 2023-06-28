@@ -21,6 +21,12 @@ TSLanguage class >> json [
 ]
 
 { #category : #'private - accessing' }
+TSLanguage class >> lua [
+
+	^ TSLuaLanguage new
+]
+
+{ #category : #'private - accessing' }
 TSLanguage class >> psql [
 
 	^ TSPSQLLanguage new
