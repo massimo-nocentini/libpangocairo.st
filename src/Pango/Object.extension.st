@@ -5,3 +5,9 @@ Object >> fullPangoPrintString [
 
 	^ self fullPrintString
 ]
+
+{ #category : #'*Pango' }
+Object >> shStyleElement [
+
+	^ SHStyleElement withTokens: #( default )
+]

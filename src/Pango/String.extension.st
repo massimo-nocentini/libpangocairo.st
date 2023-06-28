@@ -29,3 +29,9 @@ String >> replaceAllTabsWithSpacesForPango [
 		  copyReplaceAll: self class tab
 		  with: (self class space repeat: 3)
 ]
+
+{ #category : #'*Pango' }
+String >> shStyleElement [
+
+	^ SHStyleElement withTokens: #( string )
+]
