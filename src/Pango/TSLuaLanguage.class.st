@@ -22,10 +22,8 @@ TSLuaLanguage >> initialize [
 		at: 'keyword.operator' put: { 'weight bold' };
 		at: 'operator' put: { 'weight bold' };
 		at: 'constructor' put: { 'weight bold' };
-		at: 'function.builtin' put: {
-				'weight bold'.
-				('foreground #'
-				 , (SHStyleElement withTokens: #( 'self' )) color asHexString) };
+		at: 'function.builtin' put: { ('foreground #'
+			 , (SHStyleElement withTokens: #( 'self' )) color asHexString) };
 		at: 'label' put: { 'underline single' };
 		at: 'constant.builtin' put: { ('foreground #'
 			 , (SHStyleElement withTokens: #( 'nil' )) color asHexString) };
