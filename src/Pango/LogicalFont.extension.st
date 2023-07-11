@@ -17,7 +17,7 @@ LogicalFont class >> pangoMath [
 { #category : #'*Pango' }
 LogicalFont class >> pangoMathPointSize: size [
 
-	^ self familyName: 'Neo Euler' pointSize: size
+	^ self familyName: 'Euler Math' pointSize: size
 ]
 
 { #category : #'*Pango' }
