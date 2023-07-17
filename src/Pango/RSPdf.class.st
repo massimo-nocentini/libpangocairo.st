@@ -8,6 +8,43 @@ Class {
 	#category : #Pango
 }
 
+{ #category : #creating }
+RSPdf class >> allPagesOfFileReference: fileReference [
+
+	| p d uri shape |
+	shape := self new.
+
+	uri := shape g_filename_to_uri: fileReference fullName.
+
+	d := shape poppler_document_new_from_file: uri.
+
+	p := [ shape poppler_document_get_n_pages: d ] ensure: [
+		     shape gObjectUnref: d ].
+
+	^ self
+		  pagesOfFileReference: fileReference
+		  from: 1
+		  to: (p ifNil: [ 0 ])
+]
+
+{ #category : #creating }
+RSPdf class >> pagesOfFileReference: fileReference from: from to: to [
+
+	| pages |
+	pages := RSGroup new.
+
+	from to: to do: [ :i |
+		| pdf |
+		pdf := self new
+			       fileReference: fileReference;
+			       pageNumber: i;
+			       yourself.
+
+		pages add: pdf ].
+
+	^ pages
+]
+
 { #category : #visiting }
 RSPdf >> accept: visitor [
 
@@ -102,6 +139,15 @@ RSPdf >> poppler_document: document get_page: p [
 		  ffiCall:
 		  #( void #* poppler_document_get_page #( void #* document #, int
 		        p ) )
+		  module: PopplerLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPdf >> poppler_document_get_n_pages: document [
+
+	^ self
+		  ffiCall:
+		  #( int poppler_document_get_n_pages #( void #* document ) )
 		  module: PopplerLibrary
 ]
 
