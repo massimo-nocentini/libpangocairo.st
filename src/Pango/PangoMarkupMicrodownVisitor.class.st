@@ -10,7 +10,6 @@ Class {
 		'orderedNestedLevels',
 		'footers',
 		'linksCount',
-		'maxFooterSize',
 		'codeLabelRandom',
 		'increasingCodeLabel',
 		'auxiliaryOrderedLabelLanguageAssociations',
@@ -38,7 +37,10 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 	footers ifNotEmpty: [
 		stream cr.
 
-		maxFooterSize timesRepeat: [ stream << '_' ].
+		"The following workaround allows us to show a continue line instead of a fake one."
+		stream << '<span underline="single">'.
+		50 timesRepeat: [ stream space ].
+		stream << '</span>'.
 
 		footers do: [ :assoc |
 			stream
@@ -51,8 +53,7 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 				<< assoc value;
 				<< '</span></span>' ].
 
-		footers removeAll.
-		maxFooterSize := 0 ]
+		footers removeAll. ]
 ]
 
 { #category : #accessing }
@@ -145,8 +146,6 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	linksCount := 0.
 
-	maxFooterSize := 0.
-
 	codeLabelRandom := Random seed: 541.
 
 	increasingCodeLabel := 0.0.
@@ -199,8 +198,6 @@ PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
 	| assoc str |
 	linksCount := linksCount + 1.
 	str := micElement asFooterStringForPangoMarkupMicrodownVisitor: self.
-
-	maxFooterSize := maxFooterSize max: str size.
 
 	assoc := linksCount -> str.
 
