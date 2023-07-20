@@ -18,17 +18,3 @@ RSAthensRenderer >> visitPangoText: pangoShape [
 				onAthensCairoCanvasHandler: athensCanvas getHandle
 				showPangoLayout: layoutHandler ]
 ]
-
-{ #category : #'*Pango' }
-RSAthensRenderer >> visitPdf: pdfShape [
-
-	| lbtranslation |
-	lbtranslation := (pdfShape extent / 2.0) asFloatPoint negated.
-
-	matrix translateBy: lbtranslation.
-
-	athensCanvas pathTransform loadAffineTransform: matrix.
-	athensCanvas setPathMatrix.
-
-	pdfShape drawOnAthensCairoCanvas: athensCanvas
-]
