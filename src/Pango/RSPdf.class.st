@@ -54,25 +54,19 @@ RSPdf >> accept: visitor [
 { #category : #accessing }
 RSPdf >> computeEncompassingRectangle [
 
-	| rect |
+	| width height |
+	width := ByteArray new: 8.
+	height := ByteArray new: 8.
+
 	self withPopplerPageHandlerDo: [ :popplerPageHandler |
-		| w h liblua |
-		liblua := LibLua uniqueInstance.
-		liblua withOpenedLibsStateDo: [ :L |
-			liblua on: L assertLUAOK: [
-				liblua
-					luaL_requiref: L name: 'cairo';
-					on: L push: #cairo;
-					lua_getfield: L at: -1 name: 'poppler_page_get_size';
-					on: L push: popplerPageHandler;
-					lua_pcall: L nargs: 1 nresults: 2 ].
+		self
+			poppler_page_get_size: popplerPageHandler
+			width: width
+			height: height ].
 
-			w := liblua on: L at: -2.
-			h := liblua on: L at: -1.
-
-			rect := Rectangle center: 0 @ 0 extent: w @ h ] ].
-
-	^ rect
+	^ Rectangle
+		  center: 0 @ 0
+		  extent: (width doubleAt: 1) @ (height doubleAt: 1)
 ]
 
 { #category : #'as yet unclassified' }
@@ -157,6 +151,16 @@ RSPdf >> poppler_document_new_from_file: uri [
 	^ self
 		  ffiCall: #( void #* poppler_document_new_from_file
 			     #( const char #* uri #, NULL #, NULL ) )
+		  module: PopplerLibrary
+]
+
+{ #category : #'as yet unclassified' }
+RSPdf >> poppler_page_get_size: p width: width height: height [
+
+	^ self
+		  ffiCall:
+			  #( void poppler_page_get_size #( void #* p #, double #* width
+			        #, double #* height ) )
 		  module: PopplerLibrary
 ]
 
