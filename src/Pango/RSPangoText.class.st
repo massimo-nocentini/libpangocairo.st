@@ -65,7 +65,7 @@ RSPangoText >> computeEncompassingRectangle [
 	^ rectangle
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> defaultFontMap [
 
 	^ self
@@ -98,7 +98,7 @@ RSPangoText >> font: anObject [
 	font := anObject
 ]
 
-{ #category : #'*Pango' }
+{ #category : #'ffi bindings' }
 RSPangoText >> g_object_unref: handler [
 
 	self
@@ -106,7 +106,7 @@ RSPangoText >> g_object_unref: handler [
 		module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> getContextOfPangoLayout: layout [
 
 	^ self
@@ -153,7 +153,7 @@ RSPangoText >> layoutWidthUnbounded [
 	self layoutWidth: -1
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoAttrListHandler [
 
 	^ self
@@ -161,7 +161,7 @@ RSPangoText >> newPangoAttrListHandler [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoContext [
 
 	^ self
@@ -169,7 +169,7 @@ RSPangoText >> newPangoContext [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoLayout [
 
 	^ self
@@ -177,7 +177,7 @@ RSPangoText >> newPangoLayout [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 
 	self
@@ -212,7 +212,7 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 	ensuredBlock ensure: [ self g_object_unref: layoutHandler ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 
 	self
@@ -221,7 +221,7 @@ RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 
 	self
@@ -230,7 +230,7 @@ RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 		module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 
 	^ self
@@ -240,7 +240,7 @@ RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: layout setWidth: width [
 
 	^ self
@@ -249,7 +249,7 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> pangoAttrListHandlerFromString: aString [
 
 	^ self
@@ -275,7 +275,7 @@ RSPangoText >> pangoAttrListString [
 	^ Character lf join: chunks
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> pangoAttrListUnref: handler [
 
 	^ self
@@ -283,7 +283,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 		  module: PangoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #handle }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
 	| liblua |
@@ -310,7 +310,7 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 		  Rectangle origin: x @ y extent: w @ h ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> setPangoContextFontMap: fontMap [
 
 	^ self
@@ -332,7 +332,7 @@ RSPangoText >> text: anObject [
 	text := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ffi bindings' }
 RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 
 	self
@@ -341,7 +341,7 @@ RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #handle }
 RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
 
 	| handler |
