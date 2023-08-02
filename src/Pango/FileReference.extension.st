@@ -1,7 +1,9 @@
 Extension { #name : #FileReference }
 
 { #category : #'*Pango' }
-FileReference >> asGroupOfPdfPages [
+FileReference >> asPdf [
 
-	^ RSPdf allPagesOfFileReference: self
+	^ RSPdf new
+		  fileReference: self;
+		  yourself
 ]
