@@ -502,6 +502,14 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 ]
 
 { #category : #visiting }
+PangoMarkupMicrodownVisitor >> visitRaw: aRaw [
+
+	stream << aRaw text.
+
+	super visitRaw: aRaw
+]
+
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
 
 	stream << '<span strikethrough="true">'.
