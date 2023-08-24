@@ -2,8 +2,7 @@ Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
 	#instVars : [
-		'auxiliaryOrderedLabelLanguageAssociations',
-		'markupString'
+		'auxiliaryOrderedLabelLanguageAssociations'
 	],
 	#classVars : [
 		'Conversions'
@@ -56,6 +55,7 @@ RSPangoMarkup >> initialize [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
+	| markupString |
 	markupString := String streamContents: [ :stream |
 		                | span macrosFree |
 		                span := '<span {1} foreground="#{2}">' format: {
@@ -76,7 +76,7 @@ RSPangoMarkup >> markup: aString [
 ]
 
 { #category : #accessing }
-RSPangoMarkup >> text: aString [
+RSPangoMarkup >> text: markupString [
 
 	| ll cleanedString attributesString chunks counter |
 	cleanedString := markupString.

@@ -130,9 +130,7 @@ RSPangoText >> initialize [
 { #category : #accessing }
 RSPangoText >> layoutWidth [
 
-	^ layoutWidth = -1
-		  ifTrue: [ layoutWidth ]
-		  ifFalse: [ layoutWidth * 1024 ]
+	^ layoutWidth
 ]
 
 { #category : #accessing }

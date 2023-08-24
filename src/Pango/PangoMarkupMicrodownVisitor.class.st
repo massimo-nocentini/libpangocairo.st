@@ -263,7 +263,8 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		<< '</span>';
 		cr.
 
-	(stream << '<span font_family="')
+	stream
+		<< '<span font_family="';
 		<< fontMonospace familyName;
 		<< '">'.
 
