@@ -38,6 +38,34 @@ RSPangoMarkup >> convertMacros: aString [
 { #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
+	^ self text: aString
+]
+
+{ #category : #'ffi bindings' }
+RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandler [
+
+	
+]
+
+{ #category : #'ffi bindings' }
+RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
+
+	^ self
+		  ffiCall:
+			  #( void pango_layout_set_markup #( void #* layoutHandler
+			        #, const char #* aString #, -1 ) )
+		  module: PangoLibrary
+]
+
+{ #category : #handle }
+RSPangoMarkup >> pangoAttrListString [
+
+	^ String empty
+]
+
+{ #category : #accessing }
+RSPangoMarkup >> text: aString [
+
 	| markupString |
 	markupString := String streamContents: [ :stream |
 		                | span macrosFree |
@@ -55,11 +83,11 @@ RSPangoMarkup >> markup: aString [
 			                << '</span>';
 			                << '</markup>' ].
 
-	^ self text: markupString
+	^ super text: markupString
 ]
 
 { #category : #accessing }
-RSPangoMarkup >> text: markupString [
+RSPangoMarkup >> text_complex: markupString [
 
 	| ll cleanedString attributesString chunks counter |
 	cleanedString := markupString.
@@ -126,4 +154,10 @@ RSPangoMarkup >> text: markupString [
 	self attributesChunks: (chunks collect: #last).
 
 	^ super text: cleanedString
+]
+
+{ #category : #'ffi bindings' }
+RSPangoMarkup >> withPangoAttrListFromString: aString do: aBlock [
+
+	aBlock value: ExternalAddress null
 ]
