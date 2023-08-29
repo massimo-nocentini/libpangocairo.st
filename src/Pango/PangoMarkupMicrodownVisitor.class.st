@@ -75,7 +75,7 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		             yourself.
 
 	RSVerticalLineLayout new
-		verticalGap: Float goldenRatio negated;
+		verticalGap: Float goldenRatio;
 		alignLeft;
 		applyOn: composite.
 
@@ -216,10 +216,10 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 			           add: chunkShape;
 			           yourself.
 
-		  RSVerticalLineLayout new
+		  RSHorizontalLineLayout new
 			  horizontalGap:
 				  labelShape encompassingRectangle width * Float silverRatio;
-			  alignLeft;
+			  alignTop;
 			  applyOn: group.
 
 		  group asShape ]
