@@ -11,12 +11,14 @@ Class {
 		'footers',
 		'linksCount',
 		'codeLabelRandom',
-		'increasingCodeLabel',
 		'auxiliaryOrderedLabelLanguageAssociations',
 		'fontMonospace',
 		'fontSans',
 		'fontSerif',
-		'fontMath'
+		'fontMath',
+		'pangoMarkup',
+		'treeSitterLanguages',
+		'lastMicBlock'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -56,10 +58,28 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 		footers removeAll. ]
 ]
 
-{ #category : #accessing }
-PangoMarkupMicrodownVisitor >> auxiliaryOrderedLabelLanguageAssociations: aCollection [
+{ #category : #converting }
+PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 
-	auxiliaryOrderedLabelLanguageAssociations := aCollection
+	| pango composite |
+	pango := RSPangoMarkup new
+		         font: font;
+		         markup: pangoMarkup;
+		         asCompositeShape.
+
+	composite := RSGroup new
+		             add: pango;
+		             addAll:
+			             (self treeSitterLanguageShapesWithFont:
+					              LogicalFont pangoMonospace);
+		             yourself.
+
+	RSVerticalLineLayout new
+		verticalGap: Float goldenRatio negated;
+		alignLeft;
+		applyOn: composite.
+
+	^ composite asShape
 ]
 
 { #category : #accessing }
@@ -70,54 +90,6 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 			  (UnorderedBullets at: nestedLevel ifAbsent: [ '\#9671;' ])
 			  , String space ]
 		  ifFalse: [ '' ]
-]
-
-{ #category : #visiting }
-PangoMarkupMicrodownVisitor >> escapeTextInGMarkup: code [
-
-	^ self withNewLuaStateDo: [ :L :ll |
-		  | retcode |
-		  retcode := ll
-			             luaL_requiref: L name: 'cairo';
-			             on: L push: #cairo;
-			             lua_getfield: L
-			             at: -1
-			             name: 'g_markup_escape_text'
-			             remove: true;
-			             on: L push: code;
-			             lua_pcall: L nargs: 1 nresults: 1.
-
-		  self
-			  assert: retcode == ll LUA_OK
-			  description: 'failed to escape text.'.
-
-		  ll on: L at: -1 ]
-]
-
-{ #category : #visiting }
-PangoMarkupMicrodownVisitor >> highlightsMatches: srcString language: language do: recv [
-
-	^ self withNewLuaStateDo: [ :L :ll |
-		  | retcode matches srcLines |
-		  retcode := ll
-			             luaL_requiref: L name: 'tree-sitter';
-			             on: L push: #'tree-sitter';
-			             lua_getfield: L
-			             at: -1
-			             name: 'highlights_matches'
-			             remove: true;
-			             on: L push: language;
-			             on: L push: srcString;
-			             lua_pcall: L nargs: 2 nresults: 2.
-
-		  self
-			  assert: retcode == ll LUA_OK
-			  description: 'failed to compute highlights.'.
-
-		  matches := ll on: L at: -2.
-		  srcLines := ll on: L at: -1.
-
-		  matches ifNotNil: [ recv value: matches value: srcLines ] ]
 ]
 
 { #category : #visiting }
@@ -143,26 +115,16 @@ PangoMarkupMicrodownVisitor >> initialize [
 	modifier := nil.
 
 	footers := OrderedCollection new.
+	treeSitterLanguages := OrderedCollection new.
 
 	linksCount := 0.
 
 	codeLabelRandom := Random seed: 541.
 
-	increasingCodeLabel := 0.0.
-
 	fontMonospace := LogicalFont pangoMonospace.
 	fontSans := LogicalFont pangoSans.
 	fontSerif := LogicalFont pangoSerif.
 	fontMath := LogicalFont pangoMath
-]
-
-{ #category : #visiting }
-PangoMarkupMicrodownVisitor >> nextCodeLabel [
-
-	increasingCodeLabel := increasingCodeLabel + codeLabelRandom next.
-
-	^ '.. code::'
-	  , (increasingCodeLabel asString copyReplaceAll: '.' with: '')
 ]
 
 { #category : #accessing }
@@ -176,6 +138,12 @@ PangoMarkupMicrodownVisitor >> nextPutAllAlpha: alpha mod: link [
 			nextPutAll: ('<span alpha="{1}%">{2}</span>' format: {
 							 (alpha asInteger min: 100 max: 1).
 							 link value }) ]
+]
+
+{ #category : #accessing }
+PangoMarkupMicrodownVisitor >> pangoMarkup [
+
+	^ pangoMarkup
 ]
 
 { #category : #visiting }
@@ -225,17 +193,56 @@ PangoMarkupMicrodownVisitor >> pushModifier: aString [
 	^ modifier
 ]
 
+{ #category : #visiting }
+PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
+
+	^ treeSitterLanguages collect: [ :assoc |
+		  | labelShape chunkShape group |
+		  labelShape := RSPangoMarkup new
+			                markup: (String streamContents: [ :s |
+						                 s
+							                 << '<span font_family="';
+							                 << fontSans familyName;
+							                 << '" font_size="smaller" alpha="50%">[';
+							                 << assoc key;
+							                 << ']';
+							                 << '</span>' ]);
+			                asCompositeShape.
+
+		  chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
+
+		  group := RSGroup new
+			           add: labelShape;
+			           add: chunkShape;
+			           yourself.
+
+		  RSVerticalLineLayout new
+			  horizontalGap:
+				  labelShape encompassingRectangle width * Float silverRatio;
+			  alignLeft;
+			  applyOn: group.
+
+		  group asShape ]
+]
+
 { #category : #'as yet unclassified' }
 PangoMarkupMicrodownVisitor >> visit: mic [
+	"Cleanup before starting a new visit."
 
-	^ (String streamContents: [ :aStream |
-		   stream := aStream. "save the reference and continue visiting."
+	treeSitterLanguages removeAll.
 
-		   super visit: mic.
+	lastMicBlock := nil.
 
-		   self appendFooters.
+	pangoMarkup := (String streamContents: [ :aStream |
+		                stream := aStream. "save the reference and continue visiting."
 
-		   stream := nil "Clean it up" ]) trim
+		                super visit: mic.
+
+		                self appendFooters.
+
+		                stream := nil "Clean it up" ]) trim.
+
+	^ pangoMarkup
 ]
 
 { #category : #visiting }
@@ -245,66 +252,47 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 
 	super visitBold: aFormat.
 
-	stream << '</span>'
+	stream << '</span>'.
+
+	lastMicBlock := aFormat
 ]
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
-	| code label |
-	label := self nextCodeLabel.
+	| label tsText |
+	tsText := TSChunk new
+		          language: aCodeBlock language;
+		          sourceCode: aCodeBlock code;
+		          yourself.
 
-	stream cr. "introduce a new line"
+	label := 'Listing ' , (treeSitterLanguages size + 1) asString.
 
-	"to make the label invisible, this will look like to have an empty line."
+	treeSitterLanguages add: label -> tsText.
+
 	stream
-		<< '<span alpha="1">';
+		<< String space;
+		<< '<i>'.
+	super visitCode: aCodeBlock.
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
 		<< label;
-		<< '</span>';
-		cr.
+		<< ']</span></span>'.
 
-	stream
-		<< '<span font_family="';
-		<< fontMonospace familyName;
-		<< '">'.
-
-	"Prepare the code source to remove Smalltalk stuff about comments."
-	code := aCodeBlock code trim copyReplaceAll: '""' with: '"'.
-
-	code := code withInternalLineEndings
-		        fixEmptyLinesForPangoUsingJoiner: Character lf.
-
-	self assert: (code lines select: #isEmpty) isEmpty.
-
-	self
-		highlightsMatches: code
-		language: aCodeBlock language
-		do: [ :matches :codeLines |
-			| language |
-			self assert: (codeLines select: #isEmpty) isEmpty.
-
-			code := Character cr join: codeLines.
-
-			language := aCodeBlock language asSymbol value: TSLanguage.
-
-			language matches: matches.
-
-			auxiliaryOrderedLabelLanguageAssociations add: label -> language ].
-
-	code := self escapeTextInGMarkup: code.
-
-	stream
-		<< code;
-		<< '</span>';
-		cr.
-
-	^ super visitCode: aCodeBlock
+	lastMicBlock := aCodeBlock
 ]
 
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 
-	self postFooter: aFootnote do: [  ]
+	self postFooter: aFootnote do: [  ].
+
+	lastMicBlock := aFootnote
 ]
 
 { #category : #visiting }
@@ -344,7 +332,9 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	stream
 		<< '</span>';
-		<< String cr
+		<< String cr.
+
+	lastMicBlock := aHeader
 ]
 
 { #category : #visiting }
@@ -470,14 +460,17 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 { #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
-	stream
-		cr;
-		cr;
-		<< '<span>'.
+	lastMicBlock
+		appendCarriageReturnsOnStream: stream
+		nextParagraph: self.
+
+	stream << '<span>'.
 
 	super visitParagraph: aParagraph.
 
-	stream << '</span>'
+	stream << '</span>'.
+
+	lastMicBlock := aParagraph
 ]
 
 { #category : #visiting }
@@ -555,15 +548,6 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 	super visitUnorderedListItem: anUnorderedList.
 
 	self popModifier
-]
-
-{ #category : #visiting }
-PangoMarkupMicrodownVisitor >> withNewLuaStateDo: aCodeBlock [
-
-	| ll |
-	ll := LibLua uniqueInstance.
-
-	^ ll withOpenedLibsStateDo: [ :L | aCodeBlock value: L value: ll ]
 ]
 
 { #category : #visiting }

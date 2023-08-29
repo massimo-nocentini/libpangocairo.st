@@ -1,9 +1,6 @@
 Class {
 	#name : #RSPangoMarkup,
 	#superclass : #RSPangoText,
-	#instVars : [
-		'auxiliaryOrderedLabelLanguageAssociations'
-	],
 	#classVars : [
 		'Conversions'
 	],
@@ -27,12 +24,6 @@ RSPangoMarkup class >> initialize [
 ]
 
 { #category : #accessing }
-RSPangoMarkup >> auxiliaryOrderedLabelLanguageAssociations: anObject [
-
-	auxiliaryOrderedLabelLanguageAssociations := anObject
-]
-
-{ #category : #accessing }
 RSPangoMarkup >> convertMacros: aString [
 
 	| converted |
@@ -42,14 +33,6 @@ RSPangoMarkup >> convertMacros: aString [
 		converted := converted copyReplaceAll: macro with: replacement ].
 
 	^ converted
-]
-
-{ #category : #initialization }
-RSPangoMarkup >> initialize [
-
-	super initialize.
-
-	self auxiliaryOrderedLabelLanguageAssociations: OrderedCollection new
 ]
 
 { #category : #accessing }
@@ -139,25 +122,6 @@ RSPangoMarkup >> text: markupString [
 					i.
 					from asInteger.
 					attrStr } ] ].
-
-	auxiliaryOrderedLabelLanguageAssociations do: [ :assoc |
-		| i label language |
-		label := assoc key.
-		language := assoc value.
-
-		counter := counter + 1.
-
-		i := cleanedString findString: label.
-
-		self
-			assert: i > 0
-			description: 'Impossible to not find a code label.'.
-
-		language
-			populate: chunks
-			offset: i + label size + 1
-			text: cleanedString
-			counter: counter ].
 
 	self attributesChunks: (chunks collect: #last).
 

@@ -7,36 +7,6 @@ Class {
 	#category : #Pango
 }
 
-{ #category : #accessing }
-TSJsonLanguage >> at: pattern [
-	"^ pattern = 'opening.brace'
-		  ifTrue: [
-			  self halt.
-			  braces := braces + 1.
-			  highlights at: 'brace' put: { ('foreground #'
-				   ,
-					   (SHStyleElement withTokens:
-						    { ('parenthesis' , braces asString) }) color asHexString) }.
-			  super at: 'brace' ]
-		  ifFalse: [
-			  pattern = 'closing.brace'
-				  ifTrue: [
-					  | v |
-					  self halt.
-					  v := super at: 'brace'.
-
-					  braces := braces - 1.
-					  highlights at: 'brace' put: { ('foreground #'
-						   ,
-							   (SHStyleElement withTokens:
-								    { ('parenthesis' , braces asString) }) color asHexString) }.
-
-					  v ]
-				  ifFalse: [ super at: pattern ] ]"
-
-	^ super at: pattern
-]
-
 { #category : #initialization }
 TSJsonLanguage >> initialize [
 
