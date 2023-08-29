@@ -36,26 +36,24 @@ PangoMarkupMicrodownVisitor class >> initialize [
 { #category : #'as yet unclassified' }
 PangoMarkupMicrodownVisitor >> appendFooters [
 
-	footers ifNotEmpty: [
+	(footers isNotEmpty or: [ treeSitterLanguages isNotEmpty ]) ifTrue: [
 		stream cr.
 
 		"The following workaround allows us to show a continue line instead of a fake one."
 		stream << '<span underline="single">'.
 		50 timesRepeat: [ stream space ].
-		stream << '</span>'.
+		stream << '</span>' ].
 
-		footers do: [ :assoc |
-			stream
-				cr;
-				<< '<span font_family="';
-				<< fontSans familyName;
-				<< '" font_size="smaller" alpha="50%">[';
-				<< assoc key asString;
-				<< '] <span alpha="100%">';
-				<< assoc value;
-				<< '</span></span>' ].
-
-		footers removeAll. ]
+	footers do: [ :assoc |
+		stream
+			cr;
+			<< '<span font_family="';
+			<< fontSans familyName;
+			<< '" font_size="smaller" alpha="50%">[';
+			<< assoc key asString;
+			<< '] <span alpha="100%">';
+			<< assoc value;
+			<< '</span></span>' ]
 ]
 
 { #category : #converting }
@@ -229,6 +227,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 PangoMarkupMicrodownVisitor >> visit: mic [
 	"Cleanup before starting a new visit."
 
+	footers removeAll.
 	treeSitterLanguages removeAll.
 
 	lastMicBlock := nil.
