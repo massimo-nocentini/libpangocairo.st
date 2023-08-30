@@ -216,7 +216,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
 		  RSHorizontalLineLayout new
 			  horizontalGap:
-				  labelShape encompassingRectangle width * Float silverRatio;
+				  labelShape encompassingRectangle width / Float goldenRatio;
 			  alignTop;
 			  applyOn: group.
 
