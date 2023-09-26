@@ -1,6 +1,6 @@
-Extension { #name : #RSAthensRenderer }
+Extension { #name : 'RSAthensRenderer' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 RSAthensRenderer >> visitPangoText: pangoShape [
 
 	| lbtranslation |

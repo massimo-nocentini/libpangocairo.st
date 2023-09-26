@@ -1,6 +1,6 @@
-Extension { #name : #TextFontChange }
+Extension { #name : 'TextFontChange' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 TextFontChange >> asPangoAttributeChunks: aFont [
 
 	| font |

@@ -1,13 +1,14 @@
 Class {
-	#name : #TSPSQLLanguage,
-	#superclass : #TSLanguage,
+	#name : 'TSPSQLLanguage',
+	#superclass : 'TSLanguage',
 	#instVars : [
 		'braces'
 	],
-	#category : #Pango
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TSPSQLLanguage >> initialize [
 
 	super initialize.
@@ -49,7 +50,7 @@ TSPSQLLanguage >> initialize [
 			 , (SHStyleElement withTokens: { 'true' }) color asHexString) }
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 TSPSQLLanguage >> orderedPatterns [
 
 	^ super orderedPatterns

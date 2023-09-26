@@ -15,8 +15,8 @@ logicalRectangle
 
 "
 Class {
-	#name : #RSPangoText,
-	#superclass : #RSBoundingShape,
+	#name : 'RSPangoText',
+	#superclass : 'RSBoundingShape',
 	#instVars : [
 		'text',
 		'font',
@@ -24,22 +24,23 @@ Class {
 		'attributesChunks',
 		'layoutWidth'
 	],
-	#category : #Pango
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #visiting }
+{ #category : 'visiting' }
 RSPangoText >> accept: visitor [
 
 	visitor visitPangoText: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> attributesChunks: anObject [
 
 	attributesChunks := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> computeEncompassingRectangle [
 
 	| surface rectangle |
@@ -65,7 +66,7 @@ RSPangoText >> computeEncompassingRectangle [
 	^ rectangle
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> defaultFontMap [
 
 	^ self
@@ -74,31 +75,31 @@ RSPangoText >> defaultFontMap [
 		  module: PangoCairoLibrary
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> defaultForegroundColor [
 
 	^ defaultForegroundColor
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> defaultForegroundColor: anObject [
 
 	defaultForegroundColor := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> font [
 
 	^ font
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> font: anObject [
 
 	font := anObject
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> g_object_unref: handler [
 
 	self
@@ -106,7 +107,7 @@ RSPangoText >> g_object_unref: handler [
 		module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> getContextOfPangoLayout: layout [
 
 	^ self
@@ -115,7 +116,7 @@ RSPangoText >> getContextOfPangoLayout: layout [
 		  module: PangoLibrary
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 RSPangoText >> initialize [
 
 	super initialize.
@@ -127,31 +128,31 @@ RSPangoText >> initialize [
 		attributesChunks: OrderedCollection new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> layoutWidth [
 
 	^ layoutWidth
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> layoutWidth: width [
 
 	layoutWidth := width
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> layoutWidthNiceColumns [
 
 	self layoutWidth: (1024 * Float silverRatio) ceiling
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> layoutWidthUnbounded [
 
 	self layoutWidth: -1
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> newPangoAttrListHandler [
 
 	^ self
@@ -159,7 +160,7 @@ RSPangoText >> newPangoAttrListHandler [
 		  module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> newPangoContext [
 
 	^ self
@@ -167,7 +168,7 @@ RSPangoText >> newPangoContext [
 		  module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> newPangoLayout [
 
 	^ self
@@ -175,7 +176,7 @@ RSPangoText >> newPangoLayout [
 		  module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 
 	self
@@ -184,7 +185,7 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #handle }
+{ #category : 'handle' }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
 	| layoutHandler ensuredBlock |
@@ -210,7 +211,7 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 	ensuredBlock ensure: [ self g_object_unref: layoutHandler ]
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 
 	self
@@ -219,7 +220,7 @@ RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 
 	self
@@ -228,7 +229,7 @@ RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 		module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 
 	^ self
@@ -238,7 +239,7 @@ RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 		  module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: layout setWidth: width [
 
 	^ self
@@ -247,7 +248,7 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 		  module: PangoLibrary
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> pangoAttrListHandlerFromString: aString [
 
 	^ self
@@ -256,7 +257,7 @@ RSPangoText >> pangoAttrListHandlerFromString: aString [
 		  module: PangoLibrary
 ]
 
-{ #category : #handle }
+{ #category : 'handle' }
 RSPangoText >> pangoAttrListString [
 
 	| chunks |
@@ -273,7 +274,7 @@ RSPangoText >> pangoAttrListString [
 	^ Character lf join: chunks
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> pangoAttrListUnref: handler [
 
 	^ self
@@ -281,7 +282,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 		  module: PangoLibrary
 ]
 
-{ #category : #handle }
+{ #category : 'handle' }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
 	| liblua |
@@ -308,7 +309,7 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 		  Rectangle origin: x @ y extent: w @ h ]
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> setPangoContextFontMap: fontMap [
 
 	^ self
@@ -318,19 +319,19 @@ RSPangoText >> setPangoContextFontMap: fontMap [
 		  module: PangoLibrary
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> text [
 
 	^ text
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RSPangoText >> text: anObject [
 
 	text := anObject
 ]
 
-{ #category : #'ffi bindings' }
+{ #category : 'ffi bindings' }
 RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 
 	self
@@ -339,7 +340,7 @@ RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
 		module: PangoCairoLibrary
 ]
 
-{ #category : #handle }
+{ #category : 'handle' }
 RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
 
 	| handler |

@@ -1,6 +1,6 @@
-Extension { #name : #MicAbstractBlock }
+Extension { #name : 'MicAbstractBlock' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 MicAbstractBlock >> appendCarriageReturnsOnStream: stream nextParagraph: micBlock [
 
 	stream
