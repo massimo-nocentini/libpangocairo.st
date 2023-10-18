@@ -286,7 +286,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
 	| liblua |
-	liblua := LibLua uniqueInstance.
+	liblua := LibLua uniqueInstance implementationPrimitive.
 
 	^ liblua withOpenedLibsStateDo: [ :L |
 		  | x y w h requestLogicalRectangle |

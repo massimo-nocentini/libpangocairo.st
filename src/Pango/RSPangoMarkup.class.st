@@ -95,7 +95,7 @@ RSPangoMarkup >> text_complex: markupString [
 
 	attributesString := String empty.
 
-	ll := LibLua uniqueInstance.
+	ll := LibLua uniqueInstance implementationPrimitive.
 
 	self
 		withPangoAttrListFromString: String empty

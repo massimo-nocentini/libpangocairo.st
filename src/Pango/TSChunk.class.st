@@ -99,7 +99,7 @@ TSChunk >> withMatchesOn: code do: recv [
 TSChunk >> withNewLuaStateDo: aCodeBlock [
 
 	| ll |
-	ll := LibLua uniqueInstance.
+	ll := LibLua uniqueInstance implementationPrimitive.
 
 	^ ll withOpenedLibsStateDo: [ :L | aCodeBlock value: L value: ll ]
 ]
