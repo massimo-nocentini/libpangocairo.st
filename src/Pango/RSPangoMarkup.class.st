@@ -106,7 +106,7 @@ RSPangoMarkup >> text_complex: markupString [
 					ll
 						luaL_requiref: L name: 'cairo';
 						on: L push: #cairo;
-						lua_getfield: L at: -1 name: 'pango_parse_markup';
+						lua: L get: -1 field: 'pango_parse_markup';
 						on: L push: cleanedString;
 						on: L push: 0;
 						on: L push: emptyAttrListHandler;

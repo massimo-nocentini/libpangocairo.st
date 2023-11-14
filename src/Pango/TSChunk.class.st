@@ -43,9 +43,9 @@ TSChunk >> escapeTextInGMarkup: code [
 		  retcode := ll
 			             luaL_requiref: L name: 'cairo';
 			             on: L push: #cairo;
-			             lua_getfield: L
-			             at: -1
-			             name: 'g_markup_escape_text'
+			             lua: L
+			             get: -1
+			             field: 'g_markup_escape_text'
 			             remove: true;
 			             on: L push: code;
 			             lua_pcall: L nargs: 1 nresults: 1.
@@ -77,9 +77,9 @@ TSChunk >> withMatchesOn: code do: recv [
 		  retcode := ll
 			             luaL_requiref: L name: 'tree-sitter';
 			             on: L push: #'tree-sitter';
-			             lua_getfield: L
-			             at: -1
-			             name: 'highlights_matches'
+			             lua: L
+			             get: -1
+			             field: 'highlights_matches'
 			             remove: true;
 			             on: L push: language;
 			             on: L push: code;

@@ -296,7 +296,7 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 			  liblua
 				  luaL_requiref: L name: 'cairo';
 				  on: L push: #cairo;
-				  lua_getfield: L at: -1 name: 'pango_layout_get_extents';
+				  lua: L get: -1 field: 'pango_layout_get_extents';
 				  on: L push: anHandler;
 				  on: L push: requestLogicalRectangle;
 				  lua_pcall: L nargs: 2 nresults: 4 ].
