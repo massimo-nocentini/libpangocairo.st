@@ -1,6 +1,6 @@
-Extension { #name : 'Microdown' }
+Extension { #name : #Microdown }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 Microdown class >> asPangoMarkupString: aString [
 
 	| mic |

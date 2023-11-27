@@ -1,12 +1,12 @@
-Extension { #name : 'Object' }
+Extension { #name : #Object }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 Object >> fullPangoPrintString [
 
 	^ self fullPrintString
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 Object >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( default )

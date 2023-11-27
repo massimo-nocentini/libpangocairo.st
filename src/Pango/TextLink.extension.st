@@ -1,6 +1,6 @@
-Extension { #name : 'TextLink' }
+Extension { #name : #TextLink }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 TextLink >> asPangoAttributeChunks: aFont [
 
 	^ self attributesForFont: StandardFonts codeFont

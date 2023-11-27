@@ -1,6 +1,6 @@
-Extension { #name : 'FileReference' }
+Extension { #name : #FileReference }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 FileReference >> asPdf [
 
 	^ RSPdf new

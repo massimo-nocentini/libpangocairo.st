@@ -1,14 +1,13 @@
 Class {
-	#name : 'TSCLanguage',
-	#superclass : 'TSLanguage',
+	#name : #TSCLanguage,
+	#superclass : #TSLanguage,
 	#instVars : [
 		'braces'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : 'Pango'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 TSCLanguage >> initialize [
 
 	super initialize.
@@ -50,7 +49,7 @@ TSCLanguage >> initialize [
 			 , (SHStyleElement withTokens: { 'true' }) color asHexString) }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 TSCLanguage >> orderedPatterns [
 
 	^ { 'number'. 'string'. 'function.decl'. 'function'. 'variable'.

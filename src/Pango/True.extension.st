@@ -1,6 +1,6 @@
-Extension { #name : 'True' }
+Extension { #name : #True }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 True >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( 'true' )

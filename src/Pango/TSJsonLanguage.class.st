@@ -1,14 +1,13 @@
 Class {
-	#name : 'TSJsonLanguage',
-	#superclass : 'TSLanguage',
+	#name : #TSJsonLanguage,
+	#superclass : #TSLanguage,
 	#instVars : [
 		'braces'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : 'Pango'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 TSJsonLanguage >> initialize [
 
 	super initialize.
@@ -35,7 +34,7 @@ TSJsonLanguage >> initialize [
 			 , (SHStyleElement withTokens: { 'true' }) color asHexString) }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 TSJsonLanguage >> orderedPatterns [
 
 	^ { 'number'. 'string.special.key'. 'constant.builtin'.

@@ -1,6 +1,6 @@
-Extension { #name : 'Float' }
+Extension { #name : #Float }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 Float >> fullPangoPrintString [
 
 	^ self = Infinity
