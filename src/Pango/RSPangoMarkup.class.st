@@ -51,7 +51,7 @@ RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandle
 { #category : 'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 
-	<primitive: 'primitive_pango_layout_set_text' module:
+	<primitive: 'primitive_pango_layout_set_markup' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
@@ -72,8 +72,9 @@ RSPangoMarkup >> text: aString [
 				                        self font pangoMarkupSpanTagContent.
 				                        self defaultForegroundColor asHexString }.
 
-		                macrosFree := self convertMacros:
-			                              aString fixEmptyLinesForPango.
+		                "macrosFree := self convertMacros:
+			                              aString fixEmptyLinesForPango."
+		                macrosFree := aString.
 
 		                stream
 			                << '<markup>';

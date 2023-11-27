@@ -112,9 +112,8 @@ RSPangoText >> font: anObject [
 { #category : 'ffi bindings' }
 RSPangoText >> g_object_unref: handler [
 
-	self
-		ffiCall: #( void g_object_unref #( void #* handler ) )
-		module: PangoLibrary
+	<primitive: 'primitive_g_object_unref' module: 'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
