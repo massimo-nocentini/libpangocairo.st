@@ -76,15 +76,6 @@ RSPangoText >> computeEncompassingRectangle [
 	^ rectangle
 ]
 
-{ #category : 'ffi bindings' }
-RSPangoText >> defaultFontMap [
-
-	^ self
-		  ffiCall: #( void * pango_cairo_font_map_get_default
-			     #(  ) )
-		  module: PangoCairoLibrary
-]
-
 { #category : 'accessing' }
 RSPangoText >> defaultForegroundColor [
 
@@ -155,9 +146,9 @@ RSPangoText >> layoutWidthUnbounded [
 { #category : 'ffi bindings' }
 RSPangoText >> newPangoAttrListHandler [
 
-	^ self
-		  ffiCall: #( void * pango_attr_list_new #(  ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_attr_list_new' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
@@ -270,16 +261,6 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
-RSPangoText >> setPangoContextFontMap: fontMap [
-
-	^ self
-		  ffiCall:
-		  #( void pango_context_set_font_map #( void * pangoContext
-		        , void * fontMap ) )
-		  module: PangoLibrary
-]
-
 { #category : 'accessing' }
 RSPangoText >> text [
 
@@ -290,15 +271,6 @@ RSPangoText >> text [
 RSPangoText >> text: anObject [
 
 	text := anObject
-]
-
-{ #category : 'ffi bindings' }
-RSPangoText >> updatePangoContextOnAthensCairoCanvas: cairoCanvas [
-
-	self
-		ffiCall:
-		#( void pango_cairo_update_context #( void * cairoCanvas , void * pangoContext ) )
-		module: PangoCairoLibrary
 ]
 
 { #category : 'handle' }
