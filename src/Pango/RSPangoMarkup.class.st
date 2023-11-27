@@ -25,18 +25,6 @@ RSPangoMarkup class >> initialize [
 ]
 
 { #category : 'accessing' }
-RSPangoMarkup >> convertMacros: aString [
-
-	| converted |
-	converted := aString.
-
-	Conversions keysAndValuesDo: [ :macro :replacement |
-		converted := converted copyReplaceAll: macro with: replacement ].
-
-	^ converted
-]
-
-{ #category : 'accessing' }
 RSPangoMarkup >> markup: aString [
 
 	^ self text: aString
@@ -84,76 +72,6 @@ RSPangoMarkup >> text: aString [
 			                << '</markup>' ].
 
 	^ super text: markupString
-]
-
-{ #category : 'accessing' }
-RSPangoMarkup >> text_complex: markupString [
-
-	| ll cleanedString attributesString chunks counter |
-	cleanedString := markupString.
-
-	attributesString := String empty.
-
-	ll := LibLua uniqueInstance implementationPrimitive.
-
-	self
-		withPangoAttrListFromString: String empty
-		do: [ :emptyAttrListHandler |
-			ll withOpenedLibsStateDo: [ :L |
-				| parsed attributesSize |
-				ll on: L assertLUAOK: [
-					ll
-						luaL_requiref: L name: 'cairo';
-						on: L push: #cairo;
-						lua: L get: -1 field: 'pango_parse_markup';
-						on: L push: cleanedString;
-						on: L push: 0;
-						on: L push: emptyAttrListHandler;
-						lua_pcall: L nargs: 3 nresults: 4 ].
-
-				parsed := ll on: L at: -4.
-
-
-				self
-					assert: parsed
-					description: 'Failed to parse the given Pango markup string.'.
-
-				cleanedString := ll on: L at: -3.
-				attributesString := ll on: L at: -2.
-				attributesSize := ll on: L at: -1.
-
-				self
-					assert: attributesSize >= 0
-					description: 'Invalid size of attributes list.'.
-
-				self assert: (cleanedString lines select: #isEmpty) isEmpty ] ].
-
-	chunks := SortedCollection sortUsing: [ :a :b |
-		          a third = b third
-			          ifTrue: [
-				          a second = b second
-					          ifTrue: [ a first < b first ]
-					          ifFalse: [ a second < b second ] ]
-			          ifFalse: [ a third < b third ] ].
-
-	counter := 1.
-
-	attributesString ifNotEmpty: [
-		(Character lf split: attributesString) withIndexDo: [ :attrStr :i |
-			| spaceIndex from |
-			spaceIndex := attrStr indexOf: Character space.
-
-			from := attrStr copyFrom: 1 to: spaceIndex - 1.
-
-			chunks add: {
-					counter.
-					i.
-					from asInteger.
-					attrStr } ] ].
-
-	self attributesChunks: (chunks collect: #last).
-
-	^ super text: cleanedString
 ]
 
 { #category : 'ffi bindings' }
