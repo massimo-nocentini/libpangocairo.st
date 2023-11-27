@@ -116,15 +116,6 @@ RSPangoText >> g_object_unref: handler [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
-RSPangoText >> getContextOfPangoLayout: layout [
-
-	^ self
-		  ffiCall: #( void * pango_layout_get_context
-		     #( void * layout ) )
-		  module: PangoLibrary
-]
-
 { #category : 'initialization' }
 RSPangoText >> initialize [
 
@@ -170,22 +161,6 @@ RSPangoText >> newPangoAttrListHandler [
 ]
 
 { #category : 'ffi bindings' }
-RSPangoText >> newPangoContext [
-
-	^ self
-		  ffiCall: #( void * pango_context_new #(  ) )
-		  module: PangoLibrary
-]
-
-{ #category : 'ffi bindings' }
-RSPangoText >> newPangoLayout [
-
-	^ self
-		  ffiCall: #( void * pango_layout_new #( void * pangoContext ) )
-		  module: PangoLibrary
-]
-
-{ #category : 'ffi bindings' }
 RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 
 	<primitive: 'primitive_pango_cairo_create_layout' module:
@@ -222,10 +197,9 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 { #category : 'ffi bindings' }
 RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 
-	self
-		ffiCall:
-		#( void pango_cairo_show_layout #( void * cairoCanvas , void * layout ) )
-		module: PangoCairoLibrary
+	<primitive: 'primitive_pango_cairo_show_layout' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
