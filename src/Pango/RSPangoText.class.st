@@ -68,8 +68,10 @@ RSPangoText >> computeEncompassingRectangle [
 		self
 			onAthensCairoCanvas: athensCanvas
 			withPangoLayoutDo: [ :layoutHandler |
-				rectangle := self rectangleOfPangoLayoutHandler: layoutHandler ] ]
-			ensure: [ scaledCairoFont unlock ] ].
+				| point |
+				point := self rectangleOfPangoLayoutHandler: layoutHandler.
+				rectangle := Rectangle origin: 0 @ 0 extent: point ] ] ensure: [
+			scaledCairoFont unlock ] ].
 
 	^ rectangle
 ]
@@ -292,21 +294,11 @@ RSPangoText >> pangoAttrListUnref: handler [
 ]
 
 { #category : 'handle' }
-RSPangoText >> primitiveRectangleOfPangoLayoutHandler: anHandler [
+RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
 	<primitive: 'primitive_pango_layout_get_pixel_extents' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
-]
-
-{ #category : 'handle' }
-RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
-
-	| point |
-	point := self primitiveRectangleOfPangoLayoutHandler: anHandler.
-	
-
-	^ Rectangle origin: 0 @ 0 extent: point
 ]
 
 { #category : 'ffi bindings' }
