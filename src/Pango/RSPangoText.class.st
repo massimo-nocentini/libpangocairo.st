@@ -220,10 +220,9 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 { #category : 'ffi bindings' }
 RSPangoText >> pangoAttrListHandlerFromString: aString [
 
-	^ self
-		  ffiCall:
-		  #( void * pango_attr_list_from_string #( const char * aString ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_attr_list_from_string' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'handle' }
