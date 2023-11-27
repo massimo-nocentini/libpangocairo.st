@@ -213,10 +213,9 @@ RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 { #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: layout setWidth: width [
 
-	^ self
-		  ffiCall:
-		  #( void pango_layout_set_width #( void * layout , int width ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_layout_set_width' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
