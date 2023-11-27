@@ -51,11 +51,9 @@ RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandle
 { #category : 'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 
-	^ self
-		  ffiCall:
-			  #( void pango_layout_set_markup #( void #* layoutHandler
-			        #, const char #* aString #, -1 ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_layout_set_text' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'handle' }
