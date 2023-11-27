@@ -294,7 +294,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 { #category : 'handle' }
 RSPangoText >> primitiveRectangleOfPangoLayoutHandler: anHandler [
 
-	<primitive: 'primitive_pango_layout_get_extents' module:
+	<primitive: 'primitive_pango_layout_get_pixel_extents' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
@@ -302,28 +302,11 @@ RSPangoText >> primitiveRectangleOfPangoLayoutHandler: anHandler [
 { #category : 'handle' }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
-	| liblua |
-	liblua := LibLua uniqueInstance implementationPrimitive.
+	| point |
+	point := self primitiveRectangleOfPangoLayoutHandler: anHandler.
+	
 
-	^ liblua withOpenedLibsStateDo: [ :L |
-		  | x y w h requestLogicalRectangle |
-		  requestLogicalRectangle := true. "Ink rectangle otherwise."
-
-		  liblua on: L assertLUAOK: [
-			  liblua
-				  luaL_requiref: L name: 'cairo';
-				  on: L push: #cairo;
-				  lua: L get: -1 field: 'pango_layout_get_extents';
-				  on: L push: anHandler;
-				  on: L push: requestLogicalRectangle;
-				  lua_pcall: L nargs: 2 nresults: 4 ].
-
-		  x := liblua on: L at: -4.
-		  y := liblua on: L at: -3.
-		  w := liblua on: L at: -2.
-		  h := liblua on: L at: -1.
-
-		  Rectangle origin: x @ y extent: w @ h ]
+	^ Rectangle origin: 0 @ 0 extent: point
 ]
 
 { #category : 'ffi bindings' }
