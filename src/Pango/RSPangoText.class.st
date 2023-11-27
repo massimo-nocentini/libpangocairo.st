@@ -246,9 +246,9 @@ RSPangoText >> pangoAttrListString [
 { #category : 'ffi bindings' }
 RSPangoText >> pangoAttrListUnref: handler [
 
-	^ self
-		  ffiCall: #( void pango_attr_list_unref #( void * handler ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_attr_list_unref' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'handle' }
