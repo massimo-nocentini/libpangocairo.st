@@ -196,7 +196,7 @@ RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 { #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 
-		<primitive: 'primitive_pango_layout_set_attributes' module:
+	<primitive: 'primitive_pango_layout_set_attributes' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
