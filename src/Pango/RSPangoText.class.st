@@ -34,6 +34,14 @@ RSPangoText >> accept: visitor [
 	visitor visitPangoText: self
 ]
 
+{ #category : 'converting' }
+RSPangoText >> asCompositeShape [
+
+	^ RSComposite new
+		  shapes: { self };
+		  yourself
+]
+
 { #category : 'accessing' }
 RSPangoText >> attributesChunks: anObject [
 
@@ -178,11 +186,14 @@ RSPangoText >> newPangoLayout [
 
 { #category : 'ffi bindings' }
 RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
-
-	self
+	"self
 		ffiCall:
 		#( void * pango_cairo_create_layout #( void * cairoCanvas ) )
-		module: PangoCairoLibrary
+		module: PangoCairoLibrary"
+
+	<primitive: 'primitive_pango_cairo_create_layout' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'handle' }
@@ -232,11 +243,9 @@ RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 { #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 
-	^ self
-		  ffiCall:
-			  #( void pango_layout_set_text #( void * pangoHandler , const
-			        char * aString , -1 ) )
-		  module: PangoLibrary
+	<primitive: 'primitive_pango_cairo_create_layout' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
@@ -280,6 +289,14 @@ RSPangoText >> pangoAttrListUnref: handler [
 	^ self
 		  ffiCall: #( void pango_attr_list_unref #( void * handler ) )
 		  module: PangoLibrary
+]
+
+{ #category : 'handle' }
+RSPangoText >> primitiveRectangleOfPangoLayoutHandler: anHandler [
+
+	<primitive: 'primitive_pango_layout_get_extents' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'handle' }
