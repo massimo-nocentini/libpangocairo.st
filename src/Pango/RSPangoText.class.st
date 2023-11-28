@@ -81,25 +81,25 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 { #category : 'accessing - computed' }
 RSPangoText >> computeEncompassingRectangle [
 
-	| surface rectangle athensCanvas layout |
+	| surface rectangle athensCanvas layout pair attrsHandler originAndExtentPoints |
 	"A very small surface to create an `AthensCairoCanvas` object."
 	surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
 
 	athensCanvas := self cairo_create: surface.
 
-	layout := self
-		          onAthensCairoCanvas: athensCanvas
-		          withPangoLayoutDo: [ :layoutHandler |
-			          | originAndExtentPoints |
-			          originAndExtentPoints := self
-				                                   rectangleOfPangoLayoutHandler:
-				                                   layoutHandler.
+	pair := self onAthensCairoCanvas: athensCanvas.
 
-			          rectangle := Rectangle
-				                       origin: originAndExtentPoints first
-				                       extent: originAndExtentPoints second ].
+	layout := pair first.
+	attrsHandler := pair second.
+
+	originAndExtentPoints := self rectangleOfPangoLayoutHandler: layout.
+
+	rectangle := Rectangle
+		             origin: originAndExtentPoints first
+		             extent: originAndExtentPoints second.
 
 	self
+		pangoAttrListUnref: attrsHandler;
 		g_object_unref: layout;
 		cairo_destroy: athensCanvas;
 		cairo_surface_destroy: surface.
@@ -191,7 +191,7 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 ]
 
 { #category : 'handle' }
-RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
+RSPangoText >> onAthensCairoCanvas: athensCanvas [
 
 	| layoutHandler attrsHandler |
 	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
@@ -206,11 +206,9 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
 	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
 
-	aBlock value: layoutHandler.
-
-	self pangoAttrListUnref: attrsHandler.
-
-	^ layoutHandler
+	^ {
+		  layoutHandler.
+		  attrsHandler }
 ]
 
 { #category : 'ffi bindings' }
