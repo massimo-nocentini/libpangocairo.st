@@ -191,27 +191,24 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 { #category : 'handle' }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
-	| layoutHandler ensuredBlock |
+	| layoutHandler |
 	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
 		                 athensCanvas getHandle.
 
-	ensuredBlock := [
-	                self
-		                onPangoLayout: layoutHandler
-		                setWidth: self layoutWidth;
-		                onPangoLayout: layoutHandler setText: self text.
+	[
+	self
+		onPangoLayout: layoutHandler setWidth: self layoutWidth;
+		onPangoLayout: layoutHandler setText: self text.
 
-	                self
-		                withPangoAttrListFromString:
-		                self pangoAttrListString
-		                do: [ :attrListHandler |
-			                self
-				                onPangoLayout: layoutHandler
-				                setAttrListHandler: attrListHandler.
+	self
+		withPangoAttrListFromString: self pangoAttrListString
+		do: [ :attrListHandler |
+			self
+				onPangoLayout: layoutHandler
+				setAttrListHandler: attrListHandler.
 
-			                aBlock value: layoutHandler ] ].
-
-	ensuredBlock ensure: [ self g_object_unref: layoutHandler ]
+			aBlock value: layoutHandler ] ] ensure: [
+		self g_object_unref: layoutHandler ]
 ]
 
 { #category : 'ffi bindings' }
