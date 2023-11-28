@@ -254,7 +254,6 @@ RSPangoText >> pangoAttrListHandlerFromString: aString [
 { #category : 'handle' }
 RSPangoText >> pangoAttrListString [
 
-	| chunks |
 	^ String streamContents: [ :stream |
 		  stream
 			  nextPutAll:
@@ -268,19 +267,7 @@ RSPangoText >> pangoAttrListString [
 		  attributesChunks do: [ :each |
 			  stream
 				  nextPutAll: each;
-				  lf ] ].
-
-	chunks := OrderedCollection new
-		          add:
-			          '0 -1 foreground #'
-			          , self defaultForegroundColor asHexString;
-		          add: ('0 -1 font-desc "{1}, Normal {2}"' format: {
-						           self font familyName.
-						           self font pointSize });
-		          addAll: attributesChunks;
-		          yourself.
-
-	^ Character lf join: chunks
+				  lf ] ]
 ]
 
 { #category : 'ffi bindings' }
