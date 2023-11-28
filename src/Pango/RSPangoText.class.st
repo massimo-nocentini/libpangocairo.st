@@ -81,24 +81,26 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 { #category : 'accessing - computed' }
 RSPangoText >> computeEncompassingRectangle [
 
-	| surface rectangle athensCanvas |
+	| surface rectangle athensCanvas layout |
 	"A very small surface to create an `AthensCairoCanvas` object."
 	surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
 
 	athensCanvas := self cairo_create: surface.
 
-	self
-		onAthensCairoCanvas: athensCanvas
-		withPangoLayoutDo: [ :layoutHandler |
-			| originAndExtentPoints |
-			originAndExtentPoints := self rectangleOfPangoLayoutHandler:
-				                         layoutHandler.
+	layout := self
+		          onAthensCairoCanvas: athensCanvas
+		          withPangoLayoutDo: [ :layoutHandler |
+			          | originAndExtentPoints |
+			          originAndExtentPoints := self
+				                                   rectangleOfPangoLayoutHandler:
+				                                   layoutHandler.
 
-			rectangle := Rectangle
-				             origin: originAndExtentPoints first
-				             extent: originAndExtentPoints second ].
+			          rectangle := Rectangle
+				                       origin: originAndExtentPoints first
+				                       extent: originAndExtentPoints second ].
 
 	self
+		g_object_unref: layout;
 		cairo_destroy: athensCanvas;
 		cairo_surface_destroy: surface.
 
@@ -191,24 +193,24 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 { #category : 'handle' }
 RSPangoText >> onAthensCairoCanvas: athensCanvas withPangoLayoutDo: aBlock [
 
-	| layoutHandler |
+	| layoutHandler attrsHandler |
 	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
-		                 athensCanvas getHandle.
+		                 athensCanvas.
 
-	[
 	self
 		onPangoLayout: layoutHandler setWidth: self layoutWidth;
 		onPangoLayout: layoutHandler setText: self text.
 
-	self
-		withPangoAttrListFromString: self pangoAttrListString
-		do: [ :attrListHandler |
-			self
-				onPangoLayout: layoutHandler
-				setAttrListHandler: attrListHandler.
+	attrsHandler := self withPangoAttrListFromString:
+		                self pangoAttrListString.
 
-			aBlock value: layoutHandler ] ] ensure: [
-		self g_object_unref: layoutHandler ]
+	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
+
+	aBlock value: layoutHandler.
+
+	self pangoAttrListUnref: attrsHandler.
+
+	^ layoutHandler
 ]
 
 { #category : 'ffi bindings' }
@@ -255,6 +257,21 @@ RSPangoText >> pangoAttrListHandlerFromString: aString [
 RSPangoText >> pangoAttrListString [
 
 	| chunks |
+	^ String streamContents: [ :stream |
+		  stream
+			  nextPutAll:
+				  '0 -1 foreground #' , self defaultForegroundColor asHexString;
+			  lf;
+			  nextPutAll: ('0 -1 font-desc "{1}, Normal {2}"' format: {
+							   self font familyName.
+							   self font pointSize });
+			  lf.
+
+		  attributesChunks do: [ :each |
+			  stream
+				  nextPutAll: each;
+				  lf ] ].
+
 	chunks := OrderedCollection new
 		          add:
 			          '0 -1 foreground #'
@@ -284,6 +301,26 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 	self primitiveFail
 ]
 
+{ #category : 'handle' }
+RSPangoText >> spangoAttrListString [
+
+	^ String streamContents: [ :stream |
+		  stream
+			  nextPutAll: '0 -1 foreground #';
+			  nextPutAll: self defaultForegroundColor asHexString;
+			  lf;
+			  nextPutAll: '0 -1 font-desc "';
+			  nextPutAll: self font familyName;
+			  nextPutAll: ', Normal ';
+			  nextPutAll: self font pointSize asString;
+			  nextPutAll: '"'.
+
+		  attributesChunks do: [ :each |
+			  stream
+				  lf;
+				  nextPutAll: each ] ]
+]
+
 { #category : 'accessing' }
 RSPangoText >> text [
 
@@ -297,13 +334,9 @@ RSPangoText >> text: anObject [
 ]
 
 { #category : 'handle' }
-RSPangoText >> withPangoAttrListFromString: aString do: aBlock [
+RSPangoText >> withPangoAttrListFromString: aString [
 
-	| handler |
-	handler := aString
-		           ifEmpty: [ self newPangoAttrListHandler ]
-		           ifNotEmpty: [
-		           self pangoAttrListHandlerFromString: aString ].
-
-	[ aBlock value: handler ] ensure: [ self pangoAttrListUnref: handler ]
+	^ aString
+		  ifEmpty: [ self newPangoAttrListHandler ]
+		  ifNotEmpty: [ self pangoAttrListHandlerFromString: aString ]
 ]

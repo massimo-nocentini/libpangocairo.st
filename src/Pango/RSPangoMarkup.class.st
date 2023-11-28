@@ -75,7 +75,7 @@ RSPangoMarkup >> text: aString [
 ]
 
 { #category : 'ffi bindings' }
-RSPangoMarkup >> withPangoAttrListFromString: aString do: aBlock [
+RSPangoMarkup >> withPangoAttrListFromString: aString [
 
-	aBlock value: ExternalAddress null
+	^ ExternalAddress null
 ]
