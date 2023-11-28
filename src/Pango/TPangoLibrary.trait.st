@@ -1,14 +1,15 @@
 Trait {
-	#name : #TPangoLibrary,
-	#category : 'Pango'
+	#name : 'TPangoLibrary',
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #'library path' }
+{ #category : 'library path' }
 TPangoLibrary classSide >> ffiLibraryName [
 	^ PangoLibrary
 ]
 
-{ #category : #'library path' }
+{ #category : 'library path' }
 TPangoLibrary >> ffiLibraryName [
 	^ self class ffiLibraryName
 ]

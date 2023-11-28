@@ -1,6 +1,6 @@
-Extension { #name : #TextFontReference }
+Extension { #name : 'TextFontReference' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 TextFontReference >> asPangoAttributeChunks: aFont [
 	"Resend `attributesForFont:` from my parent class."
 

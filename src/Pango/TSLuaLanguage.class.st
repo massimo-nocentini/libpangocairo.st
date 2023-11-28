@@ -1,10 +1,11 @@
 Class {
-	#name : #TSLuaLanguage,
-	#superclass : #TSLanguage,
-	#category : 'Pango'
+	#name : 'TSLuaLanguage',
+	#superclass : 'TSLanguage',
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TSLuaLanguage >> initialize [
 
 	super initialize.
@@ -49,7 +50,7 @@ TSLuaLanguage >> initialize [
 			 , (SHStyleElement withTokens: { 'true' }) color asHexString) }
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 TSLuaLanguage >> orderedPatterns [
 
 	^ super orderedPatterns

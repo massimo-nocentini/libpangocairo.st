@@ -1,6 +1,6 @@
-Extension { #name : #String }
+Extension { #name : 'String' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> asRSPangoShapeUsingFont: font [
 
 	^ RSPangoMarkup new
@@ -9,20 +9,20 @@ String >> asRSPangoShapeUsingFont: font [
 		  asCompositeShape
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> fixEmptyLinesForPango [
 
 	^ self fixEmptyLinesForPangoUsingJoiner: Character cr
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> fixEmptyLinesForPangoUsingJoiner: joiner [
 
 	^ joiner join: ((Character cr split: self) collect: [ :l |
 			   l ifEmpty: [ self class space ] ])
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> gmarkupEscapeText [
 	"https://docs.gtk.org/glib/func.markup_escape_text.html"
 
@@ -32,7 +32,7 @@ String >> gmarkupEscapeText [
 		  module: PangoLibrary
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> replaceAllTabsWithSpacesForPango [
 
 	^ self
@@ -40,7 +40,7 @@ String >> replaceAllTabsWithSpacesForPango [
 		  with: (self class space repeat: 3)
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 String >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( string )

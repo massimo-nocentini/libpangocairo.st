@@ -1,24 +1,25 @@
 Class {
-	#name : #PangoLayout,
-	#superclass : #FFIOpaqueObject,
+	#name : 'PangoLayout',
+	#superclass : 'FFIOpaqueObject',
 	#traits : 'TPangoLibrary',
 	#classTraits : 'TPangoLibrary classTrait',
-	#category : 'Pango'
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 PangoLayout class >> newCanvas: aCanvas [
 
 	^ self pango_cairo_create_layout: aCanvas
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 PangoLayout class >> newContext: aContext [
 
 	^ self pango_layout_new: aContext
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 PangoLayout class >> pango_cairo_create_layout: cairo_t [
 
 	^ self
@@ -28,12 +29,12 @@ PangoLayout class >> pango_cairo_create_layout: cairo_t [
 		  module: PangoCairoLibrary
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 PangoLayout class >> pango_layout_new: context [
 	^ self ffiCall: #(PangoLayout *pango_layout_new (PangoContext *context))
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> font_description_from_string: str [
 
 	self ffiCall:
@@ -41,39 +42,39 @@ PangoLayout >> font_description_from_string: str [
 		   #( const char * str ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> get_line_count [
 
 	^ self ffiCall: #( int pango_layout_get_line_count
 	     #( self ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> get_line_spacing [
 
 	^ self ffiCall: #( float pango_layout_get_line_spacing
 	     #( self ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> get_spacing [
 
 	^ self ffiCall: #( int pango_layout_get_spacing
 	     #( self ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> logicalRectangle [
 
 	^ Rectangle origin: 0 @ 0 extent: self pixelSize
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> markup: markup [
 	^ self ffiCall: #(void pango_layout_set_markup (self, const char *markup, -1))
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> pixelSize [
 
 	| widthBuffer heightBuffer |
@@ -83,39 +84,39 @@ PangoLayout >> pixelSize [
 	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 PangoLayout >> primGetPixelSizeWidth: width height: height [
 
 	self ffiCall:
 		#( void pango_layout_get_pixel_size #( self , int * width , int * height ) )
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 PangoLayout >> primGetSizeWidth: width height: height [
 	self ffiCall: #(void pango_layout_get_size (self, int *width, int *height))
 
 	
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> pushOnLua: state liblua: liblua [
 
 	^ liblua on: state push: handle
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> set_attributes: attrListExternalAddress [
 
 	self ffiCall:
 		#( void pango_layout_set_attributes #( self , void * attrListExternalAddress ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> set_font_description: desc [
 	self ffiCall: #(void pango_layout_set_font_description (self, const PangoFontDescription *desc))
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> set_line_spacing: spacing [
 
 	^ self ffiCall:
@@ -123,21 +124,21 @@ PangoLayout >> set_line_spacing: spacing [
 		     #( self , float spacing ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> set_single_paragraph_mode: b [
 
 	^ self ffiCall: #( void pango_layout_set_single_paragraph_mode
 		     #( self , bool b ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> set_spacing: spacing [
 
 	^ self ffiCall:
 		  #( void pango_layout_set_spacing #( self , int spacing ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> size [ 
 	| widthBuffer heightBuffer |
 	widthBuffer := ByteArray new: FFIInt32 externalTypeSize.
@@ -146,14 +147,14 @@ PangoLayout >> size [
 	^ (widthBuffer signedLongAt: 1) @ (heightBuffer signedLongAt: 1)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> text: text [
 
 	^ self ffiCall:
 		  #( void pango_layout_set_text #( self , const char * text , -1 ) )
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> unref [
 
 	^ self
@@ -161,7 +162,7 @@ PangoLayout >> unref [
 		  module: PangoLibrary
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 PangoLayout >> width: width [
 	self ffiCall: #(void pango_layout_set_width (self, int width))
 ]

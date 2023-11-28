@@ -1,6 +1,6 @@
-Extension { #name : #TextEmphasis }
+Extension { #name : 'TextEmphasis' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 TextEmphasis >> asPangoAttributeChunks: aFont [
 
 	^ self emphasisCode = self class bold emphasisCode

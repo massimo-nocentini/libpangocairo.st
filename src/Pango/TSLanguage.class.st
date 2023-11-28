@@ -1,44 +1,45 @@
 Class {
-	#name : #TSLanguage,
-	#superclass : #Object,
+	#name : 'TSLanguage',
+	#superclass : 'Object',
 	#instVars : [
 		'highlights',
 		'matches'
 	],
-	#category : 'Pango'
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 TSLanguage class >> c [
 
 	^ TSCLanguage new
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 TSLanguage class >> json [
 
 	^ TSJsonLanguage new
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 TSLanguage class >> lua [
 
 	^ TSLuaLanguage new
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 TSLanguage class >> psql [
 
 	^ TSPSQLLanguage new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSLanguage >> at: pattern [
 
 	^ highlights at: pattern ifAbsent: [ #(  ) ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TSLanguage >> initialize [
 
 	super initialize.
@@ -46,19 +47,19 @@ TSLanguage >> initialize [
 	highlights := Dictionary new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSLanguage >> matches: anObject [
 
 	matches := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 TSLanguage >> orderedPatterns [
 
 	^ matches keys
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 TSLanguage >> populate: chunks offset: i text: clean_text counter: counter [
 
 	| sorted |

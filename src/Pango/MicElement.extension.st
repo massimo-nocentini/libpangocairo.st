@@ -1,6 +1,6 @@
-Extension { #name : #MicElement }
+Extension { #name : 'MicElement' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 MicElement >> asFooterStringForPangoMarkupMicrodownVisitor: aPangoMarkupMicrodownVisitor [
 
 	^ String empty
