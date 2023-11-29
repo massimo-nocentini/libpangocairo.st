@@ -256,18 +256,19 @@ RSPangoText >> pangoAttrListString [
 
 	^ String streamContents: [ :stream |
 		  stream
-			  nextPutAll:
-				  '0 -1 foreground #' , self defaultForegroundColor asHexString;
+			  nextPutAll: '0 -1 foreground #';
+			  nextPutAll: self defaultForegroundColor asHexString;
 			  lf;
-			  nextPutAll: ('0 -1 font-desc "{1}, Normal {2}"' format: {
-							   self font familyName.
-							   self font pointSize });
-			  lf.
+			  nextPutAll: '0 -1 font-desc "';
+			  nextPutAll: self font familyName;
+			  nextPutAll: ', Normal ';
+			  nextPutAll: self font pointSize asString;
+			  nextPutAll: '"'.
 
 		  attributesChunks do: [ :each |
 			  stream
-				  nextPutAll: each;
-				  lf ] ]
+				  lf;
+				  nextPutAll: each ] ]
 ]
 
 { #category : 'ffi bindings' }
@@ -284,26 +285,6 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 	<primitive: 'primitive_pango_layout_get_pixel_extents' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
-]
-
-{ #category : 'handle' }
-RSPangoText >> spangoAttrListString [
-
-	^ String streamContents: [ :stream |
-		  stream
-			  nextPutAll: '0 -1 foreground #';
-			  nextPutAll: self defaultForegroundColor asHexString;
-			  lf;
-			  nextPutAll: '0 -1 font-desc "';
-			  nextPutAll: self font familyName;
-			  nextPutAll: ', Normal ';
-			  nextPutAll: self font pointSize asString;
-			  nextPutAll: '"'.
-
-		  attributesChunks do: [ :each |
-			  stream
-				  lf;
-				  nextPutAll: each ] ]
 ]
 
 { #category : 'accessing' }
