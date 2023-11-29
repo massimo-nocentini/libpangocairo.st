@@ -1,12 +1,12 @@
-Extension { #name : #TextAttribute }
+Extension { #name : 'TextAttribute' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 TextAttribute >> asPangoAttributeChunks: aFont [
 
 	^ {  }
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 TextAttribute >> attributesForFont: aFont [
 
 	^ {

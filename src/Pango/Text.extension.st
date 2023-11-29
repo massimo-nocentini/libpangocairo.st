@@ -1,6 +1,6 @@
-Extension { #name : #Text }
+Extension { #name : 'Text' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 Text >> asRSPangoShapeUsingFont: aFont [
 
 	| attributes |

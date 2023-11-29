@@ -1,6 +1,6 @@
-Extension { #name : #MicFootnoteBlock }
+Extension { #name : 'MicFootnoteBlock' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 MicFootnoteBlock >> asFooterStringForPangoMarkupMicrodownVisitor: aPangoMarkupMicrodownVisitor [
 
 	^ self note
