@@ -1,14 +1,13 @@
 Class {
-	#name : 'RSPangoMarkup',
-	#superclass : 'RSPangoText',
+	#name : #RSPangoMarkup,
+	#superclass : #RSPangoText,
 	#classVars : [
 		'Conversions'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : #Pango
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 RSPangoMarkup class >> initialize [
 
 	Conversions := Dictionary new
@@ -24,19 +23,19 @@ RSPangoMarkup class >> initialize [
 		               yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
 	^ self text: aString
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandler [
 
 	
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 
 	<primitive: 'primitive_pango_layout_set_markup' module:
@@ -44,37 +43,34 @@ RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoMarkup >> pangoAttrListString [
 
 	^ String empty
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoMarkup >> text: aString [
 
 	| markupString |
 	markupString := String streamContents: [ :stream |
-		                | span macrosFree |
-		                span := '<span {1} foreground="#{2}">' format: {
-				                        self font pangoMarkupSpanTagContent.
-				                        self defaultForegroundColor asHexString }.
-
-		                "macrosFree := self convertMacros:
-			                              aString fixEmptyLinesForPango."
-		                macrosFree := aString fixEmptyLinesForPango.
-
 		                stream
 			                << '<markup>';
-			                << span;
-			                << macrosFree;
+			                << '<span font_family="';
+			                << self font familyName;
+			                << '" font_size="';
+			                << self font pointSize asString;
+			                << 'pt" foreground="#';
+			                << self defaultForegroundColor asHexString;
+			                << '">';
+			                << aString fixEmptyLinesForPango;
 			                << '</span>';
 			                << '</markup>' ].
 
 	^ super text: markupString
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoMarkup >> withPangoAttrListFromString: aString [
 
 	^ ExternalAddress null

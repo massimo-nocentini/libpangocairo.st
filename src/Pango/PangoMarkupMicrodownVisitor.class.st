@@ -1,6 +1,6 @@
 Class {
-	#name : 'PangoMarkupMicrodownVisitor',
-	#superclass : 'MicrodownVisitor',
+	#name : #PangoMarkupMicrodownVisitor,
+	#superclass : #MicrodownVisitor,
 	#instVars : [
 		'stream',
 		'nestedLevel',
@@ -23,18 +23,17 @@ Class {
 	#classVars : [
 		'UnorderedBullets'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : 'Pango'
 }
 
-{ #category : 'class initialization' }
+{ #category : #'class initialization' }
 PangoMarkupMicrodownVisitor class >> initialize [
 
 	UnorderedBullets := { '&#9679;'. '&#9675;'. '&#9632;'. '&#9633;'.
 	                    '&#9654;'. '&#9655;'. '&#9733;'. '&#9734;' }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 PangoMarkupMicrodownVisitor >> appendFooters [
 
 	(footers isNotEmpty or: [ treeSitterLanguages isNotEmpty ]) ifTrue: [
@@ -57,7 +56,7 @@ PangoMarkupMicrodownVisitor >> appendFooters [
 			<< '</span></span>' ]
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 
 	| pango composite |
@@ -81,7 +80,7 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 	^ composite asShape
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 
 	^ nestedLevel > 0
@@ -91,13 +90,13 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 		  ifFalse: [ '' ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> indentationString [
 
 	^ '   '
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 PangoMarkupMicrodownVisitor >> initialize [
 
 	super initialize.
@@ -126,7 +125,7 @@ PangoMarkupMicrodownVisitor >> initialize [
 	fontMath := LogicalFont pangoMath
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 PangoMarkupMicrodownVisitor >> nextPutAllAlpha: alpha mod: link [
 
 	link ifNotNil: [
@@ -139,19 +138,19 @@ PangoMarkupMicrodownVisitor >> nextPutAllAlpha: alpha mod: link [
 							 link value }) ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 PangoMarkupMicrodownVisitor >> pangoMarkup [
 
 	^ pangoMarkup
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> pointSizeForHeaderLevel: l [
 
 	^ levels at: l ifAbsent: [ levels last ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> popModifier [
 
 	modifier := modifier nextLink.
@@ -159,7 +158,7 @@ PangoMarkupMicrodownVisitor >> popModifier [
 	^ modifier
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
 
 	| assoc str |
@@ -181,7 +180,7 @@ PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
 		<< ']</span></span>'
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> pushModifier: aString [
 
 	modifier := ValueLink new
@@ -192,7 +191,7 @@ PangoMarkupMicrodownVisitor >> pushModifier: aString [
 	^ modifier
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
 	^ treeSitterLanguages collect: [ :assoc |
@@ -224,7 +223,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 		  group asShape ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 PangoMarkupMicrodownVisitor >> visit: mic [
 	"Cleanup before starting a new visit."
 
@@ -245,7 +244,7 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 	^ pangoMarkup
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 
 	stream << '<span weight="bold">'.
@@ -257,7 +256,7 @@ PangoMarkupMicrodownVisitor >> visitBold: aFormat [
 	lastMicBlock := aFormat
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 
 	| label tsText |
@@ -287,7 +286,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 	lastMicBlock := aCodeBlock
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 
 	self postFooter: aFootnote do: [  ].
@@ -295,7 +294,7 @@ PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 	lastMicBlock := aFootnote
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	| sectionNumber l |
@@ -337,7 +336,7 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 	lastMicBlock := aHeader
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
 
 	^ anInputFileMicBlock arguments
@@ -368,7 +367,7 @@ PangoMarkupMicrodownVisitor >> visitInputFile: anInputFileMicBlock [
 		  ifAbsent: [ super visitInputFile: anInputFileMicBlock ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 
 	stream << '<span font_style="italic">'.
@@ -378,7 +377,7 @@ PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 	stream << '</span>'
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
 	self postFooter: aLink do: [
@@ -389,13 +388,13 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 		stream << '</i>' ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
 	self notYetImplemented
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 
 	stream
@@ -408,7 +407,7 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 	super visitMathInline: aMicMathInline
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
 	stream
@@ -421,7 +420,7 @@ PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 	stream << '</span>'
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 
 	| mod prevLevel item stack |
@@ -458,7 +457,7 @@ PangoMarkupMicrodownVisitor >> visitOrderedListItem: anOrderedItem [
 	self popModifier
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 
 	lastMicBlock
@@ -474,7 +473,7 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 	lastMicBlock := aParagraph
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 
 	self withOneNestedLevelMoreDo: [
@@ -496,7 +495,7 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 		self popModifier ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitRaw: aRaw [
 
 	stream << aRaw text.
@@ -504,7 +503,7 @@ PangoMarkupMicrodownVisitor >> visitRaw: aRaw [
 	super visitRaw: aRaw
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
 
 	stream << '<span strikethrough="true">'.
@@ -514,7 +513,7 @@ PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
 	stream << '</span>'
 ]
 
-{ #category : 'visiting - inline elements' }
+{ #category : #'visiting - inline elements' }
 PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 
 	aMicTextBlock text lines ifNotEmpty: [ :lines |
@@ -530,14 +529,14 @@ PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 	super visitText: aMicTextBlock
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedList: anUnorderedList [
 
 	self withOneNestedLevelMoreDo: [
 		super visitUnorderedList: anUnorderedList ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 
 	self pushModifier: self bulletAtCurrentNestedLevel.
@@ -551,7 +550,7 @@ PangoMarkupMicrodownVisitor >> visitUnorderedListItem: anUnorderedList [
 	self popModifier
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 PangoMarkupMicrodownVisitor >> withOneNestedLevelMoreDo: aBlock [
 
 	nestedLevel := nestedLevel + 1.

@@ -15,8 +15,8 @@ logicalRectangle
 
 "
 Class {
-	#name : 'RSPangoText',
-	#superclass : 'RSBoundingShape',
+	#name : #RSPangoText,
+	#superclass : #RSBoundingShape,
 	#instVars : [
 		'text',
 		'font',
@@ -24,17 +24,16 @@ Class {
 		'attributesChunks',
 		'layoutWidth'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : 'Pango'
 }
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 RSPangoText >> accept: visitor [
 
 	visitor visitPangoText: self
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 RSPangoText >> asCompositeShape [
 
 	^ RSComposite new
@@ -42,13 +41,13 @@ RSPangoText >> asCompositeShape [
 		  yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> attributesChunks: anObject [
 
 	attributesChunks := anObject
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> cairoImageSurfaceCreateWidth: w height: h [
 
 	<primitive: 'primitive_cairo_image_surface_create' module:
@@ -56,21 +55,21 @@ RSPangoText >> cairoImageSurfaceCreateWidth: w height: h [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> cairo_create: surfaceExternalAddress [
 
 	<primitive: 'primitive_cairo_create' module: 'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> cairo_destroy: surfaceExternalAddress [
 
 	<primitive: 'primitive_cairo_destroy' module: 'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 
 	<primitive: 'primitive_cairo_surface_destroy' module:
@@ -78,7 +77,7 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 	self primitiveFail
 ]
 
-{ #category : 'accessing - computed' }
+{ #category : #'accessing - computed' }
 RSPangoText >> computeEncompassingRectangle [
 
 	| surface rectangle athensCanvas layout pair attrsHandler originAndExtentPoints |
@@ -107,38 +106,38 @@ RSPangoText >> computeEncompassingRectangle [
 	^ rectangle
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> defaultForegroundColor [
 
 	^ defaultForegroundColor
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> defaultForegroundColor: anObject [
 
 	defaultForegroundColor := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> font [
 
 	^ font
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> font: anObject [
 
 	font := anObject
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> g_object_unref: handler [
 
 	<primitive: 'primitive_g_object_unref' module: 'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 RSPangoText >> initialize [
 
 	super initialize.
@@ -150,31 +149,31 @@ RSPangoText >> initialize [
 		attributesChunks: OrderedCollection new
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> layoutWidth [
 
 	^ layoutWidth
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> layoutWidth: width [
 
 	layoutWidth := width
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> layoutWidthNiceColumns [
 
 	self layoutWidth: (1024 * Float silverRatio) ceiling
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> layoutWidthUnbounded [
 
 	self layoutWidth: -1
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoAttrListHandler [
 
 	<primitive: 'primitive_pango_attr_list_new' module:
@@ -182,7 +181,7 @@ RSPangoText >> newPangoAttrListHandler [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 
 	<primitive: 'primitive_pango_cairo_create_layout' module:
@@ -190,7 +189,7 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoText >> onAthensCairoCanvas: athensCanvas [
 
 	| layoutHandler attrsHandler |
@@ -211,7 +210,7 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas [
 		  attrsHandler }
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 
 	<primitive: 'primitive_pango_cairo_show_layout' module:
@@ -219,7 +218,7 @@ RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 
 	<primitive: 'primitive_pango_layout_set_attributes' module:
@@ -227,7 +226,7 @@ RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 
 	<primitive: 'primitive_pango_layout_set_text' module:
@@ -235,7 +234,7 @@ RSPangoText >> onPangoLayout: pangoHandler setText: aString [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> onPangoLayout: layout setWidth: width [
 
 	<primitive: 'primitive_pango_layout_set_width' module:
@@ -243,7 +242,7 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 	self primitiveFail
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> pangoAttrListHandlerFromString: aString [
 
 	<primitive: 'primitive_pango_attr_list_from_string' module:
@@ -251,7 +250,7 @@ RSPangoText >> pangoAttrListHandlerFromString: aString [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoText >> pangoAttrListString [
 
 	^ String streamContents: [ :stream |
@@ -270,7 +269,7 @@ RSPangoText >> pangoAttrListString [
 				  lf ] ]
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoText >> pangoAttrListUnref: handler [
 
 	<primitive: 'primitive_pango_attr_list_unref' module:
@@ -278,7 +277,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
 	<primitive: 'primitive_pango_layout_get_pixel_extents' module:
@@ -286,7 +285,7 @@ RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoText >> spangoAttrListString [
 
 	^ String streamContents: [ :stream |
@@ -306,19 +305,19 @@ RSPangoText >> spangoAttrListString [
 				  nextPutAll: each ] ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> text [
 
 	^ text
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoText >> text: anObject [
 
 	text := anObject
 ]
 
-{ #category : 'handle' }
+{ #category : #handle }
 RSPangoText >> withPangoAttrListFromString: aString [
 
 	^ aString

@@ -1,12 +1,12 @@
-Extension { #name : 'AthensCairoCanvas' }
+Extension { #name : #AthensCairoCanvas }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> getHandle [
 
 	^ handle
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> layoutPath: layout [
 
 	self
@@ -14,7 +14,7 @@ AthensCairoCanvas >> layoutPath: layout [
 		module: PangoCairoLibrary
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> newPangoLayout [
 
 	self
@@ -23,7 +23,7 @@ AthensCairoCanvas >> newPangoLayout [
 		module: PangoCairoLibrary
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> showLayout: layout [
 
 	self
@@ -31,7 +31,7 @@ AthensCairoCanvas >> showLayout: layout [
 		module: PangoCairoLibrary
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> updateContext: context [
 
 	self
@@ -40,7 +40,7 @@ AthensCairoCanvas >> updateContext: context [
 		module: PangoCairoLibrary
 ]
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 AthensCairoCanvas >> updateLayout: layout [
 
 	self
