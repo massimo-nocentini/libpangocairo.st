@@ -1,14 +1,13 @@
 Class {
-	#name : 'RSPangoMarkup',
-	#superclass : 'RSPangoText',
+	#name : #RSPangoMarkup,
+	#superclass : #RSPangoText,
 	#classVars : [
 		'Conversions'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : #Pango
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 RSPangoMarkup class >> initialize [
 
 	Conversions := Dictionary new
@@ -24,19 +23,19 @@ RSPangoMarkup class >> initialize [
 		               yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoMarkup >> markup: aString [
 
 	^ self text: aString
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandler [
 
 	
 ]
 
-{ #category : 'ffi bindings' }
+{ #category : #'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 
 	<primitive: 'primitive_pango_layout_set_markup' module:
@@ -44,13 +43,7 @@ RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
-RSPangoMarkup >> pangoAttrListString [
-
-	^ String empty
-]
-
-{ #category : 'accessing' }
+{ #category : #accessing }
 RSPangoMarkup >> text: aString [
 
 	| markupString |
@@ -71,8 +64,8 @@ RSPangoMarkup >> text: aString [
 	^ super text: markupString
 ]
 
-{ #category : 'handle' }
-RSPangoMarkup >> withPangoAttrListFromString: aString [
+{ #category : #handle }
+RSPangoMarkup >> withPangoAttrList [
 
-	^ ExternalAddress null
+	^ self newPangoAttrListHandler
 ]

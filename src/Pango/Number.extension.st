@@ -1,6 +1,6 @@
-Extension { #name : 'Number' }
+Extension { #name : #Number }
 
-{ #category : '*Pango' }
+{ #category : #'*Pango' }
 Number >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( number )

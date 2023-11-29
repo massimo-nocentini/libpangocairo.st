@@ -1,15 +1,14 @@
 Class {
-	#name : 'TSChunk',
-	#superclass : 'Object',
+	#name : #TSChunk,
+	#superclass : #Object,
 	#instVars : [
 		'language',
 		'sourceCode'
 	],
-	#category : 'Pango',
-	#package : 'Pango'
+	#category : 'Pango'
 }
 
-{ #category : 'evaluating' }
+{ #category : #evaluating }
 TSChunk >> asRSPangoShapeUsingFont: aFont [
 
 	| tsLanguage chunks code |
@@ -35,7 +34,7 @@ TSChunk >> asRSPangoShapeUsingFont: aFont [
 		  asCompositeShape
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 TSChunk >> escapeTextInGMarkup: code [
 
 	^ self withNewLuaStateDo: [ :L :ll |
@@ -57,19 +56,19 @@ TSChunk >> escapeTextInGMarkup: code [
 		  ll on: L at: -1 ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TSChunk >> language: anObject [
 
 	language := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TSChunk >> sourceCode: anObject [
 
 	sourceCode := anObject
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 TSChunk >> withMatchesOn: code do: recv [
 
 	^ self withNewLuaStateDo: [ :L :ll |
@@ -95,7 +94,7 @@ TSChunk >> withMatchesOn: code do: recv [
 		  matches ifNotNil: [ recv value: matches value: srcLines ] ]
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 TSChunk >> withNewLuaStateDo: aCodeBlock [
 
 	| ll |
