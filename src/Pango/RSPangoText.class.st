@@ -24,8 +24,17 @@ Class {
 		'attributesChunks',
 		'layoutWidth'
 	],
+	#classVars : [
+		'OriginPoint'
+	],
 	#category : #Pango
 }
+
+{ #category : #'class initialization' }
+RSPangoText class >> initialize [
+
+	OriginPoint := 0 @ 0
+]
 
 { #category : #visiting }
 RSPangoText >> accept: visitor [
@@ -93,7 +102,7 @@ RSPangoText >> computeEncompassingRectangle [
 
 	extent := self rectangleOfPangoLayoutHandler: layout.
 
-	rectangle := Rectangle center: 0 @ 0 extent: extent.
+	rectangle := Rectangle center: OriginPoint extent: extent.
 
 	self
 		pangoAttrListUnref: attrsHandler;
