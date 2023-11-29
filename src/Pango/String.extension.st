@@ -12,7 +12,23 @@ String >> asRSPangoShapeUsingFont: font [
 { #category : #'*Pango' }
 String >> fixEmptyLinesForPango [
 
-	^ self fixEmptyLinesForPangoUsingJoiner: Character cr
+	| ending separator |
+	ending := Character cr.
+	separator := Character space.
+
+	^ self class streamContents: [ :stream |
+		  self first = ending ifTrue: [ stream << separator ].
+
+		  1 to: self size - 1 do: [ :i |
+			  | each |
+			  each := self at: i.
+			  stream nextPut: each.
+			  (each = ending and: [ (self at: i + 1) = ending ]) ifTrue: [
+				  stream nextPut: separator ] ].
+
+		  stream nextPut: self last.
+
+		  self last = ending ifTrue: [ stream << separator ] ]
 ]
 
 { #category : #'*Pango' }
