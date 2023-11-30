@@ -50,6 +50,32 @@ RSPangoText >> asCompositeShape [
 		  yourself
 ]
 
+{ #category : #converting }
+RSPangoText >> asMorph [
+
+	| surface |
+	surface := AthensCairoSurface
+		           width: self encompassingRectangle width
+		           height: self encompassingRectangle height.
+
+	surface drawDuring: [ :cr |
+		| layout pair attrsHandler |
+		pair := self onAthensCairoCanvas: cr getHandle.
+
+		layout := pair first.
+		attrsHandler := pair second.
+
+		self
+			onAthensCairoCanvasHandler: cr getHandle
+			showPangoLayout: layout.
+
+		self
+			pangoAttrListUnref: attrsHandler;
+			g_object_unref: layout ].
+
+	^ surface asForm asMorph
+]
+
 { #category : #accessing }
 RSPangoText >> attributesChunks: anObject [
 
@@ -267,7 +293,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 { #category : #handle }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
-	<primitive: 'primitive_pango_layout_get_pixel_size' module:
+	<primitive: 'primitive_pango_layout_get_ink_pixel_size' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]

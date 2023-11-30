@@ -1,7 +1,7 @@
 Class {
 	#name : #PangoExamples,
 	#superclass : #Object,
-	#category : 'Pango'
+	#category : #Pango
 }
 
 { #category : #examples }
@@ -56,6 +56,23 @@ PangoExamples class >> example2 [
 		export.
 
 	canvas open
+]
+
+{ #category : #examples }
+PangoExamples class >> example2ViaRSPangoMarkup [
+
+	<example>
+	(RSPangoMarkup new
+		 markup:
+			 '<span foreground="blue" font_family="Lucida Grande" font_size="40pt">
+		<b> bold </b>
+		<u> is </u>
+		<i> nice </i>
+	</span>
+	<tt> hello </tt>
+	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored<sub>12</sub></span>
+	';
+		 asMorph) asMorph openInWindow
 ]
 
 { #category : #examples }
