@@ -1,6 +1,6 @@
-Extension { #name : #MicLinkBlock }
+Extension { #name : 'MicLinkBlock' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 MicLinkBlock >> asFooterStringForPangoMarkupMicrodownVisitor: aPangoMarkupMicrodownVisitor [
 
 	^ self url

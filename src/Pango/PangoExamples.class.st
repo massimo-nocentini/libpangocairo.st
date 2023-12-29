@@ -1,10 +1,11 @@
 Class {
-	#name : #PangoExamples,
-	#superclass : #Object,
-	#category : #Pango
+	#name : 'PangoExamples',
+	#superclass : 'Object',
+	#category : 'Pango',
+	#package : 'Pango'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example1 [
 
 	<example>
@@ -30,7 +31,7 @@ PangoExamples class >> example1 [
 	surface asForm asMorph openInWindow
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example2 [
 
 	<example>
@@ -58,7 +59,7 @@ PangoExamples class >> example2 [
 	canvas open
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example2ViaRSPangoMarkup [
 
 	<example>
@@ -75,7 +76,7 @@ PangoExamples class >> example2ViaRSPangoMarkup [
 		 asMorph) asMorph openInWindow
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example3 [
 
 	<example>
@@ -96,7 +97,7 @@ PangoExamples class >> example3 [
 		inspect
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example4 [
 
 	<example>
@@ -124,7 +125,7 @@ world' , '</span>';
 		inspect
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example5 [
 
 	<example>
@@ -144,7 +145,7 @@ PangoExamples class >> example5 [
 		inspect
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 PangoExamples class >> example6 [
 
 	<example>
@@ -163,6 +164,6 @@ PangoExamples class >> example6 [
 		inspect
 ]
 
-{ #category : #'see class side' }
+{ #category : 'see class side' }
 PangoExamples >> seeClassSide [
 ]

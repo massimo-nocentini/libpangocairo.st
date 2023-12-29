@@ -1,6 +1,6 @@
-Extension { #name : #UndefinedObject }
+Extension { #name : 'UndefinedObject' }
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 UndefinedObject >> appendCarriageReturnsOnStream: stream nextParagraph: micBlock [
 
 	stream
@@ -8,7 +8,7 @@ UndefinedObject >> appendCarriageReturnsOnStream: stream nextParagraph: micBlock
 		cr
 ]
 
-{ #category : #'*Pango' }
+{ #category : '*Pango' }
 UndefinedObject >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( 'nil' )
