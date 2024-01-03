@@ -32,16 +32,6 @@ String >> fixEmptyLinesForPango [
 ]
 
 { #category : '*Pango' }
-String >> gmarkupEscapeText [
-	"https://docs.gtk.org/glib/func.markup_escape_text.html"
-
-	^ self
-		  ffiCall:
-		  #( char #* g_markup_escape_text #( char #* self #, int -1 ) )
-		  module: PangoLibrary
-]
-
-{ #category : '*Pango' }
 String >> replaceAllTabsWithSpacesForPango [
 
 	^ self

@@ -518,14 +518,14 @@ PangoMarkupMicrodownVisitor >> visitStrike: aFormat [
 PangoMarkupMicrodownVisitor >> visitText: aMicTextBlock [
 
 	aMicTextBlock text lines ifNotEmpty: [ :lines |
-		stream nextPutAll: lines first gmarkupEscapeText.
+		stream nextPutAll: lines first gMarkupEscapeText.
 
 		2 to: lines size do: [ :i |
 			stream cr.
 
 			self nextPutAllAlpha: (i = 1) asBit * 100 mod: modifier.
 
-			stream nextPutAll: (lines at: i) gmarkupEscapeText ] ].
+			stream nextPutAll: (lines at: i) gMarkupEscapeText ] ].
 
 	super visitText: aMicTextBlock
 ]
