@@ -68,5 +68,7 @@ RSPangoMarkup >> text: aString [
 { #category : 'handle' }
 RSPangoMarkup >> withPangoAttrList [
 
-	^ self newPangoAttrListHandler
+	<primitive: 'primitive_pango_attr_list_new' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]

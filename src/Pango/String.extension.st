@@ -32,13 +32,6 @@ String >> fixEmptyLinesForPango [
 ]
 
 { #category : '*Pango' }
-String >> fixEmptyLinesForPangoUsingJoiner: joiner [
-
-	^ joiner join: ((Character cr split: self) collect: [ :l |
-			   l ifEmpty: [ self class space ] ])
-]
-
-{ #category : '*Pango' }
 String >> gmarkupEscapeText [
 	"https://docs.gtk.org/glib/func.markup_escape_text.html"
 

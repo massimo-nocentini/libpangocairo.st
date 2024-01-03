@@ -44,14 +44,6 @@ RSPangoText >> accept: visitor [
 ]
 
 { #category : 'converting' }
-RSPangoText >> asCompositeShape [
-
-	^ RSComposite new
-		  shapes: { self };
-		  yourself
-]
-
-{ #category : 'converting' }
 RSPangoText >> asMorph [
 
 	| surface |
@@ -205,14 +197,6 @@ RSPangoText >> layoutWidthNiceColumns [
 RSPangoText >> layoutWidthUnbounded [
 
 	self layoutWidth: -1
-]
-
-{ #category : 'ffi bindings' }
-RSPangoText >> newPangoAttrListHandler [
-
-	<primitive: 'primitive_pango_attr_list_new' module:
-	'CairoGraphicsPlugin'>
-	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
