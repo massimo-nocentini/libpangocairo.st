@@ -58,7 +58,7 @@ RSPangoMarkup >> text: aString [
 			                << 'pt" foreground="#';
 			                << self defaultForegroundColor asHexString;
 			                << '">';
-			                << aString fixEmptyLinesForPango asUTF8String;
+			                << aString asUTF8String fixEmptyLinesForPango;
 			                << '</span>';
 			                << '</markup>' ].
 

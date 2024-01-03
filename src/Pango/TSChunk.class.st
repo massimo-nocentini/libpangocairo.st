@@ -16,7 +16,7 @@ TSChunk >> asRSPangoShapeUsingFont: aFont [
 	tsLanguage := TSLanguage perform: language asSymbol.
 	chunks := OrderedCollection new.
 
-	code := sourceCode replaceAllTabsWithSpacesForPango
+	code := sourceCode replaceAllTabsWithThreeSpaces
 		        fixEmptyLinesForPango.
 
 	self withMatchesOn: code do: [ :matches :codeLines |
