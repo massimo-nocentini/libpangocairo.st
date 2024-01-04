@@ -1,8 +1,8 @@
 Class {
 	#name : 'PangoExamples',
 	#superclass : 'Object',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-Tests',
+	#package : 'LibPangoCairo-Tests'
 }
 
 { #category : 'examples' }

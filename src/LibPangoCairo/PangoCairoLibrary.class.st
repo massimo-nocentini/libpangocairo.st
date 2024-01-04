@@ -1,8 +1,9 @@
 Class {
 	#name : 'PangoCairoLibrary',
 	#superclass : 'FFILibrary',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-FFILibrary',
+	#package : 'LibPangoCairo',
+	#tag : 'FFILibrary'
 }
 
 { #category : 'accessing platform' }

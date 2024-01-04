@@ -10,13 +10,15 @@ BaselineOfLibPangoCairo >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [
-		spec
-			baseline: 'VMPluginsPrimitives'
-			with: [ spec repository: 'github://massimo-nocentini/vm-plugins-primitives.st' ].
+		spec baseline: 'VMPluginsPrimitives' with: [
+			spec repository:
+				'github://massimo-nocentini/vm-plugins-primitives.st' ].
 
 		spec
-			baseline: 'LibLuast'
-			with: [ spec repository: 'github://massimo-nocentini/liblua.st' ].
+			baseline: 'LibTreeSitter'
+			with: [ spec repository: 'github://massimo-nocentini/libtreesitter.st' ].
 
-		spec package: 'LibPangoCairo' ]
+		spec
+			package: 'LibPangoCairo';
+			package: 'LibPangoCairo-Tests' ]
 ]

@@ -4,8 +4,9 @@ Class {
 	#classVars : [
 		'Conversions'
 	],
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-Roassal',
+	#package : 'LibPangoCairo',
+	#tag : 'Roassal'
 }
 
 { #category : 'initialization' }

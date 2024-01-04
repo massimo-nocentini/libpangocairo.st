@@ -3,8 +3,9 @@ Class {
 	#superclass : 'FFIOpaqueObject',
 	#traits : 'TPangoLibrary',
 	#classTraits : 'TPangoLibrary classTrait',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-FFILibrary',
+	#package : 'LibPangoCairo',
+	#tag : 'FFILibrary'
 }
 
 { #category : 'instance creation' }

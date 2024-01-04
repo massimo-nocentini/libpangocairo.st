@@ -1,7 +1,8 @@
 Trait {
 	#name : 'TPangoLibrary',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-FFILibrary',
+	#package : 'LibPangoCairo',
+	#tag : 'FFILibrary'
 }
 
 { #category : 'library path' }
