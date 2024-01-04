@@ -1,4 +1,5 @@
-# pharo-pango
+# libpangocairo.st
+
 A library to manage [pango fonts](http://www.pango.org) within [Pharo](http://pharo.org)
 
 ```Smalltalk
