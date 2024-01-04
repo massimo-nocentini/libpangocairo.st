@@ -164,6 +164,18 @@ PangoExamples class >> example6 [
 		inspect
 ]
 
+{ #category : 'examples' }
+PangoExamples class >> exampleOpenCanvasWithHelloWorld [
+
+	<example>
+	RSCanvas new
+		add: (RSPangoMarkup new
+				 text: 'hello <span foreground="red" size="20pt"><i>world</i></span>';
+				 yourself);
+		@ RSCanvasController;
+		open
+]
+
 { #category : 'see class side' }
 PangoExamples >> seeClassSide [
 ]
