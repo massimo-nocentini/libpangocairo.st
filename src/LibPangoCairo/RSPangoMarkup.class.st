@@ -1,3 +1,6 @@
+"
+I am a variant that allows the user to write its text using the GMarkup language.
+"
 Class {
 	#name : 'RSPangoMarkup',
 	#superclass : 'RSPangoText',
