@@ -176,6 +176,20 @@ PangoExamples class >> exampleOpenCanvasWithHelloWorld [
 		open
 ]
 
+{ #category : 'examples' }
+PangoExamples class >> exampleOpenRSMarkupWIthEmptyLines [
+
+	<example>
+	RSCanvas new
+		add: (RSPangoMarkup new
+				 text: 'hello
+
+world';
+				 notedWithPad: 1.618);
+		@ RSCanvasController;
+		open
+]
+
 { #category : 'see class side' }
 PangoExamples >> seeClassSide [
 ]
