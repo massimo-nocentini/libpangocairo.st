@@ -26,9 +26,9 @@ RSUMLClassMethodCalypso >> buildUmlCanvas [
 
 	methods := self context selectedMethods.
 
-	shape := (methods size > 1
-		          ifTrue: [ methods ]
-		          ifFalse: [ methods last ]) asShapeSlotsDfsTree: walker.
+	shape := (methods size = 1
+		          ifTrue: [ methods first ]
+		          ifFalse: [ methods ]) asShapeSlotsDfsTree: walker.
 
 	^ RSCanvas new
 		  useRTree;
