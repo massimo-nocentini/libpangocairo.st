@@ -15,31 +15,25 @@ Class {
 RSUMLNotebookCalypso class >> shouldBeActivatedInContext: aBrowserContext [
 
 	^ (super shouldBeActivatedInContext: aBrowserContext) and: [
-		  aBrowserContext selectedMethods size == 1 and: [
-			  | method |
-			  method := aBrowserContext selectedMethods first.
-
-			  method protocol name beginsWith: 'notebook' ] ]
+		  (aBrowserContext selectedMethods select: [ :method |
+			   method hasPragmaNamed: #notebook ]) isNotEmpty ]
 ]
 
 { #category : 'building' }
 RSUMLNotebookCalypso >> buildUmlCanvas [
 
-	| walker method methods presenter notebook shape pseudoVariableName |
-	walker := CTDfsWalker new.
+	| method methods presenter notebook shape pseudoVariableName |
+	methods := self context selectedMethods select: [ :each |
+		           each hasPragmaNamed: #notebook ].
 
-	methods := self context selectedMethods.
-
-	method := methods size = 1
-		          ifTrue: [ methods first ]
-		          ifFalse: [ ^ RSCanvas new ].
+	method := methods ifEmpty: [ ^ RSCanvas new ] ifNotEmpty: #first.
 
 	presenter := SpCodePresenter new
 		             beForScripting;
 		             yourself.
 
 	pseudoVariableName := method sourceNode arguments
-		                      ifEmpty: [ 'dummyNotebooko' ]
+		                      ifEmpty: [ 'dummyNotebook' ]
 		                      ifNotEmpty: [ :args | args first name ].
 
 	notebook := CTNotebookKeyedValuedOrderedCollection new
@@ -58,7 +52,7 @@ RSUMLNotebookCalypso >> buildUmlCanvas [
 
 	notebook value.
 
-	shape := notebook asShapeSlotsDfsTree: walker.
+	shape := notebook asShapeSlotsDfsTree: CTDfsWalker new.
 
 	^ RSCanvas new
 		  useRTree;
@@ -70,5 +64,5 @@ RSUMLNotebookCalypso >> buildUmlCanvas [
 { #category : 'initialization' }
 RSUMLNotebookCalypso >> defaultTitle [
 
-	^ 'Selected Notebook'
+	^ 'Notebook'
 ]

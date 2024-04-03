@@ -39,5 +39,5 @@ RSUMLClassMicrodownCommentCalypso >> buildUmlCanvas [
 { #category : 'initialization' }
 RSUMLClassMicrodownCommentCalypso >> defaultTitle [
 
-	^ 'RSComment'
+	^ 'Microdown'
 ]

@@ -40,5 +40,5 @@ RSUMLClassMethodCalypso >> buildUmlCanvas [
 { #category : 'initialization' }
 RSUMLClassMethodCalypso >> defaultTitle [
 
-	^ 'Selected Methods'
+	^ 'Methods'
 ]
