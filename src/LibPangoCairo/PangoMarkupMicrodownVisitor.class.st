@@ -500,7 +500,7 @@ PangoMarkupMicrodownVisitor >> visitQuote: aQuote [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitRaw: aRaw [
 
-	stream << aRaw text.
+	stream << aRaw bodyString.
 
 	super visitRaw: aRaw
 ]
