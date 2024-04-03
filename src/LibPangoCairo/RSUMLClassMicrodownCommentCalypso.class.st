@@ -29,6 +29,7 @@ RSUMLClassMicrodownCommentCalypso >> buildUmlCanvas [
 	pangoMicVisitor visit: mic.
 
 	^ RSCanvas new
+		  useRTree;
 		  @ RSCanvasController;
 		  add:
 			  (pangoMicVisitor asRSPangoShapeUsingFont: LogicalFont pangoSerif);
