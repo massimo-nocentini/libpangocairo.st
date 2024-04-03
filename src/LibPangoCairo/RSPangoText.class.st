@@ -279,7 +279,7 @@ RSPangoText >> pangoAttrListUnref: handler [
 { #category : 'handle' }
 RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
 
-	<primitive: 'primitive_pango_layout_get_ink_pixel_size' module:
+	<primitive: 'primitive_pango_layout_get_pixel_size' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]

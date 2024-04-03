@@ -403,7 +403,7 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 		<< '<span font_family="';
 		<< fontMath familyName;
 		<< '">';
-		<< aMicMathInline text;
+		<< aMicMathInline bodyString;
 		<< '</span>'.
 
 	super visitMathInline: aMicMathInline
