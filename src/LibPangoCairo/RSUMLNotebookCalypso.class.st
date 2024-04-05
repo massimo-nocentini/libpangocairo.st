@@ -22,37 +22,13 @@ RSUMLNotebookCalypso class >> shouldBeActivatedInContext: aBrowserContext [
 { #category : 'building' }
 RSUMLNotebookCalypso >> buildUmlCanvas [
 
-	| method methods presenter notebook shape pseudoVariableName |
+	| method methods shape |
 	methods := self context selectedMethods select: [ :each |
 		           each hasPragmaNamed: #notebook ].
 
 	method := methods ifEmpty: [ ^ RSCanvas new ] ifNotEmpty: #first.
 
-	presenter := SpCodePresenter new
-		             beForScripting;
-		             yourself.
-
-	pseudoVariableName := method sourceNode arguments
-		                      ifEmpty: [ 'dummyNotebook' ]
-		                      ifNotEmpty: [ :args | args first name ].
-
-	notebook := CTNotebookKeyedValuedOrderedCollection new
-		            pseudoVariableName: pseudoVariableName;
-		            yourself.
-
-	presenter interactionModel addBinding:
-		(WorkspaceVariable key: pseudoVariableName value: notebook).
-
-
-	presenter text:
-		(RBParser parseExpression: method sourceNode body formattedCode)
-			formattedCode.
-
-	notebook codePresenter: presenter.
-
-	notebook value.
-
-	shape := notebook asShapeSlotsDfsTree: CTDfsWalker new.
+	shape := method asNotebook asShapeSlotsDfsTree: CTDfsWalker new.
 
 	^ RSCanvas new
 		  useRTree;
