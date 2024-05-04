@@ -3,7 +3,7 @@ Extension { #name : 'RSAthensRenderer' }
 { #category : '*LibPangoCairo' }
 RSAthensRenderer >> visitPangoText: pangoShape [
 
-	| lbtranslation layout pair attrsHandler |
+	| lbtranslation cairo_tHandle |
 	lbtranslation := (pangoShape extent / 2.0) asFloatPoint negated.
 
 	matrix translateBy: lbtranslation.
@@ -11,16 +11,15 @@ RSAthensRenderer >> visitPangoText: pangoShape [
 	athensCanvas pathTransform loadAffineTransform: matrix.
 	athensCanvas setPathMatrix.
 
-	pair := pangoShape onAthensCairoCanvas: athensCanvas getHandle.
+	(pangoShape paint asAthensPaintOn: athensCanvas) loadOnCairoCanvas:
+		athensCanvas.
 
-	layout := pair first.
-	attrsHandler := pair second.
-
-	pangoShape
-		onAthensCairoCanvasHandler: athensCanvas getHandle
-		showPangoLayout: layout.
+	cairo_tHandle := athensCanvas getHandle.
 
 	pangoShape
-		pangoAttrListUnref: attrsHandler;
-		g_object_unref: layout
+		onAthensCairoCanvas: cairo_tHandle
+		do: [ :layout :attrsHandler |
+			pangoShape
+				onAthensCairoCanvasHandler: cairo_tHandle
+				showPangoLayout: layout ]
 ]

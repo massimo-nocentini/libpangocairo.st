@@ -53,19 +53,15 @@ RSPangoText >> asMorph [
 		           height: self encompassingRectangle height.
 
 	surface drawDuring: [ :cr |
-		| layout pair attrsHandler |
-		pair := self onAthensCairoCanvas: cr getHandle.
-
-		layout := pair first.
-		attrsHandler := pair second.
+		| cairo_tHandle |
+		cairo_tHandle := cr getHandle.
 
 		self
-			onAthensCairoCanvasHandler: cr getHandle
-			showPangoLayout: layout.
-
-		self
-			pangoAttrListUnref: attrsHandler;
-			g_object_unref: layout ].
+			onAthensCairoCanvas: cairo_tHandle
+			do: [ :layout :attrsHandler |
+				self
+					onAthensCairoCanvasHandler: cairo_tHandle
+					showPangoLayout: layout ] ].
 
 	^ surface asForm asMorph
 ]
@@ -109,24 +105,19 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 { #category : 'accessing - computed' }
 RSPangoText >> computeEncompassingRectangle [
 
-	| surface rectangle athensCanvas layout pair attrsHandler extent |
+	| surface rectangle athensCanvas |
 	"A very small surface to create an `AthensCairoCanvas` object."
 	surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
 
 	athensCanvas := self cairo_create: surface.
 
-	pair := self onAthensCairoCanvas: athensCanvas.
+	self onAthensCairoCanvas: athensCanvas do: [ :layout :attrsHandler |
+		| extent |
+		extent := self rectangleOfPangoLayoutHandler: layout.
 
-	layout := pair first.
-	attrsHandler := pair second.
-
-	extent := self rectangleOfPangoLayoutHandler: layout.
-
-	rectangle := Rectangle center: OriginPoint extent: extent.
+		rectangle := Rectangle center: OriginPoint extent: extent ].
 
 	self
-		pangoAttrListUnref: attrsHandler;
-		g_object_unref: layout;
 		cairo_destroy: athensCanvas;
 		cairo_surface_destroy: surface.
 
@@ -209,7 +200,7 @@ RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
 ]
 
 { #category : 'handle' }
-RSPangoText >> onAthensCairoCanvas: athensCanvas [
+RSPangoText >> onAthensCairoCanvas: athensCanvas do: block [
 
 	| layoutHandler attrsHandler |
 	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
@@ -223,9 +214,10 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas [
 
 	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
 
-	^ {
-		  layoutHandler.
-		  attrsHandler }
+	[ block value: layoutHandler value: attrsHandler ] ensure: [
+		self
+			pangoAttrListUnref: attrsHandler;
+			g_object_unref: layoutHandler ]
 ]
 
 { #category : 'ffi bindings' }
