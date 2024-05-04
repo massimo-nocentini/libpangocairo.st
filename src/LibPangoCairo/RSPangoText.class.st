@@ -53,15 +53,7 @@ RSPangoText >> asMorph [
 		           height: self encompassingRectangle height.
 
 	surface drawDuring: [ :cr |
-		| cairo_tHandle |
-		cairo_tHandle := cr getHandle.
-
-		self
-			onAthensCairoCanvas: cairo_tHandle
-			do: [ :layout :attrsHandler |
-				self
-					onAthensCairoCanvasHandler: cairo_tHandle
-					showPangoLayout: layout ] ].
+		self showLayoutOnAthensCairoCanvasHandle: cr getHandle ].
 
 	^ surface asForm asMorph
 ]
@@ -111,11 +103,12 @@ RSPangoText >> computeEncompassingRectangle [
 
 	athensCanvas := self cairo_create: surface.
 
-	self onAthensCairoCanvas: athensCanvas do: [ :layout :attrsHandler |
-		| extent |
-		extent := self rectangleOfPangoLayoutHandler: layout.
-
-		rectangle := Rectangle center: OriginPoint extent: extent ].
+	self
+		onAthensCairoCanvasHandle: athensCanvas
+		withPangoLayoutHandleDo: [ :layout |
+			| extent |
+			extent := self extentOfPangoLayoutHandle: layout.
+			rectangle := Rectangle center: OriginPoint extent: extent ].
 
 	self
 		cairo_destroy: athensCanvas;
@@ -134,6 +127,14 @@ RSPangoText >> defaultForegroundColor [
 RSPangoText >> defaultForegroundColor: anObject [
 
 	defaultForegroundColor := anObject
+]
+
+{ #category : 'handle' }
+RSPangoText >> extentOfPangoLayoutHandle: anHandler [
+
+	<primitive: 'primitive_pango_layout_get_pixel_size' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'accessing' }
@@ -192,18 +193,26 @@ RSPangoText >> layoutWidthUnbounded [
 ]
 
 { #category : 'ffi bindings' }
-RSPangoText >> newPangoLayoutOnAthensCairoCanvasHandler: cairoCanvas [
+RSPangoText >> newPangoLayoutHandleOnAthensCairoCanvasHandle: cairoCanvas [
 
 	<primitive: 'primitive_pango_cairo_create_layout' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
 
+{ #category : 'ffi bindings' }
+RSPangoText >> onAthensCairoCanvasHandle: cairoCanvas showPangoLayout: layout [
+
+	<primitive: 'primitive_pango_cairo_show_layout' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
+]
+
 { #category : 'handle' }
-RSPangoText >> onAthensCairoCanvas: athensCanvas do: block [
+RSPangoText >> onAthensCairoCanvasHandle: athensCanvas withPangoLayoutHandleDo: block [
 
 	| layoutHandler attrsHandler |
-	layoutHandler := self newPangoLayoutOnAthensCairoCanvasHandler:
+	layoutHandler := self newPangoLayoutHandleOnAthensCairoCanvasHandle:
 		                 athensCanvas.
 
 	self
@@ -214,18 +223,10 @@ RSPangoText >> onAthensCairoCanvas: athensCanvas do: block [
 
 	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
 
-	[ block value: layoutHandler value: attrsHandler ] ensure: [
+	[ block value: layoutHandler ] ensure: [
 		self
 			pangoAttrListUnref: attrsHandler;
 			g_object_unref: layoutHandler ]
-]
-
-{ #category : 'ffi bindings' }
-RSPangoText >> onAthensCairoCanvasHandler: cairoCanvas showPangoLayout: layout [
-
-	<primitive: 'primitive_pango_cairo_show_layout' module:
-	'CairoGraphicsPlugin'>
-	self primitiveFail
 ]
 
 { #category : 'ffi bindings' }
@@ -268,12 +269,13 @@ RSPangoText >> pangoAttrListUnref: handler [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
-RSPangoText >> rectangleOfPangoLayoutHandler: anHandler [
+{ #category : 'converting' }
+RSPangoText >> showLayoutOnAthensCairoCanvasHandle: anHandle [
 
-	<primitive: 'primitive_pango_layout_get_pixel_size' module:
-	'CairoGraphicsPlugin'>
-	self primitiveFail
+	self
+		onAthensCairoCanvasHandle: anHandle
+		withPangoLayoutHandleDo: [ :layout |
+			self onAthensCairoCanvasHandle: anHandle showPangoLayout: layout ]
 ]
 
 { #category : 'accessing' }
