@@ -73,24 +73,24 @@ PangoExamples class >> example2ViaRSPangoMarkup [
 	<tt> hello </tt>
 	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored<sub>12</sub></span>
 	';
-		 asMorph) asMorph openInWindow
+		 asMorph) openInWindow
 ]
 
 { #category : 'examples' }
 PangoExamples class >> example3 [
 
 	<example>
-	| pango |
-	pango := RSPangoMarkup new
-		         markup:
-			         '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
+	| pango markup |
+	markup := '<span foreground="blue" font_family="Cantarell" font_size="12pt"><b> bold </b>
 		<u> is </u>
 		<i> nice </i>
 	</span>
 	<tt> hello </tt>
-	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>';
-		         notedWithPad: Float goldenRatio.
+	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>'.
 
+	pango := RSPangoMarkup new
+		         markup: markup;
+		         notedWithPad: Float goldenRatio.
 
 	RSGroup new
 		add: pango;
@@ -169,8 +169,10 @@ PangoExamples class >> exampleOpenCanvasWithHelloWorld [
 
 	<example>
 	RSCanvas new
+		showEncompassingRectangles;
 		add: (RSPangoMarkup new
-				 text: 'hello <span foreground="red" size="20pt"><i>world</i></span>';
+				 text:
+					 'hello <span foreground="red" size="20pt"><i>world</i></span>';
 				 yourself);
 		@ RSCanvasController;
 		open
@@ -185,7 +187,8 @@ PangoExamples class >> exampleOpenRSMarkupWIthEmptyLines [
 				 text: 'hello
 
 world';
-				 notedWithPad: 1.618);
+				 notedWithPad: Float goldenRatio);
+		showEncompassingRectangles;
 		@ RSCanvasController;
 		open
 ]
