@@ -108,7 +108,7 @@ RSPangoText >> computeEncompassingRectangle [
 		withPangoLayoutHandleDo: [ :layout |
 			| extent |
 			extent := self extentOfPangoLayoutHandle: layout.
-			rectangle := Rectangle center: OriginPoint extent: extent ].
+			rectangle := Rectangle floatCenter: 0.0 @ 0.0 extent: extent ].
 
 	self
 		cairo_destroy: athensCanvas;
@@ -265,6 +265,14 @@ RSPangoText >> pangoAttrListHandlerFromString: aString [
 RSPangoText >> pangoAttrListUnref: handler [
 
 	<primitive: 'primitive_pango_attr_list_unref' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFail
+]
+
+{ #category : 'handle' }
+RSPangoText >> rectangleOfPangoLayoutHandle: anHandler class: aClass [
+
+	<primitive: 'primitive_pango_layout_get_pixel_extents' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
 ]
