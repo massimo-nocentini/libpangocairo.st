@@ -5,7 +5,7 @@ String >> asRSPangoShapeUsingFont: font [
 
 	^ RSPangoMarkup new
 		  font: font;
-		  markup: self;
+		  text: self;
 		  asCompositeShape
 ]
 

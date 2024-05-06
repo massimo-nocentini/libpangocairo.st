@@ -37,8 +37,7 @@ PangoExamples class >> example2 [
 	<example>
 	| pango canvas |
 	pango := RSPangoMarkup new
-		         markup:
-			         '<span><tt>' , Object class comment , '</tt></span>';
+		         text: '<span><tt>' , Object class comment , '</tt></span>';
 		         notedWithPad: Float goldenRatio.
 
 	pango draggable.
@@ -64,7 +63,7 @@ PangoExamples class >> example2ViaRSPangoMarkup [
 
 	<example>
 	(RSPangoMarkup new
-		 markup:
+		 text:
 			 '<span foreground="blue" font_family="Lucida Grande" font_size="40pt">
 		<b> bold </b>
 		<u> is </u>
@@ -89,7 +88,7 @@ PangoExamples class >> example3 [
 	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored</span>'.
 
 	pango := RSPangoMarkup new
-		         markup: markup;
+		         text: markup;
 		         notedWithPad: Float goldenRatio.
 
 	RSGroup new
@@ -103,7 +102,7 @@ PangoExamples class >> example4 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span font_family="Cantarell" font_size="12pt">'
 			         , 'Hello
 
@@ -119,7 +118,7 @@ world' , '</span>';
 				 yourself);
 		add: (RSPangoMarkup new boxedWithPad: 0);
 		add: (RSPangoMarkup new
-				 markup:
+				 text:
 					 '<span font_family="Cantarell" font_size="32pt" foreground="red">&#169;</span>';
 				 yourself);
 		inspect
@@ -131,7 +130,7 @@ PangoExamples class >> example5 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on">'
 			         , Object class comment , '</span>';
 		         boxedWithPad: Float goldenRatio.
@@ -140,7 +139,7 @@ PangoExamples class >> example5 [
 	RSGroup new
 		add: pango;
 		add: (RSPangoMarkup new
-				 markup: '<span color="green">' , Object class comment , '</span>';
+				 text: '<span color="green">' , Object class comment , '</span>';
 				 boxedWithPad: Float goldenRatio);
 		inspect
 ]
@@ -151,7 +150,7 @@ PangoExamples class >> example6 [
 	<example>
 	| pango |
 	pango := RSPangoMarkup new
-		         markup:
+		         text:
 			         '<span foreground="blue" font_family="Cantarell" font_size="12pt" font_features="dlig=1, -kern, afrc on"><tt>'
 			         ,
 				         (PangoLayout >> #pixelSize) inspectionSource
@@ -165,6 +164,15 @@ PangoExamples class >> example6 [
 ]
 
 { #category : 'examples' }
+PangoExamples class >> exampleHelloWorldMorph [
+
+	<example>
+	(RSPangoMarkup new
+		 text: '<span background="#00FF007F">Hello World</span>';
+		 asMorph) openInWindow
+]
+
+{ #category : 'examples' }
 PangoExamples class >> exampleOpenCanvasWithHelloWorld [
 
 	<example>
@@ -172,7 +180,7 @@ PangoExamples class >> exampleOpenCanvasWithHelloWorld [
 		showEncompassingRectangles;
 		add: (RSPangoMarkup new
 				 text:
-					 'hello <span foreground="red" size="20pt"><i>world</i></span>';
+					 '<span background="#ffFFff7F">hello <span foreground="red" size="20pt"><i>world</i></span></span>';
 				 yourself);
 		@ RSCanvasController;
 		open

@@ -72,7 +72,7 @@ PangoLayout >> logicalRectangle [
 
 { #category : 'accessing' }
 PangoLayout >> markup: markup [
-	^ self ffiCall: #(void pango_layout_set_markup (self, const char *markup, -1))
+	^ self ffiCall: #(void pango_layout_set_markup (self, const char *markup, int -1))
 ]
 
 { #category : 'accessing' }

@@ -64,7 +64,7 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 	| pango composite |
 	pango := RSPangoMarkup new
 		         font: font;
-		         markup: pangoMarkup;
+		         text: pangoMarkup;
 		         asCompositeShape.
 
 	composite := RSGroup new
@@ -199,7 +199,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 	^ treeSitterLanguages collect: [ :assoc |
 		  | labelShape chunkShape group |
 		  labelShape := RSPangoMarkup new
-			                markup: (String streamContents: [ :s |
+			                text: (String streamContents: [ :s |
 						                 s
 							                 << '<span font_family="';
 							                 << fontSans familyName;

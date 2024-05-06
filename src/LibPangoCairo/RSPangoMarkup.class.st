@@ -28,12 +28,6 @@ RSPangoMarkup class >> initialize [
 		               yourself
 ]
 
-{ #category : 'accessing' }
-RSPangoMarkup >> markup: aString [
-
-	^ self text: aString
-]
-
 { #category : 'ffi bindings' }
 RSPangoMarkup >> onPangoLayout: layoutHandler setAttrListHandler: attrListHandler [
 
