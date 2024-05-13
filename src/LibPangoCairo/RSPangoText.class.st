@@ -1,5 +1,7 @@
 "
-logicalRectangle
+The `logicalRectangle` should be:
+
+```
 	""Answer a Rectangle with the logical bounds.
 	See https://docs.gtk.org/Pango/method.GlyphString.extents.html""
 
@@ -12,7 +14,7 @@ logicalRectangle
 		logicalRectangle: logicalRectangle.
 
 	^ inkRectangle asRectangle
-
+```
 "
 Class {
 	#name : 'RSPangoText',
@@ -64,6 +66,30 @@ RSPangoText >> attributesChunks: anObject [
 	attributesChunks := anObject
 ]
 
+{ #category : 'accessing' }
+RSPangoText >> baseRectangle [
+
+	(baseRectangle isNil or: [ baseRectangle == OriginPoint ]) ifTrue: [
+		| surface athensCanvas |
+		"A very small surface to create an `AthensCairoCanvas` object."
+		surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
+
+		athensCanvas := self cairo_create: surface.
+
+		self
+			onAthensCairoCanvasHandle: athensCanvas
+			withPangoLayoutHandleDo: [ :layout |
+				| extent |
+				extent := self extentOfPangoLayoutHandle: layout.
+				baseRectangle := Rectangle at00extent: extent ].
+
+		self
+			cairo_destroy: athensCanvas;
+			cairo_surface_destroy: surface ].
+
+	^ super baseRectangle
+]
+
 { #category : 'ffi bindings' }
 RSPangoText >> cairoImageSurfaceCreateWidth: w height: h [
 
@@ -92,29 +118,6 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 	<primitive: 'primitive_cairo_surface_destroy' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
-]
-
-{ #category : 'accessing - computed' }
-RSPangoText >> computeEncompassingRectangle [
-
-	| surface rectangle athensCanvas |
-	"A very small surface to create an `AthensCairoCanvas` object."
-	surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
-
-	athensCanvas := self cairo_create: surface.
-
-	self
-		onAthensCairoCanvasHandle: athensCanvas
-		withPangoLayoutHandleDo: [ :layout |
-			| extent |
-			extent := self extentOfPangoLayoutHandle: layout.
-			rectangle := Rectangle floatCenter: 0.0 @ 0.0 extent: extent ].
-
-	self
-		cairo_destroy: athensCanvas;
-		cairo_surface_destroy: surface.
-
-	^ rectangle
 ]
 
 { #category : 'accessing' }
@@ -160,6 +163,8 @@ RSPangoText >> g_object_unref: handler [
 RSPangoText >> initialize [
 
 	super initialize.
+
+	baseRectangle := OriginPoint.
 
 	self
 		layoutWidthUnbounded;
