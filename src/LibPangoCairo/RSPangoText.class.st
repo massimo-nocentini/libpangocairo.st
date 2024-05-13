@@ -69,23 +69,25 @@ RSPangoText >> attributesChunks: anObject [
 { #category : 'accessing' }
 RSPangoText >> baseRectangle [
 
-	(baseRectangle isNil or: [ baseRectangle == OriginPoint ]) ifTrue: [
-		| surface athensCanvas |
-		"A very small surface to create an `AthensCairoCanvas` object."
-		surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
+	self text == ''
+		ifTrue: [ baseRectangle := OriginPoint corner: OriginPoint ]
+		ifFalse: [
+			| surface athensCanvas |
+			"A very small surface to create an `AthensCairoCanvas` object."
+			surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
 
-		athensCanvas := self cairo_create: surface.
+			athensCanvas := self cairo_create: surface.
 
-		self
-			onAthensCairoCanvasHandle: athensCanvas
-			withPangoLayoutHandleDo: [ :layout |
-				| extent |
-				extent := self extentOfPangoLayoutHandle: layout.
-				baseRectangle := Rectangle at00extent: extent ].
+			self
+				onAthensCairoCanvasHandle: athensCanvas
+				withPangoLayoutHandleDo: [ :layout |
+					| extent |
+					extent := self extentOfPangoLayoutHandle: layout.
+					baseRectangle := Rectangle at00extent: extent ].
 
-		self
-			cairo_destroy: athensCanvas;
-			cairo_surface_destroy: surface ].
+			self
+				cairo_destroy: athensCanvas;
+				cairo_surface_destroy: surface ].
 
 	^ super baseRectangle
 ]
@@ -168,15 +170,14 @@ RSPangoText >> g_object_unref: handler [
 { #category : 'initialization' }
 RSPangoText >> initialize [
 
-	super initialize.
-
-	baseRectangle := OriginPoint.
-
 	self
 		layoutWidthUnbounded;
 		font: StandardFonts defaultFont;
 		defaultForegroundColor: Smalltalk ui theme textColor;
-		attributesChunks: OrderedCollection new
+		attributesChunks: OrderedCollection new;
+		text: ''.
+
+	super initialize
 ]
 
 { #category : 'accessing' }
