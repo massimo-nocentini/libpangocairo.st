@@ -120,6 +120,12 @@ RSPangoText >> cairo_surface_destroy: surfaceExternalAddress [
 	self primitiveFail
 ]
 
+{ #category : 'defaults' }
+RSPangoText >> defaultExtent [
+
+	^ OriginPoint
+]
+
 { #category : 'accessing' }
 RSPangoText >> defaultForegroundColor [
 
