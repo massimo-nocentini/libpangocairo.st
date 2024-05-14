@@ -42,6 +42,12 @@ RSPangoMarkup >> onPangoLayout: layoutHandler setText: aString [
 	self primitiveFail
 ]
 
+{ #category : 'ffi bindings' }
+RSPangoMarkup >> pangoAttrListUnref: attrsHandler [
+
+	
+]
+
 { #category : 'accessing' }
 RSPangoMarkup >> text: aString [
 
@@ -66,7 +72,5 @@ RSPangoMarkup >> text: aString [
 { #category : 'handle' }
 RSPangoMarkup >> withPangoAttrList [
 
-	<primitive: 'primitive_pango_attr_list_new' module:
-	'CairoGraphicsPlugin'>
-	self primitiveFail
+	
 ]
