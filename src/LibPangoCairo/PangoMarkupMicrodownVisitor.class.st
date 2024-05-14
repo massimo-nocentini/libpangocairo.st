@@ -35,7 +35,7 @@ PangoMarkupMicrodownVisitor class >> initialize [
 	                    '&#9654;'. '&#9655;'. '&#9733;'. '&#9734;' }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PangoMarkupMicrodownVisitor >> appendFooters [
 
 	(footers isNotEmpty or: [ treeSitterLanguages isNotEmpty ]) ifTrue: [
@@ -225,7 +225,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 		  group asShape ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visit: mic [
 	"Cleanup before starting a new visit."
 
@@ -313,11 +313,14 @@ PangoMarkupMicrodownVisitor >> visitHeader: aHeader [
 
 	sectionNumber := String streamContents: [ :s |
 		                 1 to: l do: [ :k |
+			                 | num |
+			                 num := sectionsNumbering
+				                        at: k
+				                        ifAbsentPut: [ " Warning signal:
+									                  'Use a level more in depth than expected.'."
+					                        1 ].
 			                 s
-				                 << (sectionsNumbering at: k ifAbsent: [
-							                  Warning signal:
-									                  'Use a level more in depth than expected.'.
-							                  0 ]) asString;
+				                 << num asString;
 				                 << '.' ] ].
 
 	stream
