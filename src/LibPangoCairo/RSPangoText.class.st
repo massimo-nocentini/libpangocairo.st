@@ -83,7 +83,7 @@ RSPangoText >> baseRectangle [
 				withPangoLayoutHandleDo: [ :layout |
 					| extent |
 					extent := self extentOfPangoLayoutHandle: layout.
-					baseRectangle := Rectangle at00extent: extent ].
+					baseRectangle := Rectangle extentCenteredAtCartesianOrigin: extent ].
 
 			self
 				cairo_destroy: athensCanvas;
