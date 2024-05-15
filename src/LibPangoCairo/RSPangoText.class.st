@@ -19,6 +19,8 @@ The `logicalRectangle` should be:
 Class {
 	#name : 'RSPangoText',
 	#superclass : 'RSBoundingShape',
+	#traits : 'TCairoGraphicsPlugin',
+	#classTraits : 'TCairoGraphicsPlugin classTrait',
 	#instVars : [
 		'text',
 		'font',
@@ -50,9 +52,7 @@ RSPangoText >> accept: visitor [
 RSPangoText >> asMorph [
 
 	| surface |
-	surface := AthensCairoSurface
-		           width: self encompassingRectangle width
-		           height: self encompassingRectangle height.
+	surface := AthensCairoSurface width: self width height: self height.
 
 	surface drawDuring: [ :cr |
 		self showLayoutOnAthensCairoCanvasHandle: cr getHandle ].
@@ -158,13 +158,6 @@ RSPangoText >> font [
 RSPangoText >> font: anObject [
 
 	font := anObject
-]
-
-{ #category : 'ffi bindings' }
-RSPangoText >> g_object_unref: handler [
-
-	<primitive: 'primitive_g_object_unref' module: 'CairoGraphicsPlugin'>
-	self primitiveFail
 ]
 
 { #category : 'initialization' }
