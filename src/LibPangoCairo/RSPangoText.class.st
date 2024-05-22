@@ -60,6 +60,16 @@ RSPangoText >> asMorph [
 	^ surface asForm asMorph
 ]
 
+{ #category : 'converting' }
+RSPangoText >> asPresenter [
+
+	^ SpAthensPresenter new
+		  surfaceExtent: self extent;
+		  drawBlock: [ :aCanvas :boundingBox |
+			  self showLayoutOnAthensCairoCanvasHandle: aCanvas getHandle ];
+		  yourself
+]
+
 { #category : 'accessing' }
 RSPangoText >> attributesChunks: anObject [
 
