@@ -87,8 +87,7 @@ PangoExamples class >> example2ViaRSPangoMarkupPresenter [
 		<i> nice </i>
 	</span>
 	<tt> hello </tt>
-	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored<sub>12</sub></span>
-	';
+	 <span font_family="sans" font_stretch="ultracondensed" letter_spacing="500" font_weight="light"> SANS</span><span foreground="#FFCC00"> colored<sub>12</sub></span>';
 		 asPresenter) open
 ]
 

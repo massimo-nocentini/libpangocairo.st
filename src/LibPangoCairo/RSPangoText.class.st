@@ -64,6 +64,7 @@ RSPangoText >> asMorph [
 RSPangoText >> asPresenter [
 
 	^ SpAthensPresenter new
+		  extent: self extent;
 		  surfaceExtent: self extent;
 		  drawBlock: [ :aCanvas :boundingBox |
 			  self showLayoutOnAthensCairoCanvasHandle: aCanvas getHandle ];
