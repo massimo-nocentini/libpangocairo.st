@@ -443,9 +443,16 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
 	| label texChunk |
-	texChunk := PopplerTeXChunk new
-		            chunk: aMicMath body;
-		            yourself.
+	texChunk := aMicMath arguments
+		            at: #tikZ
+		            ifPresent: [ :tikZ |
+			            PopplerTikZChunk new
+				            chunk: aMicMath body;
+				            yourself ]
+		            ifAbsent: [
+			            PopplerTeXChunk new
+				            chunk: aMicMath body;
+				            yourself ].
 
 	label := self appendFooterNamed: #math label: 'Math' shape: texChunk.
 
