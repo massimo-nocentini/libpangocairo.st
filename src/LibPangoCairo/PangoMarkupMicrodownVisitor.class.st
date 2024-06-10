@@ -442,7 +442,28 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
-	self notYetImplemented
+	| label texChunk |
+	texChunk := PopplerTeXChunk new
+		            chunk: aMicMath body;
+		            yourself.
+
+	label := self appendFooterNamed: #math label: 'Math' shape: texChunk.
+
+	stream
+		<< String space;
+		<< '<i>'.
+	super visitMath: aMicMath.
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
+		<< label;
+		<< ']</span></span>'.
+
+	lastMicBlock := aMicMath
 ]
 
 { #category : 'visiting' }
