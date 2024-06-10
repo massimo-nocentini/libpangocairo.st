@@ -35,10 +35,23 @@ PangoMarkupMicrodownVisitor class >> initialize [
 	                    '&#9654;'. '&#9655;'. '&#9733;'. '&#9734;' }
 ]
 
+{ #category : 'visiting' }
+PangoMarkupMicrodownVisitor >> appendFooterNamed: groupName label: label shape: tsText [
+
+	| associations l |
+	associations := treeSitterLanguages at: groupName.
+
+	l := label , String space , (associations size + 1) asString.
+
+	associations add: l -> tsText.
+
+	^ l
+]
+
 { #category : 'accessing' }
 PangoMarkupMicrodownVisitor >> appendFooters [
 
-	(footers isNotEmpty or: [ treeSitterLanguages isNotEmpty ]) ifTrue: [
+	self hasFooter ifTrue: [
 		stream cr.
 
 		"The following workaround allows us to show a continue line instead of a fake one."
@@ -92,6 +105,14 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 		  ifFalse: [ '' ]
 ]
 
+{ #category : 'testing' }
+PangoMarkupMicrodownVisitor >> hasFooter [
+
+	^ footers isNotEmpty | (treeSitterLanguages at: #link) isNotEmpty
+	  | (treeSitterLanguages at: #code) isNotEmpty
+	  | (treeSitterLanguages at: #math) isNotEmpty
+]
+
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> indentationString [
 
@@ -115,7 +136,12 @@ PangoMarkupMicrodownVisitor >> initialize [
 	modifier := nil.
 
 	footers := OrderedCollection new.
-	treeSitterLanguages := OrderedCollection new.
+	
+	treeSitterLanguages := Dictionary new
+		                       at: #link put: OrderedCollection new;
+		                       at: #math put: OrderedCollection new;
+		                       at: #code put: OrderedCollection new;
+		                       yourself.
 
 	linksCount := 0.
 
@@ -196,41 +222,49 @@ PangoMarkupMicrodownVisitor >> pushModifier: aString [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
-	^ treeSitterLanguages collect: [ :assoc |
-		  | labelShape chunkShape group |
-		  labelShape := RSPangoMarkup new
-			                text: (String streamContents: [ :s |
-						                 s
-							                 << '<span font_family="';
-							                 << fontSans familyName;
-							                 << '" font_size="smaller" alpha="50%">[';
-							                 << assoc key;
-							                 << ']';
-							                 << '</span>' ]);
-			                asCompositeShape.
+	| shapes |
+	shapes := RSGroup new.
 
-		  chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
+	treeSitterLanguages keysAndValuesDo: [ :groupName :associations |
+		associations do: [ :assoc |
+			| labelShape chunkShape group |
+			labelShape := RSPangoMarkup new
+				              text: (String streamContents: [ :s |
+							               s
+								               << '<span font_family="';
+								               << fontSans familyName;
+								               << '" font_size="smaller" alpha="50%">[';
+								               << assoc key;
+								               << ']';
+								               << '</span>' ]);
+				              asCompositeShape.
 
-		  group := RSGroup new
-			           add: labelShape;
-			           add: chunkShape;
-			           yourself.
+			chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
 
-		  RSHorizontalLineLayout new
-			  horizontalGap:
-				  labelShape encompassingRectangle width / Float goldenRatio;
-			  alignTop;
-			  applyOn: group.
+			group := RSGroup new
+				         add: labelShape;
+				         add: chunkShape;
+				         yourself.
 
-		  group asShape ]
+			RSHorizontalLineLayout new
+				horizontalGap:
+					labelShape encompassingRectangle width / Float goldenRatio;
+				alignTop;
+				applyOn: group.
+
+			shapes add: group asShape ] ].
+
+	^ shapes
 ]
 
-{ #category : 'visiting' }
+{ #category : 'visiting main API' }
 PangoMarkupMicrodownVisitor >> visit: mic [
 	"Cleanup before starting a new visit."
 
 	footers removeAll.
-	treeSitterLanguages removeAll.
+
+	treeSitterLanguages keysAndValuesDo: [ :groupName :associations |
+		associations removeAll ].
 
 	lastMicBlock := nil.
 
@@ -267,9 +301,7 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		          sourceCode: aCodeBlock code;
 		          yourself.
 
-	label := 'Listing ' , (treeSitterLanguages size + 1) asString.
-
-	treeSitterLanguages add: label -> tsText.
+	label := self appendFooterNamed: #code label: 'Listing' shape: tsText.
 
 	stream
 		<< String space;
@@ -385,12 +417,26 @@ PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
-	self postFooter: aLink do: [
-		stream << '<i>'.
+	| label url |
+	url := aLink asFooterStringForPangoMarkupMicrodownVisitor: self.
 
-		super visitLink: aLink.
+	label := self appendFooterNamed: #link label: 'Link' shape: url asUrl.
 
-		stream << '</i>' ]
+	stream
+		<< String space;
+		<< '<i>'.
+	super visitLink: aLink.
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
+		<< label;
+		<< ']</span></span>'.
+
+	lastMicBlock := aLink
 ]
 
 { #category : 'visiting' }
