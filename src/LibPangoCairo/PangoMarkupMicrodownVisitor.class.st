@@ -105,6 +105,12 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 		  ifFalse: [ '' ]
 ]
 
+{ #category : 'accessing' }
+PangoMarkupMicrodownVisitor >> docClassOptionsOfMicMathBlock: aMicMath [
+
+	^ aMicMath arguments at: #texDocClassOptions ifAbsent: [ '12pt' ]
+]
+
 { #category : 'testing' }
 PangoMarkupMicrodownVisitor >> hasFooter [
 
@@ -217,6 +223,24 @@ PangoMarkupMicrodownVisitor >> pushModifier: aString [
 		            yourself.
 
 	^ modifier
+]
+
+{ #category : 'visiting' }
+PangoMarkupMicrodownVisitor >> texChunkOfMicMathBlock: aMicMath [
+
+	| texChunk texEnv |
+	texEnv := aMicMath arguments
+		          at: #texEnv
+		          ifPresent: [ :texEnvName | texEnvName asSymbol ]
+		          ifAbsent: [ #eq ].
+
+	texChunk := texEnv = #eq
+		            ifTrue: [ PopplerTeXDisplayStyleChunk new ]
+		            ifFalse: [
+			            texEnv = #tikZ
+				            ifTrue: [ PopplerTikZChunk new ]
+				            ifFalse: [ PopplerTeXChunk new ] ].
+	^ texChunk
 ]
 
 { #category : 'visiting' }
@@ -442,23 +466,9 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
-	| label texChunk texEnv docClassOptions |
-	"Parsing header line"
-	texEnv := aMicMath arguments
-		          at: #texEnv
-		          ifPresent: [ :texEnvName | texEnvName asSymbol ]
-		          ifAbsent: [ #eq ].
-
-	docClassOptions := aMicMath arguments
-		                   at: #texDocClassOptions
-		                   ifAbsent: [ '12pt' ].
-
-	texChunk := texEnv = #eq
-		            ifTrue: [ PopplerTeXDisplayStyleChunk new ]
-		            ifFalse: [
-			            texEnv = #tikZ
-				            ifTrue: [ PopplerTikZChunk new ]
-				            ifFalse: [ PopplerTeXChunk new ] ].
+	| label texChunk docClassOptions |
+	texChunk := self texChunkOfMicMathBlock: aMicMath.
+	docClassOptions := self docClassOptionsOfMicMathBlock: aMicMath.
 
 	"Prepare the chunk object with the provided customizations."
 	texChunk
