@@ -15,7 +15,7 @@ PangoPharoEvaluator >> asRSPangoShapeUsingFont: aFont [
 	| result src |
 	src := self source.
 	result := self evaluator
-		          text: src replaceAllTabsWithThreeSpaces;
+		          text: src;
 		          evaluate: src onCompileError: [
 			          | text g |
 			          text := self evaluator textWithStyle.
