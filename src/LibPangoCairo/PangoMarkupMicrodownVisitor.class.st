@@ -8,7 +8,6 @@ Class {
 		'sectionsNumbering',
 		'modifier',
 		'orderedNestedLevels',
-		'footers',
 		'linksCount',
 		'codeLabelRandom',
 		'auxiliaryOrderedLabelLanguageAssociations',
@@ -17,8 +16,8 @@ Class {
 		'fontSerif',
 		'fontMath',
 		'pangoMarkup',
-		'treeSitterLanguages',
-		'lastMicBlock'
+		'lastMicBlock',
+		'footers'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -39,36 +38,13 @@ PangoMarkupMicrodownVisitor class >> initialize [
 PangoMarkupMicrodownVisitor >> appendFooterNamed: groupName label: label shape: tsText [
 
 	| associations l |
-	associations := treeSitterLanguages at: groupName.
+	associations := footers at: groupName.
 
 	l := label , String space , (associations size + 1) asString.
 
 	associations add: l -> tsText.
 
 	^ l
-]
-
-{ #category : 'accessing' }
-PangoMarkupMicrodownVisitor >> appendFooters [
-
-	self hasFooter ifTrue: [
-		stream cr.
-
-		"The following workaround allows us to show a continue line instead of a fake one."
-		stream << '<span underline="single">'.
-		50 timesRepeat: [ stream space ].
-		stream << '</span>' ].
-
-	footers do: [ :assoc |
-		stream
-			cr;
-			<< '<span font_family="';
-			<< fontSans familyName;
-			<< '" font_size="smaller" alpha="50%">[';
-			<< assoc key asString;
-			<< '] <span alpha="100%">';
-			<< assoc value;
-			<< '</span></span>' ]
 ]
 
 { #category : 'converting' }
@@ -111,12 +87,31 @@ PangoMarkupMicrodownVisitor >> docClassOptionsOfMicMathBlock: aMicMath [
 	^ aMicMath arguments at: #texDocClassOptions ifAbsent: [ '12pt' ]
 ]
 
+{ #category : 'accessing' }
+PangoMarkupMicrodownVisitor >> drawSeparatorBeforeFooters [
+
+	self hasFooter ifTrue: [
+		stream cr.
+
+		"The following workaround allows us to show a continue line instead of a fake one."
+		stream << '<span underline="single">'.
+		50 timesRepeat: [ stream space ].
+		stream << '</span>' ]
+]
+
+{ #category : 'initialization' }
+PangoMarkupMicrodownVisitor >> footerNames [
+
+	^ #( link math code note )
+]
+
 { #category : 'testing' }
 PangoMarkupMicrodownVisitor >> hasFooter [
 
-	^ footers isNotEmpty | (treeSitterLanguages at: #link) isNotEmpty
-	  | (treeSitterLanguages at: #code) isNotEmpty
-	  | (treeSitterLanguages at: #math) isNotEmpty
+	^ footers values
+		  inject: false
+		  into: [ :aBoolean :associations |
+		  aBoolean | associations isNotEmpty ]
 ]
 
 { #category : 'visiting' }
@@ -141,13 +136,9 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	modifier := nil.
 
-	footers := OrderedCollection new.
-	
-	treeSitterLanguages := Dictionary new
-		                       at: #link put: OrderedCollection new;
-		                       at: #math put: OrderedCollection new;
-		                       at: #code put: OrderedCollection new;
-		                       yourself.
+	footers := Dictionary new.
+	self footerNames do: [ :footerName |
+		footers at: footerName put: OrderedCollection new ].
 
 	linksCount := 0.
 
@@ -193,28 +184,6 @@ PangoMarkupMicrodownVisitor >> popModifier [
 ]
 
 { #category : 'visiting' }
-PangoMarkupMicrodownVisitor >> postFooter: micElement do: block [
-
-	| assoc str |
-	linksCount := linksCount + 1.
-	str := micElement asFooterStringForPangoMarkupMicrodownVisitor: self.
-
-	assoc := linksCount -> str.
-
-	footers add: assoc.
-
-	block value.
-
-	stream
-		<< String space;
-		<< '<span baseline_shift="superscript"><span font_family="';
-		<< fontSans familyName;
-		<< '" font_size="smaller" alpha="50%">[';
-		<< assoc key asString;
-		<< ']</span></span>'
-]
-
-{ #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> pushModifier: aString [
 
 	modifier := ValueLink new
@@ -249,7 +218,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 	| shapes |
 	shapes := RSGroup new.
 
-	treeSitterLanguages keysAndValuesDo: [ :groupName :associations |
+	footers keysAndValuesDo: [ :groupName :associations |
 		associations do: [ :assoc |
 			| labelShape chunkShape group |
 			labelShape := RSPangoMarkup new
@@ -285,9 +254,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 PangoMarkupMicrodownVisitor >> visit: mic [
 	"Cleanup before starting a new visit."
 
-	footers removeAll.
-
-	treeSitterLanguages keysAndValuesDo: [ :groupName :associations |
+	footers keysAndValuesDo: [ :groupName :associations |
 		associations removeAll ].
 
 	lastMicBlock := nil.
@@ -297,7 +264,7 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 
 		                super visit: mic.
 
-		                self appendFooters.
+		                self drawSeparatorBeforeFooters.
 
 		                stream := nil "Clean it up" ]) trim.
 
@@ -347,7 +314,26 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 
-	self postFooter: aFootnote do: [  ].
+	| label note |
+	note := String streamContents: [ :noteStream |
+		        noteStream
+			        << '<span font_family="';
+			        << fontSerif familyName;
+			        << '" font_size="smaller">';
+			        <<
+				        (aFootnote asFooterStringForPangoMarkupMicrodownVisitor:
+						         self);
+			        << '</span>' ].
+
+	label := self appendFooterNamed: #note label: 'Note' shape: note.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
+		<< label;
+		<< ']</span></span>'.
 
 	lastMicBlock := aFootnote
 ]
