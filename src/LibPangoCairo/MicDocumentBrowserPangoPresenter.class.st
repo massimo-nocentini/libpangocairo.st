@@ -9,13 +9,12 @@ Class {
 MicDocumentBrowserPangoPresenter class >> menuCommandOn: aBuilder [
 
 	<worldMenu>
-	(aBuilder item: #'Documentation Pango Browser')
+	(aBuilder item: #'Documentation Browser - Roassal')
 		parent: #Help;
-		order: 1;
+		order: 0;
 		action: [ self open ];
 		iconName: #smallHelp;
-		help: 'Explore a list of available documentation usign Pango.';
-		withSeparatorAfter
+		help: 'Explore a list of available documentation usign Roassal.'
 ]
 
 { #category : 'navigation' }
