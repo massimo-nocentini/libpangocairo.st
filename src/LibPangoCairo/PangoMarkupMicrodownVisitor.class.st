@@ -442,17 +442,28 @@ PangoMarkupMicrodownVisitor >> visitLink: aLink [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitMath: aMicMath [
 
-	| label texChunk |
-	texChunk := aMicMath arguments
-		            at: #tikZ
-		            ifPresent: [ :tikZ |
-			            PopplerTikZChunk new
-				            chunk: aMicMath body;
-				            yourself ]
-		            ifAbsent: [
-			            PopplerTeXChunk new
-				            chunk: aMicMath body;
-				            yourself ].
+	| label texChunk texEnv docClassOptions |
+	"Parsing header line"
+	texEnv := aMicMath arguments
+		          at: #texEnv
+		          ifPresent: [ :texEnvName | texEnvName asSymbol ]
+		          ifAbsent: [ #eq ].
+
+	docClassOptions := aMicMath arguments
+		                   at: #texDocClassOptions
+		                   ifAbsent: [ '12pt' ].
+
+	texChunk := texEnv = #eq
+		            ifTrue: [ PopplerTeXDisplayStyleChunk new ]
+		            ifFalse: [
+			            texEnv = #tikZ
+				            ifTrue: [ PopplerTikZChunk new ]
+				            ifFalse: [ PopplerTeXChunk new ] ].
+
+	"Prepare the chunk object with the provided customizations."
+	texChunk
+		commaSeparatedDocClassOptionsString: docClassOptions;
+		chunk: aMicMath body.
 
 	label := self appendFooterNamed: #math label: 'Math' shape: texChunk.
 
