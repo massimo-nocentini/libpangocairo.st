@@ -17,7 +17,8 @@ Class {
 		'fontMath',
 		'pangoMarkup',
 		'lastMicBlock',
-		'footers'
+		'footers',
+		'pharoEvaluator'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -102,7 +103,11 @@ PangoMarkupMicrodownVisitor >> drawSeparatorBeforeFooters [
 { #category : 'initialization' }
 PangoMarkupMicrodownVisitor >> footerNames [
 
-	^ #( link math code note )
+	| dict |
+	dict := Dictionary new.
+	#( link math code note eval ) do: [ :footerName |
+		dict at: footerName put: OrderedCollection new ].
+	^ dict
 ]
 
 { #category : 'testing' }
@@ -136,9 +141,7 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	modifier := nil.
 
-	footers := Dictionary new.
-	self footerNames do: [ :footerName |
-		footers at: footerName put: OrderedCollection new ].
+	footers := self footerNames.
 
 	linksCount := 0.
 
@@ -147,7 +150,11 @@ PangoMarkupMicrodownVisitor >> initialize [
 	fontMonospace := LogicalFont pangoMonospace.
 	fontSans := LogicalFont pangoSans.
 	fontSerif := LogicalFont pangoSerif.
-	fontMath := LogicalFont pangoMath
+	fontMath := LogicalFont pangoMath.
+
+	pharoEvaluator := SpCodePresenter new
+		                  beForScripting;
+		                  yourself
 ]
 
 { #category : 'accessing' }
@@ -557,6 +564,34 @@ PangoMarkupMicrodownVisitor >> visitParagraph: aParagraph [
 	stream << '</span>'.
 
 	lastMicBlock := aParagraph
+]
+
+{ #category : 'visiting - extensions' }
+PangoMarkupMicrodownVisitor >> visitPharoEvaluator: aPharoEvalBlock [
+
+	| obj label |
+	obj := PangoPharoEvaluator new
+		       evaluator: pharoEvaluator;
+		       source: aPharoEvalBlock body;
+		       yourself.
+
+	label := self appendFooterNamed: #eval label: 'Eval' shape: obj.
+
+	stream
+		<< String space;
+		<< '<i>'.
+	super visitPharoEvaluator: aPharoEvalBlock.
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
+		<< label;
+		<< ']</span></span>'.
+
+	lastMicBlock := aPharoEvalBlock
 ]
 
 { #category : 'visiting' }
