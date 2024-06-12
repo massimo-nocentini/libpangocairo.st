@@ -19,8 +19,6 @@ The `logicalRectangle` should be:
 Class {
 	#name : 'RSPangoText',
 	#superclass : 'RSBoundingShape',
-	#traits : 'TCairoGraphicsPlugin',
-	#classTraits : 'TCairoGraphicsPlugin classTrait',
 	#instVars : [
 		'text',
 		'font',
@@ -169,6 +167,13 @@ RSPangoText >> font [
 RSPangoText >> font: anObject [
 
 	font := anObject
+]
+
+{ #category : 'accessing' }
+RSPangoText >> g_object_unref: handler [
+
+	<primitive: 'primitive_g_object_unref' module: 'CairoGraphicsPlugin'>
+	self primitiveFail
 ]
 
 { #category : 'initialization' }
