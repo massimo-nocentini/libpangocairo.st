@@ -11,7 +11,5 @@ RSAthensRenderer >> visitPangoText: pangoShape [
 	(pangoShape paint asAthensPaintOn: athensCanvas) loadOnCairoCanvas:
 		athensCanvas.
 
-
-	pangoShape showLayoutOnAthensCairoCanvasHandle:
-		athensCanvas getHandle
+	pangoShape showLayoutOnAthensCairoCanvas: athensCanvas
 ]

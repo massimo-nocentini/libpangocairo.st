@@ -27,6 +27,8 @@ Class {
 		'layoutWidth'
 	],
 	#classVars : [
+		'LastSmalltalkSession',
+		'LayoutForExtents',
 		'OriginPoint'
 	],
 	#category : 'LibPangoCairo-Roassal',
@@ -37,7 +39,8 @@ Class {
 { #category : 'class initialization' }
 RSPangoText class >> initialize [
 
-	OriginPoint := 0 @ 0
+	OriginPoint := 0 @ 0.
+	LastSmalltalkSession := Smalltalk session
 ]
 
 { #category : 'visiting' }
@@ -52,8 +55,7 @@ RSPangoText >> asMorph [
 	| surface |
 	surface := AthensCairoSurface width: self width height: self height.
 
-	surface drawDuring: [ :cr |
-		self showLayoutOnAthensCairoCanvasHandle: cr getHandle ].
+	surface drawDuring: [ :cr | self showLayoutOnAthensCairoCanvas: cr ].
 
 	^ surface asForm asMorph
 ]
@@ -64,8 +66,7 @@ RSPangoText >> asPresenter [
 	^ SpAthensPresenter new
 		  extent: self extent;
 		  surfaceExtent: self extent;
-		  drawBlock: [ :aCanvas :boundingBox |
-			  self showLayoutOnAthensCairoCanvasHandle: aCanvas getHandle ];
+		  drawBlock: [ :aCanvas :boundingBox | self showLayoutOnAthensCairoCanvas: aCanvas ];
 		  yourself
 ]
 
@@ -78,25 +79,16 @@ RSPangoText >> attributesChunks: anObject [
 { #category : 'accessing' }
 RSPangoText >> baseRectangle [
 
-	self text == ''
-		ifTrue: [ baseRectangle := OriginPoint corner: OriginPoint ]
-		ifFalse: [
-			| surface athensCanvas |
-			"A very small surface to create an `AthensCairoCanvas` object."
-			surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
-
-			athensCanvas := self cairo_create: surface.
-
-			self
-				onAthensCairoCanvasHandle: athensCanvas
-				withPangoLayoutHandleDo: [ :layout |
-					| extent |
-					extent := self extentOfPangoLayoutHandle: layout.
-					baseRectangle := Rectangle extentCenteredAtCartesianOrigin: extent ].
-
-			self
-				cairo_destroy: athensCanvas;
-				cairo_surface_destroy: surface ].
+	baseRectangle := self text == ''
+		                 ifTrue: [ OriginPoint corner: OriginPoint ]
+		                 ifFalse: [
+			                 self
+				                 onPangoLayoutHandle: self layoutForExtents
+				                 withAttributesDo: [ :layout |
+					                 | extent |
+					                 extent := self extentOfPangoLayoutHandle: layout.
+					                 Rectangle extentCenteredAtCartesianOrigin:
+						                 extent ] ].
 
 	^ super baseRectangle
 ]
@@ -190,6 +182,24 @@ RSPangoText >> initialize [
 ]
 
 { #category : 'accessing' }
+RSPangoText >> layoutForExtents [
+
+	(Smalltalk session ~~ LastSmalltalkSession or: [
+		 LayoutForExtents isNil ]) ifTrue: [
+		| surface athensCanvas |
+		surface := self cairoImageSurfaceCreateWidth: 1 height: 1.
+		athensCanvas := self cairo_create: surface.
+		LayoutForExtents := self
+			                    newPangoLayoutHandleOnAthensCairoCanvasHandle:
+			                    athensCanvas
+		"self
+				cairo_destroy: athensCanvas;
+				cairo_surface_destroy: surface" ].
+
+	^ LayoutForExtents
+]
+
+{ #category : 'accessing' }
 RSPangoText >> layoutWidth [
 
 	^ layoutWidth
@@ -229,27 +239,6 @@ RSPangoText >> onAthensCairoCanvasHandle: cairoCanvas showPangoLayout: layout [
 	self primitiveFail
 ]
 
-{ #category : 'handle' }
-RSPangoText >> onAthensCairoCanvasHandle: athensCanvas withPangoLayoutHandleDo: block [
-
-	| layoutHandler attrsHandler |
-	layoutHandler := self newPangoLayoutHandleOnAthensCairoCanvasHandle:
-		                 athensCanvas.
-
-	self
-		onPangoLayout: layoutHandler setWidth: self layoutWidth;
-		onPangoLayout: layoutHandler setText: self text.
-
-	attrsHandler := self withPangoAttrList.
-
-	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
-
-	[ block value: layoutHandler ] ensure: [
-		self
-			pangoAttrListUnref: attrsHandler;
-			g_object_unref: layoutHandler ]
-]
-
 { #category : 'ffi bindings' }
 RSPangoText >> onPangoLayout: pangoHandler setAttrListHandler: attrListHander [
 
@@ -272,6 +261,22 @@ RSPangoText >> onPangoLayout: layout setWidth: width [
 	<primitive: 'primitive_pango_layout_set_width' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFail
+]
+
+{ #category : 'handle' }
+RSPangoText >> onPangoLayoutHandle: layoutHandler withAttributesDo: block [
+
+	| attrsHandler |
+	self
+		onPangoLayout: layoutHandler setWidth: self layoutWidth;
+		onPangoLayout: layoutHandler setText: self text.
+
+	attrsHandler := self withPangoAttrList.
+
+	self onPangoLayout: layoutHandler setAttrListHandler: attrsHandler.
+
+	^ [ block value: layoutHandler ] ensure: [
+		  self pangoAttrListUnref: attrsHandler ]
 ]
 
 { #category : 'ffi bindings' }
@@ -299,12 +304,14 @@ RSPangoText >> rectangleOfPangoLayoutHandle: anHandler class: aClass [
 ]
 
 { #category : 'converting' }
-RSPangoText >> showLayoutOnAthensCairoCanvasHandle: anHandle [
+RSPangoText >> showLayoutOnAthensCairoCanvas: anAthensCairoCanvas [
 
 	self
-		onAthensCairoCanvasHandle: anHandle
-		withPangoLayoutHandleDo: [ :layout |
-			self onAthensCairoCanvasHandle: anHandle showPangoLayout: layout ]
+		onPangoLayoutHandle: anAthensCairoCanvas pangoLayoutHandle
+		withAttributesDo: [ :layout |
+			self
+				onAthensCairoCanvasHandle: anAthensCairoCanvas getHandle
+				showPangoLayout: layout ]
 ]
 
 { #category : 'accessing' }

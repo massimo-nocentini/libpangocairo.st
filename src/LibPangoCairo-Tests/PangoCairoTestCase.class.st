@@ -8,28 +8,33 @@ Class {
 { #category : 'tests' }
 PangoCairoTestCase >> testSizeExtent [
 
-	| surface rectangle extent athensCanvas pango |
-	pango := RSPangoText new
-		         text: 'hello world';
-		         yourself.
+	| surface rectangle extent athensCanvas pangoShape pangoLayoutHandle |
+	pangoShape := RSPangoText new
+		              text: 'hello world';
+		              yourself.
 
-	surface := pango cairoImageSurfaceCreateWidth: 1 height: 1.
+	surface := pangoShape cairoImageSurfaceCreateWidth: 1 height: 1.
 
-	athensCanvas := pango cairo_create: surface.
+	athensCanvas := pangoShape cairo_create: surface.
 
-	pango
-		onAthensCairoCanvasHandle: athensCanvas
-		withPangoLayoutHandleDo: [ :layout |
-			extent := pango extentOfPangoLayoutHandle: layout.
-			rectangle := pango
+	pangoLayoutHandle := pangoShape
+		                     newPangoLayoutHandleOnAthensCairoCanvasHandle:
+		                     athensCanvas.
+
+	pangoShape
+		onPangoLayoutHandle: pangoLayoutHandle
+		withAttributesDo: [ :layout |
+			extent := pangoShape extentOfPangoLayoutHandle: layout.
+			rectangle := pangoShape
 				             rectangleOfPangoLayoutHandle: layout
 				             class: Rectangle ].
 
-	pango
+	pangoShape
+		g_object_unref: pangoLayoutHandle;
 		cairo_destroy: athensCanvas;
 		cairo_surface_destroy: surface.
 
 	self assert: extent equals: rectangle extent.
 
-	self assert: pango asCompositeShape extent equals: extent
+	self assert: pangoShape asCompositeShape extent equals: extent
 ]
