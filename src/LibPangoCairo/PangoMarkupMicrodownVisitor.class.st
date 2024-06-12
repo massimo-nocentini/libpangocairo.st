@@ -18,7 +18,7 @@ Class {
 		'pangoMarkup',
 		'lastMicBlock',
 		'footers',
-		'pharoEvaluator'
+		'codePresenter'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -80,6 +80,18 @@ PangoMarkupMicrodownVisitor >> bulletAtCurrentNestedLevel [
 			  (UnorderedBullets at: nestedLevel ifAbsent: [ '\#9671;' ])
 			  , String space ]
 		  ifFalse: [ '' ]
+]
+
+{ #category : 'accessing' }
+PangoMarkupMicrodownVisitor >> codePresenter [
+
+	^ codePresenter
+]
+
+{ #category : 'accessing' }
+PangoMarkupMicrodownVisitor >> codePresenter: anObject [
+
+	codePresenter := anObject
 ]
 
 { #category : 'accessing' }
@@ -152,9 +164,9 @@ PangoMarkupMicrodownVisitor >> initialize [
 	fontSerif := LogicalFont pangoSerif.
 	fontMath := LogicalFont pangoMath.
 
-	pharoEvaluator := SpCodePresenter new
-		                  beForScripting;
-		                  yourself
+	self codePresenter: (SpCodePresenter new
+			 beForScripting;
+			 yourself)
 ]
 
 { #category : 'accessing' }
@@ -571,7 +583,7 @@ PangoMarkupMicrodownVisitor >> visitPharoEvaluator: aPharoEvalBlock [
 
 	| obj label |
 	obj := PangoPharoEvaluator new
-		       evaluator: pharoEvaluator;
+		       evaluator: self codePresenter;
 		       source: aPharoEvalBlock body;
 		       yourself.
 

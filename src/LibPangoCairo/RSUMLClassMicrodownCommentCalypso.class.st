@@ -21,18 +21,17 @@ RSUMLClassMicrodownCommentCalypso class >> shouldBeActivatedInContext: aBrowserC
 { #category : 'building' }
 RSUMLClassMicrodownCommentCalypso >> buildUmlCanvas [
 
-	| pangoMicVisitor mic |
-	pangoMicVisitor := PangoMarkupMicrodownVisitor new.
-
+	| shape mic |
 	mic := Microdown parse: self targetClass comment.
 
-	pangoMicVisitor visit: mic.
+	shape := PangoMarkupMicrodownVisitor new
+		         visit: mic;
+		         asRSPangoShapeUsingFont: LogicalFont pangoSerif.
 
 	^ RSCanvas new
 		  useRTree;
 		  @ RSCanvasController;
-		  add:
-			  (pangoMicVisitor asRSPangoShapeUsingFont: LogicalFont pangoSerif);
+		  add: shape;
 		  yourself
 ]
 
