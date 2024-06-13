@@ -1,20 +1,7 @@
 "
-The `logicalRectangle` should be:
+# Intro
 
-```
-	""Answer a Rectangle with the logical bounds.
-	See https://docs.gtk.org/Pango/method.GlyphString.extents.html""
-
-	| logicalRectangle inkRectangle |
-	logicalRectangle := PangoRectangle externalNew.
-	inkRectangle := PangoRectangle externalNew.
-
-	self
-		getExtentsInkRectangle: inkRectangle
-		logicalRectangle: logicalRectangle.
-
-	^ inkRectangle asRectangle
-```
+[Text Attributes and markup](https://docs.gtk.org/Pango/pango_markup.html)
 "
 Class {
 	#name : 'RSPangoText',
