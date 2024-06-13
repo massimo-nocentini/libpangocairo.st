@@ -1,23 +1,6 @@
 Extension { #name : 'AthensCairoCanvas' }
 
 { #category : '*LibPangoCairo' }
-AthensCairoCanvas >> layoutPath: layout [
-
-	self
-		ffiCall: #( void pango_cairo_layout_path #( self , void * layout ) )
-		module: PangoCairoLibrary
-]
-
-{ #category : '*LibPangoCairo' }
-AthensCairoCanvas >> newPangoLayout [
-
-	self
-		ffiCall: #( void * pango_cairo_create_layout
-		   #( self ) )
-		module: PangoCairoLibrary
-]
-
-{ #category : '*LibPangoCairo' }
 AthensCairoCanvas >> showLayout: layout [
 
 	self
