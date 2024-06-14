@@ -8,8 +8,9 @@ Class {
 	#superclass : 'RSBoundingShape',
 	#traits : 'TExternalAddressHolder',
 	#classTraits : 'TExternalAddressHolder classTrait',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-Roassal',
+	#package : 'LibPangoCairo',
+	#tag : 'Roassal'
 }
 
 { #category : 'finalization' }

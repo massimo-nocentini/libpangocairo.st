@@ -1,8 +1,9 @@
 Class {
 	#name : 'MicDocumentBrowserPangoPresenter',
 	#superclass : 'MicDocumentBrowserPresenter',
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-Microdown',
+	#package : 'LibPangoCairo',
+	#tag : 'Microdown'
 }
 
 { #category : 'opening' }

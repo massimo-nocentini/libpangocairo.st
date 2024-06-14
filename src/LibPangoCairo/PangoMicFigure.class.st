@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'micHttpResource'
 	],
-	#category : 'LibPangoCairo',
-	#package : 'LibPangoCairo'
+	#category : 'LibPangoCairo-Microdown',
+	#package : 'LibPangoCairo',
+	#tag : 'Microdown'
 }
 
 { #category : 'converting' }
