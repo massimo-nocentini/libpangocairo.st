@@ -53,17 +53,9 @@ RSGdkPixbuf >> gdkPixbufGetWidthHeight: pixbufHandle [
 
 { #category : 'primitives of CairoGraphicsPlugin' }
 RSGdkPixbuf >> gdkPixbufNewFromFile: fileName [
+	"Bind the [`gdk_pixbuf_new_from_file`](https://docs.gtk.org/gdk-pixbuf/ctor.Pixbuf.new_from_file.html) C function."
 
 	<primitive: 'primitive_gdk_pixbuf_new_from_file' module:
-	'CairoGraphicsPlugin'>
-	self primitiveFailed.
-	^ ExternalAddress null
-]
-
-{ #category : 'primitives of CairoGraphicsPlugin' }
-RSGdkPixbuf >> gdkPixbufNewFromInline: aByteArray [
-
-	<primitive: 'primitive_gdk_pixbuf_new_from_inline' module:
 	'CairoGraphicsPlugin'>
 	self primitiveFailed.
 	^ ExternalAddress null
@@ -75,12 +67,6 @@ RSGdkPixbuf >> initialize [
 	super initialize.
 
 	self addToTheResourceManager
-]
-
-{ #category : 'loading' }
-RSGdkPixbuf >> loadByteArray: aByteArray [
-
-	handle := self gdkPixbufNewFromInline: aByteArray
 ]
 
 { #category : 'loading' }
