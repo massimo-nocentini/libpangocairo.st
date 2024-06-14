@@ -1,6 +1,14 @@
 Extension { #name : 'AthensCairoCanvas' }
 
 { #category : '*LibPangoCairo' }
+AthensCairoCanvas >> gdkCairoSetSourcePixbuf: pixbufHandle x: x y: y [
+
+	<primitive: 'primitive_gdk_cairo_set_source_pixbuf' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFailed
+]
+
+{ #category : '*LibPangoCairo' }
 AthensCairoCanvas >> showLayout: layout [
 
 	self
