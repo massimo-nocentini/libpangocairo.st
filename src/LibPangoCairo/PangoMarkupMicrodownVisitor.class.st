@@ -117,7 +117,7 @@ PangoMarkupMicrodownVisitor >> footerNames [
 
 	| dict |
 	dict := Dictionary new.
-	#( link math code note eval ) do: [ :footerName |
+	#( link math code note eval figure ) do: [ :footerName |
 		dict at: footerName put: OrderedCollection new ].
 	^ dict
 ]
@@ -328,6 +328,36 @@ PangoMarkupMicrodownVisitor >> visitCode: aCodeBlock [
 		<< ']</span></span>'.
 
 	lastMicBlock := aCodeBlock
+]
+
+{ #category : 'visiting - inline elements' }
+PangoMarkupMicrodownVisitor >> visitFigure: aFigure [
+
+	| label pangoMicFigure |
+	pangoMicFigure := PangoMicFigure new
+		                  micHttpResource: aFigure reference;
+		                  yourself.
+
+	label := self
+		         appendFooterNamed: #figure
+		         label: 'Figure'
+		         shape: pangoMicFigure.
+
+	stream
+		<< String space;
+		<< '<i>'.
+	super visitFigure: aFigure.
+	stream << '</i>'.
+
+	stream
+		<< String space;
+		<< '<span baseline_shift="superscript"><span font_family="';
+		<< fontSans familyName;
+		<< '" font_size="smaller" alpha="50%">[';
+		<< label;
+		<< ']</span></span>'.
+
+	lastMicBlock := aFigure
 ]
 
 { #category : 'visiting' }

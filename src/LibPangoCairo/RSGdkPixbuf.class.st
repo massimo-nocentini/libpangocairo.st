@@ -59,12 +59,27 @@ RSGdkPixbuf >> gdkPixbufNewFromFile: fileName [
 	^ ExternalAddress null
 ]
 
+{ #category : 'primitives of CairoGraphicsPlugin' }
+RSGdkPixbuf >> gdkPixbufNewFromInline: aByteArray [
+
+	<primitive: 'primitive_gdk_pixbuf_new_from_inline' module:
+	'CairoGraphicsPlugin'>
+	self primitiveFailed.
+	^ ExternalAddress null
+]
+
 { #category : 'initialization' }
 RSGdkPixbuf >> initialize [
 
 	super initialize.
 
 	self addToTheResourceManager
+]
+
+{ #category : 'loading' }
+RSGdkPixbuf >> loadByteArray: aByteArray [
+
+	handle := self gdkPixbufNewFromInline: aByteArray
 ]
 
 { #category : 'loading' }
