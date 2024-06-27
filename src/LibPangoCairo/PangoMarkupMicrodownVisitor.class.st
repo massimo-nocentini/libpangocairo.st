@@ -59,9 +59,8 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 
 	composite := RSGroup new
 		             add: pango;
-		             addAll:
-			             (self treeSitterLanguageShapesWithFont:
-					              LogicalFont pangoMonospace);
+		             addAll: (self treeSitterLanguageShapesWithFont:
+					              PangoLogicalFontManager pangoMonospace);
 		             yourself.
 
 	RSVerticalLineLayout new
@@ -159,10 +158,10 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	codeLabelRandom := Random seed: 541.
 
-	fontMonospace := LogicalFont pangoMonospace.
-	fontSans := LogicalFont pangoSans.
-	fontSerif := LogicalFont pangoSerif.
-	fontMath := LogicalFont pangoMath.
+	fontMonospace := PangoLogicalFontManager pangoMonospace.
+	fontSans := PangoLogicalFontManager pangoSans.
+	fontSerif := PangoLogicalFontManager pangoSerif.
+	fontMath := PangoLogicalFontManager pangoMath.
 
 	self codePresenter: (SpCodePresenter new
 			 beForScripting;

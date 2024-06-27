@@ -28,7 +28,7 @@ PangoPharoEvaluator >> asRSPangoShapeUsingFont: aFont [
 						                asCompositeShape);
 				               add:
 				               (text asRSPangoShapeUsingFont:
-					                LogicalFont pangoMonospace);
+					                PangoLogicalFontManager pangoMonospace);
 				               yourself.
 
 			          RSVerticalLineLayout new

@@ -45,7 +45,7 @@ MicDocumentBrowserPangoPresenter >> initializePresenters [
 					               shape := PangoMarkupMicrodownVisitor new
 						                        visit: micElement;
 						                        asRSPangoShapeUsingFont:
-							                        LogicalFont pangoSerif.
+							                        PangoLogicalFontManager pangoSerif.
 
 					               aCanvas
 						               add: shape;
