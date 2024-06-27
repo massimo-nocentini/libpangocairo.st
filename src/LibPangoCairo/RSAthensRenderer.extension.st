@@ -3,33 +3,24 @@ Extension { #name : 'RSAthensRenderer' }
 { #category : '*LibPangoCairo' }
 RSAthensRenderer >> visitGdkPixbuf: gdkPixbufShape [
 
-	| lbtranslation cPoint |
-	lbtranslation := gdkPixbufShape extent halvedAsFloat negated.
+	self visitShapeIfNecessary: gdkPixbufShape block: [
+		| point |
+		point := athensCanvas getCurrentPoint
+		         - gdkPixbufShape extent halvedAsFloat.
 
-	matrix translateBy: lbtranslation.
+		athensCanvas
+			gdkCairoSetSourcePixbuf: gdkPixbufShape getHandle
+			x: point x
+			y: point y.
 
-	athensCanvas pathTransform loadAffineTransform: matrix.
-	athensCanvas setPathMatrix.
-
-	cPoint := athensCanvas getCurrentPoint.
-
-	athensCanvas
-		gdkCairoSetSourcePixbuf: gdkPixbufShape getHandle
-		x: cPoint x
-		y: cPoint y;
-		primPaint
+		athensCanvas primPaint ]
 ]
 
 { #category : '*LibPangoCairo' }
 RSAthensRenderer >> visitPangoText: pangoShape [
 
-	matrix translateBy: pangoShape extent halvedAsFloat negated.
-
-	athensCanvas pathTransform loadAffineTransform: matrix.
-	athensCanvas setPathMatrix.
-
-	(pangoShape paint asAthensPaintOn: athensCanvas) loadOnCairoCanvas:
-		athensCanvas.
-
-	pangoShape showLayoutOnAthensCairoCanvas: athensCanvas
+	self
+		visitShape: pangoShape
+		withScaledMatrixDo: [
+		pangoShape showLayoutOnAthensCairoCanvas: athensCanvas ]
 ]
