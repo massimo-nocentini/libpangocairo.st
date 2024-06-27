@@ -51,24 +51,49 @@ PangoMarkupMicrodownVisitor >> appendFooterNamed: groupName label: label shape: 
 { #category : 'converting' }
 PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 
-	| pango composite |
-	pango := RSPangoMarkup new
-		         font: font;
-		         text: pangoMarkup;
-		         asCompositeShape.
+	| composite footerShapes |
+	composite := RSPangoMarkup new
+		             font: font;
+		             text: pangoMarkup;
+		             asCompositeShape.
 
-	composite := RSGroup new
-		             add: pango;
-		             addAll: (self treeSitterLanguageShapesWithFont:
-					              PangoLogicalFontManager pangoMonospace);
-		             yourself.
+	footerShapes := self treeSitterLanguageShapesWithFont:
+		                PangoLogicalFontManager pangoMonospace.
 
-	RSVerticalLineLayout new
-		verticalGap: Float goldenRatio;
-		alignLeft;
-		applyOn: composite.
+	footerShapes ifNotEmpty: [
+		| maxWidth controlPoints random separatorLine |
+		composite := RSGroup new
+			             add: composite;
+			             addAll: footerShapes;
+			             yourself.
 
-	^ composite asShape
+		maxWidth := composite
+			            inject: 0
+			            into: [ :maxWidthSoFar :each |
+			            each width max: maxWidthSoFar ].
+
+		controlPoints := (0 to: maxWidth) linspace:
+			                 ((maxWidth log: 2) * Float goldenRatio) ceiling.
+
+		random := RandomGaussian seed: 541.
+
+		separatorLine := RSdeCasteljauLine new
+			                 color: Smalltalk ui theme borderColor translucent;
+			                 controlPoints:
+				                 (controlPoints collect: [ :each |
+						                  each @ 0 + random next ]);
+			                 asCompositeShape.
+
+		composite add: separatorLine afterIndex: 1.
+
+		RSVerticalLineLayout new
+			verticalGap: Float goldenRatio;
+			alignLeft;
+			on: composite.
+
+		composite := composite asShape ].
+
+	^ composite
 ]
 
 { #category : 'accessing' }
@@ -97,18 +122,6 @@ PangoMarkupMicrodownVisitor >> codePresenter: anObject [
 PangoMarkupMicrodownVisitor >> docClassOptionsOfMicMathBlock: aMicMath [
 
 	^ aMicMath arguments at: #texDocClassOptions ifAbsent: [ '12pt' ]
-]
-
-{ #category : 'accessing' }
-PangoMarkupMicrodownVisitor >> drawSeparatorBeforeFooters [
-
-	self hasFooter ifTrue: [
-		stream cr.
-
-		"The following workaround allows us to show a continue line instead of a fake one."
-		stream << '<span underline="single">'.
-		50 timesRepeat: [ stream space ].
-		stream << '</span>' ]
 ]
 
 { #category : 'initialization' }
@@ -281,8 +294,6 @@ PangoMarkupMicrodownVisitor >> visit: mic [
 		                stream := aStream. "save the reference and continue visiting."
 
 		                super visit: mic.
-
-		                self drawSeparatorBeforeFooters.
 
 		                stream := nil "Clean it up" ]) trim.
 
