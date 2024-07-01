@@ -18,7 +18,8 @@ Class {
 		'pangoMarkup',
 		'lastMicBlock',
 		'footers',
-		'codePresenter'
+		'codePresenter',
+		'gaussianRandom'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -61,7 +62,7 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		                PangoLogicalFontManager pangoMonospace.
 
 	footerShapes ifNotEmpty: [
-		| maxWidth controlPoints random separatorLine |
+		| maxWidth controlPoints separatorLine |
 		composite := RSGroup new
 			             add: composite;
 			             addAll: footerShapes;
@@ -75,13 +76,11 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		controlPoints := (0 to: maxWidth) linspace:
 			                 ((maxWidth log: 2) * Float goldenRatio) ceiling.
 
-		random := RandomGaussian seed: 541.
-
 		separatorLine := RSdeCasteljauLine new
-			                 color: Smalltalk ui theme borderColor translucent;
+			                 color: Smalltalk ui theme borderColor lighter;
 			                 controlPoints:
 				                 (controlPoints collect: [ :each |
-						                  each @ 0 + random next ]);
+						                  each @ gaussianRandom next ]);
 			                 asCompositeShape.
 
 		composite add: separatorLine afterIndex: 1.
@@ -169,7 +168,7 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	linksCount := 0.
 
-	codeLabelRandom := Random seed: 541.
+	codeLabelRandom := Random seed: Number firstCarmichaelNumber.
 
 	fontMonospace := PangoLogicalFontManager pangoMonospace.
 	fontSans := PangoLogicalFontManager pangoSans.
@@ -178,7 +177,9 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	self codePresenter: (SpCodePresenter new
 			 beForScripting;
-			 yourself)
+			 yourself).
+
+	gaussianRandom := RandomGaussian seed: Number firstCarmichaelNumber
 ]
 
 { #category : 'accessing' }
