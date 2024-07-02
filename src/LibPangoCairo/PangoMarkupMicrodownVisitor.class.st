@@ -8,8 +8,6 @@ Class {
 		'sectionsNumbering',
 		'modifier',
 		'orderedNestedLevels',
-		'linksCount',
-		'codeLabelRandom',
 		'auxiliaryOrderedLabelLanguageAssociations',
 		'fontMonospace',
 		'fontSans',
@@ -62,26 +60,22 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		                PangoLogicalFontManager pangoMonospace.
 
 	footerShapes ifNotEmpty: [
-		| maxWidth controlPoints separatorLine |
+		| maxWidth separatorLine |
 		composite := RSGroup new
 			             add: composite;
 			             addAll: footerShapes;
 			             yourself.
 
 		maxWidth := composite
-			            inject: 0
+			            inject: 0.0
 			            into: [ :maxWidthSoFar :each |
 			            each width max: maxWidthSoFar ].
 
-		controlPoints := (0 to: maxWidth) linspace:
-			                 ((maxWidth log: 2) * Float goldenRatio) ceiling.
-
-		separatorLine := RSdeCasteljauLine new
-			                 color: Smalltalk ui theme borderColor lighter;
-			                 controlPoints:
-				                 (controlPoints collect: [ :each |
-						                  each @ gaussianRandom next ]);
-			                 asCompositeShape.
+		separatorLine := RSLine new
+			                 startPoint: 0 @ 0;
+			                 endPoint: maxWidth + Float goldenRatio @ 0.0;
+			                 color: Smalltalk ui theme borderColor;
+			                 yourself.
 
 		composite add: separatorLine afterIndex: 1.
 
@@ -166,10 +160,6 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	footers := self footerNames.
 
-	linksCount := 0.
-
-	codeLabelRandom := Random seed: Number firstCarmichaelNumber.
-
 	fontMonospace := PangoLogicalFontManager pangoMonospace.
 	fontSans := PangoLogicalFontManager pangoSans.
 	fontSerif := PangoLogicalFontManager pangoSerif.
@@ -193,12 +183,6 @@ PangoMarkupMicrodownVisitor >> nextPutAllAlpha: alpha mod: link [
 			nextPutAll: ('<span alpha="{1}%">{2}</span>' format: {
 							 (alpha asInteger min: 100 max: 1).
 							 link value }) ]
-]
-
-{ #category : 'accessing' }
-PangoMarkupMicrodownVisitor >> pangoMarkup [
-
-	^ pangoMarkup
 ]
 
 { #category : 'visiting' }
@@ -272,8 +256,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 				         yourself.
 
 			RSHorizontalLineLayout new
-				horizontalGap:
-					labelShape encompassingRectangle width / Float goldenRatio;
+				horizontalGap: labelShape width * Float silverRatio;
 				alignTop;
 				applyOn: group.
 

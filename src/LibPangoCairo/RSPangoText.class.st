@@ -66,9 +66,9 @@ RSPangoText >> attributesChunks: anObject [
 { #category : 'accessing' }
 RSPangoText >> baseRectangle [
 
-	baseRectangle := self text == ''
-		                 ifTrue: [ OriginPoint corner: OriginPoint ]
-		                 ifFalse: [
+	baseRectangle := self text
+		                 ifNil: [ OriginPoint corner: OriginPoint ]
+		                 ifNotNil: [
 			                 self
 				                 onPangoLayoutHandle: self layoutForExtents
 				                 withAttributesDo: [ :layout |
@@ -160,10 +160,9 @@ RSPangoText >> initialize [
 
 	self
 		layoutWidthUnbounded;
-		font: StandardFonts defaultFont;
+		font: PangoLogicalFontManager pangoSerif;
 		defaultForegroundColor: Smalltalk ui theme textColor;
-		attributesChunks: OrderedCollection new;
-		text: ''.
+		attributesChunks: OrderedCollection new.
 
 	super initialize
 ]
