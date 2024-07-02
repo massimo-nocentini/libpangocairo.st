@@ -16,8 +16,7 @@ Class {
 		'pangoMarkup',
 		'lastMicBlock',
 		'footers',
-		'codePresenter',
-		'gaussianRandom'
+		'codePresenter'
 	],
 	#classVars : [
 		'UnorderedBullets'
@@ -167,9 +166,7 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	self codePresenter: (SpCodePresenter new
 			 beForScripting;
-			 yourself).
-
-	gaussianRandom := RandomGaussian seed: Number firstCarmichaelNumber
+			 yourself)
 ]
 
 { #category : 'accessing' }
