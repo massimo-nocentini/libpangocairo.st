@@ -232,32 +232,32 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 	shapes := RSGroup new.
 
 	footers keysAndValuesDo: [ :groupName :associations |
-		associations do: [ :assoc |
-			| labelShape chunkShape group |
-			labelShape := RSPangoMarkup new
-				              text: (String streamContents: [ :s |
-							               s
-								               << '<span font_family="';
-								               << fontSans familyName;
-								               << '" font_size="smaller" alpha="50%">[';
-								               << assoc key;
-								               << ']';
-								               << '</span>' ]);
-				              asCompositeShape.
+		associations ifNotEmpty: [
+			associations do: [ :assoc |
+				| labelShape chunkShape group |
+				labelShape := RSPangoMarkup new
+					              font: fontSans;
+					              text: (String streamContents: [ :s |
+								               s
+									               << '<span font_size="smaller" alpha="50%">[';
+									               << assoc key;
+									               << ']';
+									               << '</span>' ]);
+					              yourself.
 
-			chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
+				chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
 
-			group := RSGroup new
-				         add: labelShape;
-				         add: chunkShape;
-				         yourself.
+				group := RSGroup new
+					         add: labelShape;
+					         add: chunkShape;
+					         yourself.
 
-			RSHorizontalLineLayout new
-				horizontalGap: labelShape width * Float silverRatio;
-				alignTop;
-				applyOn: group.
+				RSHorizontalLineLayout new
+					horizontalGap: labelShape width * Float silverRatio;
+					alignTop;
+					applyOn: group.
 
-			shapes add: group asShape ] ].
+				shapes add: group asShape ] ] ].
 
 	^ shapes
 ]

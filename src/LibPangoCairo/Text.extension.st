@@ -21,8 +21,9 @@ Text >> asRSPangoShapeUsingFont: aFont [
 				attributes add: attrString ] ] ].
 
 	^ RSPangoText new
+		  model: self;
 		  font: aFont;
 		  attributesChunks: attributes;
 		  text: self asString;
-		  asCompositeShape
+		  yourself
 ]

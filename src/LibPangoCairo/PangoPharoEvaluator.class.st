@@ -25,10 +25,8 @@ PangoPharoEvaluator >> asRSPangoShapeUsingFont: aFont [
 				               add: (RSPangoMarkup new
 						                text:
 							                '<span foreground="red">Syntactic error:</span>';
-						                asCompositeShape);
-				               add:
-				               (text asRSPangoShapeUsingFont:
-					                PangoLogicalFontManager pangoMonospace);
+						                yourself);
+				               add: (text asRSPangoShapeUsingFont: aFont);
 				               yourself.
 
 			          RSVerticalLineLayout new
