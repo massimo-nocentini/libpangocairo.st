@@ -360,9 +360,7 @@ PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 			        << '<span font_family="';
 			        << fontSerif familyName;
 			        << '" font_size="smaller">';
-			        <<
-				        (aFootnote asFooterStringForPangoMarkupMicrodownVisitor:
-						         self);
+			        << aFootnote note;
 			        << '</span>' ].
 
 	label := self appendFooterNamed: #note label: 'Note' shape: note.
@@ -467,10 +465,11 @@ PangoMarkupMicrodownVisitor >> visitItalic: aFormat [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> visitLink: aLink [
 
-	| label url |
-	url := aLink asFooterStringForPangoMarkupMicrodownVisitor: self.
-
-	label := self appendFooterNamed: #link label: 'Link' shape: url asUrl.
+	| label |
+	label := self
+		         appendFooterNamed: #link
+		         label: 'Link'
+		         shape: aLink url asUrl.
 
 	stream
 		<< String space;
