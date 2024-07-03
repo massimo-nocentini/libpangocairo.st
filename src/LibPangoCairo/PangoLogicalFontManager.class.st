@@ -23,7 +23,7 @@ PangoLogicalFontManager class >> initialize [
 		ifTrue: [
 			PangoMathLogicalFont := LogicalFont
 				                        familyName: 'Euler Math'
-				                        pointSize: codeFontSize.
+				                        pointSize: defaultFontSize.
 
 			PangoSansLogicalFont := LogicalFont
 				                        familyName: 'Helvetica Neue'
@@ -41,7 +41,7 @@ PangoLogicalFontManager class >> initialize [
 				ifTrue: [
 					PangoMathLogicalFont := LogicalFont
 						                        familyName: 'Euler Math'
-						                        pointSize: codeFontSize.
+						                        pointSize: defaultFontSize.
 
 					PangoSansLogicalFont := LogicalFont
 						                        familyName: 'Source Sans Pro'
@@ -57,7 +57,7 @@ PangoLogicalFontManager class >> initialize [
 				ifFalse: [
 					PangoMathLogicalFont := LogicalFont
 						                        familyName: 'Euler Math'
-						                        pointSize: codeFontSize.
+						                        pointSize: defaultFontSize.
 
 					PangoSansLogicalFont := LogicalFont
 						                        familyName: 'Source Sans Pro'

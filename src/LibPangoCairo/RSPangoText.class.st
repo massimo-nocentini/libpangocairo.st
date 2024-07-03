@@ -315,20 +315,22 @@ RSPangoText >> text: anObject [
 { #category : 'handle' }
 RSPangoText >> withPangoAttrList [
 
-	^ self pangoAttrListHandlerFromString:
-		  (String streamContents: [ :stream |
-			   stream
-				   nextPutAll: '0 -1 foreground #';
-				   nextPutAll: self defaultForegroundColor asHexString;
-				   lf;
-				   nextPutAll: '0 -1 font-desc "';
-				   nextPutAll: self font familyName;
-				   nextPutAll: ', Normal ';
-				   nextPutAll: self font pointSize asString;
-				   nextPutAll: '"'.
+	| stylesString |
+	stylesString := String streamContents: [ :stream |
+		                stream
+			                nextPutAll: '0 -1 foreground #';
+			                nextPutAll: self defaultForegroundColor asHexString;
+			                lf;
+			                nextPutAll: '0 -1 font-desc "';
+			                nextPutAll: self font familyName;
+			                nextPutAll: ', Normal ';
+			                nextPutAll: self font pointSize asString;
+			                nextPutAll: '"'.
 
-			   attributesChunks do: [ :each |
-				   stream
-					   lf;
-					   nextPutAll: each ] ])
+		                attributesChunks do: [ :each |
+			                stream
+				                lf;
+				                nextPutAll: each ] ].
+
+	^ self pangoAttrListHandlerFromString: stylesString
 ]
