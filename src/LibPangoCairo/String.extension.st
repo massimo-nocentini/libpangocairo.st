@@ -4,9 +4,10 @@ Extension { #name : 'String' }
 String >> asRSPangoShapeUsingFont: font [
 
 	^ RSPangoMarkup new
+		  model: self;
 		  font: font;
 		  text: self;
-		  asCompositeShape
+		  yourself
 ]
 
 { #category : '*LibPangoCairo' }

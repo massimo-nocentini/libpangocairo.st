@@ -68,10 +68,10 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		maxWidth := composite
 			            inject: 0.0
 			            into: [ :maxWidthSoFar :each |
-			            each width max: maxWidthSoFar ].
+			            maxWidthSoFar max: each width ].
 
 		separatorLine := RSLine new
-			                 startPoint: 0 @ 0;
+			                 startPoint: 0.0 @ 0.0;
 			                 endPoint: maxWidth + Float goldenRatio @ 0.0;
 			                 color: Smalltalk ui theme borderColor;
 			                 yourself.
