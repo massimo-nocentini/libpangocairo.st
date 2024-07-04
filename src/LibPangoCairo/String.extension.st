@@ -11,6 +11,12 @@ String >> asRSPangoShapeUsingFont: font [
 ]
 
 { #category : '*LibPangoCairo' }
+String >> fullPangoPrintString [
+
+	^ super fullPangoPrintString gMarkupEscapeText
+]
+
+{ #category : '*LibPangoCairo' }
 String >> shStyleElement [
 
 	^ SHStyleElement withTokens: #( string )

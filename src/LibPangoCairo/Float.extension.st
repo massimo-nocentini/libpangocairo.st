@@ -8,5 +8,5 @@ Float >> fullPangoPrintString [
 		  ifFalse: [
 			  self = NegativeInfinity
 				  ifTrue: [ '\minussign\infty' ]
-				  ifFalse: [ self fullPrintString ] ]
+				  ifFalse: [ super fullPangoPrintString ] ]
 ]
