@@ -113,7 +113,10 @@ PangoMarkupMicrodownVisitor >> codePresenter: anObject [
 { #category : 'accessing' }
 PangoMarkupMicrodownVisitor >> docClassOptionsOfMicMathBlock: aMicMath [
 
-	^ aMicMath arguments at: #texDocClassOptions ifAbsent: [ '12pt' ]
+	^ aMicMath arguments
+		  at: #texDocClassOptions
+		  ifAbsent: [
+		  PangoLogicalFontManager pangoMath pointSize asString , 'pt' ]
 ]
 
 { #category : 'initialization' }
@@ -210,19 +213,16 @@ PangoMarkupMicrodownVisitor >> pushModifier: aString [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> texChunkOfMicMathBlock: aMicMath [
 
-	| texChunk texEnv |
+	| texEnv |
 	texEnv := aMicMath arguments
 		          at: #texEnv
 		          ifPresent: [ :texEnvName | texEnvName asSymbol ]
 		          ifAbsent: [ #eq ].
 
-	texChunk := texEnv = #eq
-		            ifTrue: [ PopplerTeXDisplayStyleChunk new ]
-		            ifFalse: [
-			            texEnv = #tikZ
-				            ifTrue: [ PopplerTikZChunk new ]
-				            ifFalse: [ PopplerTeXChunk new ] ].
-	^ texChunk
+	texEnv = #eq ifTrue: [ ^ PopplerTeXDisplayStyleChunk new ].
+	texEnv = #tikZ ifTrue: [ ^ PopplerTikZChunk new ].
+
+	^ PopplerTeXChunk new "otherwise."
 ]
 
 { #category : 'visiting' }
