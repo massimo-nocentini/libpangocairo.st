@@ -268,7 +268,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 		            yourself.
 
 	^ shapes collect: [ :group |
-		  | composite |
+		  | composite g |
 		  composite := group first
 			               width: maxWidth;
 			               yourself.
@@ -278,7 +278,24 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
 		  layout on: group. "Put the label and the chunk shapes on the same line."
 
-		  group asShape ]
+		  composite := group asShape.
+
+		  g := RSGroup new
+			       add: (RSLine new
+					        startPoint: 0 @ 0;
+					        endPoint: composite width + Float goldenRatio @ 0.0;
+					        color: Smalltalk ui theme borderColor lighter lighter;
+					        dashed;
+					        capRound;
+					        yourself);
+			       add: composite;
+			       yourself.
+
+		  RSVerticalLineLayout new
+			  verticalGap: Float goldenRatio;
+			  on: g.
+
+		  g asShape ]
 ]
 
 { #category : 'visiting main API' }
