@@ -59,7 +59,7 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 		                PangoLogicalFontManager pangoMonospace.
 
 	footerShapes ifNotEmpty: [
-		| maxWidth separatorLine |
+		| maxWidth |
 		composite := RSGroup new
 			             add: composite;
 			             addAll: footerShapes;
@@ -69,14 +69,6 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 			            inject: 0.0
 			            into: [ :maxWidthSoFar :each |
 			            maxWidthSoFar max: each width ].
-
-		separatorLine := RSLine new
-			                 startPoint: 0.0 @ 0.0;
-			                 endPoint: maxWidth + Float goldenRatio @ 0.0;
-			                 color: Smalltalk ui theme borderColor;
-			                 yourself.
-
-		composite add: separatorLine afterIndex: 1.
 
 		RSVerticalLineLayout new
 			verticalGap: Float goldenRatio;
@@ -228,7 +220,7 @@ PangoMarkupMicrodownVisitor >> texChunkOfMicMathBlock: aMicMath [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
-	| shapes maxWidth layout location |
+	| shapes maxWidth layout location vLayout |
 	maxWidth := 0.0.
 	shapes := OrderedCollection new.
 
@@ -267,6 +259,10 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 		            left;
 		            yourself.
 
+	vLayout := RSVerticalLineLayout new
+		           verticalGap: Float goldenRatio;
+		           yourself.
+
 	^ shapes collect: [ :group |
 		  | composite g |
 		  composite := group first
@@ -284,16 +280,13 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 			       add: (RSLine new
 					        startPoint: 0 @ 0;
 					        endPoint: composite width + Float goldenRatio @ 0.0;
-					        color: Smalltalk ui theme borderColor lighter lighter;
-					        dashed;
+					        color: (Smalltalk ui theme borderColor alpha: 0.5);
 					        capRound;
 					        yourself);
 			       add: composite;
 			       yourself.
 
-		  RSVerticalLineLayout new
-			  verticalGap: Float goldenRatio;
-			  on: g.
+		  vLayout on: g.
 
 		  g asShape ]
 ]
