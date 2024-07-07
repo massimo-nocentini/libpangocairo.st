@@ -230,7 +230,7 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
 	| shapes maxWidth layout location |
 	maxWidth := 0.0.
-	shapes := RSGroup new.
+	shapes := OrderedCollection new.
 
 	footers keysAndValuesDo: [ :groupName :associations |
 		associations ifNotEmpty: [
@@ -272,8 +272,12 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 		  composite := group first
 			               width: maxWidth;
 			               yourself.
+
+		  "Ensure that the Pango shape for the label is positioned on the left margin."
 		  location move: composite shapes first on: composite.
-		  layout on: group.
+
+		  layout on: group. "Put the label and the chunk shapes on the same line."
+
 		  group asShape ]
 ]
 
