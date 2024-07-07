@@ -228,7 +228,8 @@ PangoMarkupMicrodownVisitor >> texChunkOfMicMathBlock: aMicMath [
 { #category : 'visiting' }
 PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 
-	| shapes |
+	| shapes maxWidth layout location |
+	maxWidth := 0.0.
 	shapes := RSGroup new.
 
 	footers keysAndValuesDo: [ :groupName :associations |
@@ -243,23 +244,37 @@ PangoMarkupMicrodownVisitor >> treeSitterLanguageShapesWithFont: aFont [
 									               << assoc key;
 									               << ']';
 									               << '</span>' ]);
-					              yourself.
+					              asCompositeShape. "necessary because of the alignment step at the bottom."
 
 				chunkShape := assoc value asRSPangoShapeUsingFont: aFont.
+
+				maxWidth := maxWidth max: labelShape width.
 
 				group := RSGroup new
 					         add: labelShape;
 					         add: chunkShape;
 					         yourself.
 
-				RSHorizontalLineLayout new
-					horizontalGap: labelShape width * Float silverRatio;
-					alignMiddle;
-					applyOn: group.
+				shapes add: group ] ] ].
 
-				shapes add: group asShape ] ] ].
+	"Now that we have the `maxWidth` we can setup the layout object."
+	layout := RSHorizontalLineLayout new
+		          horizontalGap: maxWidth * Float silverRatio;
+		          alignMiddle;
+		          yourself.
 
-	^ shapes
+	location := RSLocation new
+		            left;
+		            yourself.
+
+	^ shapes collect: [ :group |
+		  | composite |
+		  composite := group first
+			               width: maxWidth;
+			               yourself.
+		  location move: composite shapes first on: composite.
+		  layout on: group.
+		  group asShape ]
 ]
 
 { #category : 'visiting main API' }
