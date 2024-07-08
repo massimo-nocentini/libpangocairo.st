@@ -11,8 +11,6 @@ Class {
 		'auxiliaryOrderedLabelLanguageAssociations',
 		'fontMonospace',
 		'fontSans',
-		'fontSerif',
-		'fontMath',
 		'pangoMarkup',
 		'lastMicBlock',
 		'footers',
@@ -156,8 +154,6 @@ PangoMarkupMicrodownVisitor >> initialize [
 
 	fontMonospace := PangoLogicalFontManager pangoMonospace.
 	fontSans := PangoLogicalFontManager pangoSans.
-	fontSerif := PangoLogicalFontManager pangoSerif.
-	fontMath := PangoLogicalFontManager pangoMath.
 
 	self codePresenter: (SpCodePresenter new
 			 beForScripting;
@@ -387,7 +383,7 @@ PangoMarkupMicrodownVisitor >> visitFootnote: aFootnote [
 	note := String streamContents: [ :noteStream |
 		        noteStream
 			        << '<span font_family="';
-			        << fontSerif familyName;
+			        << PangoLogicalFontManager pangoSerif familyName;
 			        << '" font_size="smaller">';
 			        << aFootnote note;
 			        << '</span>' ].
@@ -553,7 +549,7 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 
 	stream
 		<< '<span font_family="';
-		<< fontMath familyName;
+		<< PangoLogicalFontManager pangoMath familyName;
 		<< '">';
 		<< aMicMathInline bodyString;
 		<< '</span>'.
@@ -561,7 +557,7 @@ PangoMarkupMicrodownVisitor >> visitMathInline: aMicMathInline [
 	super visitMathInline: aMicMathInline
 ]
 
-{ #category : 'visiting' }
+{ #category : 'visiting - inline elements' }
 PangoMarkupMicrodownVisitor >> visitMonospace: aFormat [
 
 	stream
