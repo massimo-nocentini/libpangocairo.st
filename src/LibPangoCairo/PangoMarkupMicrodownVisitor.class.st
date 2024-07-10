@@ -51,22 +51,16 @@ PangoMarkupMicrodownVisitor >> asRSPangoShapeUsingFont: font [
 	composite := RSPangoMarkup new
 		             font: font;
 		             text: pangoMarkup;
-		             asCompositeShape.
+		             yourself.
 
 	footerShapes := self treeSitterLanguageShapesWithFont:
 		                PangoLogicalFontManager pangoMonospace.
 
 	footerShapes ifNotEmpty: [
-		| maxWidth |
 		composite := RSGroup new
 			             add: composite;
 			             addAll: footerShapes;
 			             yourself.
-
-		maxWidth := composite
-			            inject: 0.0
-			            into: [ :maxWidthSoFar :each |
-			            maxWidthSoFar max: each width ].
 
 		RSVerticalLineLayout new
 			verticalGap: Float goldenRatio;
