@@ -30,11 +30,11 @@ PangoLogicalFontManager class >> initialize [
 				                        pointSize: defaultFontSize.
 
 			PangoSerifLogicalFont := LogicalFont
-				                         familyName: 'Lucide Grande'
+				                         familyName: 'Lucida Grande'
 				                         pointSize: defaultFontSize.
 
 			PangoMonospaceLogicalFont := LogicalFont
-				                             familyName: 'Menlo'
+				                             familyName: 'Monaco'
 				                             pointSize: codeFontSize ]
 		ifFalse: [
 			Smalltalk os isLinux
