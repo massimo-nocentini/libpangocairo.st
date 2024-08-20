@@ -293,7 +293,7 @@ RSPangoText >> rectangleOfPangoLayoutHandle: anHandler class: aClass [
 RSPangoText >> showLayoutOnAthensCairoCanvas: anAthensCairoCanvas [
 
 	self
-		onPangoLayoutHandle: anAthensCairoCanvas pangoLayoutHandle
+		onPangoLayoutHandle: self layoutForExtents
 		withAttributesDo: [ :layout |
 			self
 				onAthensCairoCanvasHandle: anAthensCairoCanvas getHandle
