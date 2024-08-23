@@ -21,55 +21,79 @@ PangoLogicalFontManager class >> initialize [
 
 	Smalltalk os isMacOS
 		ifTrue: [
-			PangoMathLogicalFont := LogicalFont
-				                        familyName: 'Euler Math'
-				                        pointSize: defaultFontSize.
-
-			PangoSansLogicalFont := LogicalFont
-				                        familyName: 'Helvetica Neue'
-				                        pointSize: defaultFontSize.
-
-			PangoSerifLogicalFont := LogicalFont
-				                         familyName: 'Lucida Grande'
-				                         pointSize: defaultFontSize.
-
-			PangoMonospaceLogicalFont := LogicalFont
-				                             familyName: 'Monaco'
-				                             pointSize: codeFontSize ]
+			self
+				initializeMacOSdefaultFontSize: defaultFontSize
+				codeFontSize: codeFontSize ]
 		ifFalse: [
 			Smalltalk os isLinux
 				ifTrue: [
-					PangoMathLogicalFont := LogicalFont
-						                        familyName: 'Euler Math'
-						                        pointSize: defaultFontSize.
-
-					PangoSansLogicalFont := LogicalFont
-						                        familyName: 'Source Sans Pro'
-						                        pointSize: defaultFontSize.
-
-					PangoSerifLogicalFont := LogicalFont
-						                         familyName: 'Source Serif Pro'
-						                         pointSize: defaultFontSize.
-
-					PangoMonospaceLogicalFont := LogicalFont
-						                             familyName: 'Source Code Pro'
-						                             pointSize: codeFontSize ]
+					self
+						initializeLinuxDefaultFontSize: defaultFontSize
+						codeFontSize: codeFontSize ]
 				ifFalse: [
-					PangoMathLogicalFont := LogicalFont
-						                        familyName: 'Euler Math'
-						                        pointSize: defaultFontSize.
+					self
+						initializeWinDefaultFontSize: defaultFontSize
+						codeFontSize: codeFontSize ] ]
+]
 
-					PangoSansLogicalFont := LogicalFont
-						                        familyName: 'Source Sans Pro'
-						                        pointSize: defaultFontSize.
+{ #category : 'class initialization' }
+PangoLogicalFontManager class >> initializeLinuxDefaultFontSize: defaultFontSize codeFontSize: codeFontSize [
 
-					PangoSerifLogicalFont := LogicalFont
-						                         familyName: 'Source Serif Pro'
-						                         pointSize: defaultFontSize.
+	PangoMathLogicalFont := LogicalFont
+		                        familyName: 'Euler Math'
+		                        pointSize: defaultFontSize.
 
-					PangoMonospaceLogicalFont := LogicalFont
-						                             familyName: 'Consolas'
-						                             pointSize: codeFontSize ] ]
+	PangoSansLogicalFont := LogicalFont
+		                        familyName: 'Source Sans Pro'
+		                        pointSize: defaultFontSize.
+
+	PangoSerifLogicalFont := LogicalFont
+		                         familyName: 'Source Serif Pro'
+		                         pointSize: defaultFontSize.
+
+	PangoMonospaceLogicalFont := LogicalFont
+		                             familyName: 'Source Code Pro'
+		                             pointSize: codeFontSize
+]
+
+{ #category : 'class initialization' }
+PangoLogicalFontManager class >> initializeMacOSdefaultFontSize: defaultFontSize codeFontSize: codeFontSize [
+
+	PangoMathLogicalFont := LogicalFont
+		                        familyName: 'Euler Math'
+		                        pointSize: defaultFontSize.
+
+	PangoSansLogicalFont := LogicalFont
+		                        familyName: 'Lucida Grande'
+		                        pointSize: defaultFontSize.
+
+	PangoSerifLogicalFont := LogicalFont
+		                         familyName: 'Times New Roman'
+		                         pointSize: defaultFontSize.
+
+	PangoMonospaceLogicalFont := LogicalFont
+		                             familyName: 'Monaco'
+		                             pointSize: codeFontSize
+]
+
+{ #category : 'class initialization' }
+PangoLogicalFontManager class >> initializeWinDefaultFontSize: defaultFontSize codeFontSize: codeFontSize [
+
+	PangoMathLogicalFont := LogicalFont
+		                        familyName: 'Euler Math'
+		                        pointSize: defaultFontSize.
+
+	PangoSansLogicalFont := LogicalFont
+		                        familyName: 'Source Sans Pro'
+		                        pointSize: defaultFontSize.
+
+	PangoSerifLogicalFont := LogicalFont
+		                         familyName: 'Source Serif Pro'
+		                         pointSize: defaultFontSize.
+
+	PangoMonospaceLogicalFont := LogicalFont
+		                             familyName: 'Consolas'
+		                             pointSize: codeFontSize
 ]
 
 { #category : 'accessing' }
